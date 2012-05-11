@@ -4,6 +4,10 @@ The module converts json into csv with column titles. It is the perfect partner 
 
 ## How to use
 
+Install
+
+    npm install json2csv
+
 Include the module and run
 
     json2csv = require('json2csv');
