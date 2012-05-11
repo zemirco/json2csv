@@ -1,4 +1,5 @@
 exports.parse = (params) ->
+  params.data = JSON.parse JSON.stringify params.data
   if checkFields(params)
     createColumnTitles params, createColumnContent
   
