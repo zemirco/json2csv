@@ -11,8 +11,9 @@ checkFields = (params) ->
         found = true
         break
     if found is false
-      throw new Error "#{name} is not a valid column specifier"
-  true
+      throw new Error "Cannot find #{name} as a json key"
+    else
+      return true
   
 createColumnTitles = (params, callback) ->
   str = ''
