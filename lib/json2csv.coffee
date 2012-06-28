@@ -30,5 +30,6 @@ createColumnContent = (params, str) ->
       if line isnt ''
         line += ','
       line += JSON.stringify elem[field]
+    line = line.replace(/\\"/g, '""');
     str += '\r\n' + line
   return str
