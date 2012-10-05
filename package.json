@@ -1,6 +1,6 @@
 {
   "name": "json2csv",
-  "version": "v0.0.4",
+  "version": "v0.1.0",
   "description": "Convert json to csv with column titles",
   "keywords": [
     "json",
@@ -15,6 +15,9 @@
     "twitter": "zeMirco"
   },
   "main" : "./lib/json2csv.js",
+  "bin" : {
+    "json2csv": "./bin/json2csv.js"
+  },
   "repository": { 
     "type" : "git", 
     "url" : "https://github.com/zeMirco/json2csv"
