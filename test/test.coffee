@@ -3,12 +3,7 @@ json2csv = require '.././lib/json2csv'
 
 describe 'parse', ->
   
-  fromMongo = [
-    { "carModel" : "Audi",      "price" : 10000,  "color" : "blue" }
-    { "carModel" : "BMW",       "price" : 15000,  "color" : "red" }
-    { "carModel" : "Mercedes",  "price" : 20000,  "color" : "yellow" }
-    { "carModel" : "Porsche",   "price" : 30000,  "color" : "green" }
-  ]
+  fromMongo = require './cars.json'
 
   result = 'carModel,price,color\r\n"Audi",10000,"blue"\r\n"BMW",15000,"red"\r\n"Mercedes",20000,"yellow"\r\n"Porsche",30000,"green"'
     
