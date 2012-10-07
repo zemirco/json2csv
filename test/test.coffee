@@ -19,6 +19,16 @@ describe 'parse', ->
       
   it 'should throw an error if field is not a key in the json data', () ->
     (json2csv.parse({data: fromMongo, fields: ['carModel', 'location', 'color']})).should.throw()
+    
+  input = [
+    {'a string': 'with a description'},
+    {'a string': 'with a description and "quotes"'}
+  ]
+    
+  it 'should escape quotes with double quotes', () ->
+    (json2csv.parse({data: input, fields: ['a string']}))
+      .should
+      .equal('a string\r\n"with a description"\r\n"with a description and ""quotes"""')
           
   result_selected = 'carModel,price\r\n"Audi",10000\r\n"BMW",15000\r\n"Mercedes",20000\r\n"Porsche",30000'
       
