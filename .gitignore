@@ -1,6 +1,5 @@
 node_modules
 .DS_Store
 .tm_properties
-*.csv
 server.*
 published
