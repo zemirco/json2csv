@@ -1,33 +1,34 @@
 {
   "name": "json2csv",
-  "version": "v0.0.5",
+  "version": "v0.1.0",
   "description": "Convert json to csv with column titles",
   "keywords": [
     "json",
+    "to",
     "csv",
     "export",
-    "mongoexport",
-    "convert"
+    "convert",
+    "parse"
   ],
   "author": {
     "name": "Mirco Zeiss",
     "email": "mirco.zeiss@gmail.com",
     "twitter": "zeMirco"
   },
-  "main" : "./lib/json2csv.js",
-  "repository": { 
-    "type" : "git", 
-    "url" : "https://github.com/zeMirco/json2csv"
+  "main": "./lib/json2csv.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zeMirco/json2csv"
   },
   "engines": {
-    "node": ">0.6.0"
+    "node": "~0.8.0"
   },
   "scripts": {
     "test": "make test"
   },
   "devDependencies": {
-    "coffee-script": ">1.3.0",
-    "should": ">0.6.0",
-    "mocha": ">1.0.0"
+    "mocha": "~1.6.0",
+    "should": "~1.2.0",
+    "async": "~0.1.22"
   }
 }
