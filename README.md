@@ -1,6 +1,6 @@
 # Convert json to csv
 
-The module converts json into csv with column titles. It is the perfect partner for MongoDB and it works similar to [mongoexport](http://www.mongodb.org/display/DOCS/mongoexport) but in node.js. The code is written in [CoffeeScript](http://coffeescript.org/).
+Converts json into csv with column titles and proper line endings.
 
 ## How to use
 
@@ -70,7 +70,7 @@ Should result in
 
 ## Testing
 
-Requires mocha and should.
+Requires mocha, should and async.
 
 Run
 
