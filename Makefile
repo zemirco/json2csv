@@ -1,4 +1,4 @@
 test:
-	mocha --reporter spec --compilers coffee:coffee-script
+	mocha --reporter spec
 	
 .PHONY: test
