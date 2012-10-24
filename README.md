@@ -116,34 +116,8 @@ Use `-p` to show the result in a beautiful table inside the console.
 #### Input file, specify fields and use pretty logging
     
     json2csv -i input.json -f carModel,price,color -p
-
-<table>
-  <tr>
-    <th>carModel</th>
-    <th>price</th>
-    <th>color</th>
-  </tr>
-  <tr>
-    <td>"Audi"</td>
-    <td>10000</td>
-    <td>"blue"</td>
-  </tr>
-  <tr>
-    <td>"BMW"</td>
-    <td>15000</td>
-    <td>"red"</td>
-  </tr>
-  <tr>
-    <td>"Mercedes"</td>
-    <td>20000</td>
-    <td>"yellow"</td>
-  </tr>
-  <tr>
-    <td>"Porsche"</td>
-    <td>30000</td>
-    <td>"green"</td>
-  </tr>
-</table>
+    
+![Screenshot](https://s3.amazonaws.com/zeMirco/github/json2csv/json2csv-pretty.png)
 
 #### Input file, specify fields and write to file
 
