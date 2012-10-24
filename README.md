@@ -1,8 +1,23 @@
 # Convert json to csv
 
-Converts json into csv with column titles and proper line endings.
+Converts json into csv with column titles and proper line endings. Can be used as a module and from the command line.
 
 ## How to use
+
+Notice!
+
+With version 1.0.0 the API of json2csv was changed. Before `json2csv.parse()` returned the csv. From
+v1.0.0 on `json2csv()` returns a callback function with the csv as a parameter to follow node.js coding styles.
+
+Before
+
+    var csv = json2csv.parse({      
+      data: [{"car": "Audi", "color": "blue"}, {"car": "Porsche", "color": "silver"}],
+      fields: ['car', 'color']
+    });
+    console.log(csv);
+    
+Usage for v1.0.0 and after is shown in the examples.
 
 Install
 
@@ -11,7 +26,10 @@ Install
 Include the module and run
 
     json2csv = require('json2csv');
-    json2csv.parse({data: someJSONData, fields: ['field1', 'field2', 'field3']});
+    
+    json2csv({data: someJSONData, fields: ['field1', 'field2', 'field3']}, function(csv) {
+      console.log(csv);
+    });
     
 ## Example
 
@@ -35,38 +53,129 @@ Include the module and run
       }
     ];
 
-    var csv = json2csv.parse({
-      data: json,
-      fields: ['car', 'price', 'color']
+    json2csv({data: json, fields: ['car', 'price', 'color']}, function(csv) {
+      fs.writeFile('file.csv', csv, function(err) {
+        if (err) throw err;
+        console.log('file saved');
+      });
     });
-
-    fs.writeFile('file.csv', csv, function(err) {
-      if (err) throw err;
-      console.log('file saved');
-    });
-      
+ 
 The content of the "file.csv" should be
 
     car, price, color
-    Audi, 40000, blue
-    BMW, 35000, black
-    Porsche, 60000, green
+    "Audi", 40000, "blue"
+    "BMW", 35000, "black"
+    "Porsche", 60000, "green"
     
 ### Example 2
     
 Similarly to [mongoexport](http://www.mongodb.org/display/DOCS/mongoexport) you can choose which fields to export
-
-    var csv = json2csv.parse({      
-      data: json
-      fields: ['car', 'color']
-    })
+    
+    json2csv({data: json, fields: ['car', 'color']}, function(csv) {
+      console.log(csv);
+    });
     
 Should result in
 
     car, color
-    Audi, blue
-    BMW, black
-    Porsche, green
+    "Audi", "blue"
+    "BMW", "black"
+    "Porsche", "green"
+    
+## Command Line Interface
+
+`json2csv` can also be called from the command line
+
+    Usage: json2csv [options]
+
+    Options:
+
+      -h, --help              output usage information
+      -V, --version           output the version number
+      -i, --input <input>     Path and name of the incoming json file.
+      -o, --output <output>   Path and name of the resulting csv file. Defaults to console.
+      -f, --fields [fields]   Specify the fields to convert.
+      -l, --fieldList <list>  Specify a file with a list of fields to include. One field per line.
+      -p, --pretty            Use only when printing to console. Logs output in pretty tables.
+      
+An input file `-i` and fields `-f` are required. If no output `-o` is specified the result is logged to the console.
+Use `-p` to show the result in a beautiful table inside the console.
+      
+### CLI examples
+
+#### Input file and specify fields
+
+    json2csv -i input.json -f carModel,price,color
+
+    carModel,price,color
+    "Audi",10000,"blue"
+    "BMW",15000,"red"
+    "Mercedes",20000,"yellow"
+    "Porsche",30000,"green"
+    
+#### Input file, specify fields and use pretty logging
+    
+    json2csv -i input.json -f carModel,price,color -p
+
+<table>
+  <tr>
+    <th>carModel</th>
+    <th>price</th>
+    <th>color</th>
+  </tr>
+  <tr>
+    <td>"Audi"</td>
+    <td>10000</td>
+    <td>"blue"</td>
+  </tr>
+  <tr>
+    <td>"BMW"</td>
+    <td>15000</td>
+    <td>"red"</td>
+  </tr>
+  <tr>
+    <td>"Mercedes"</td>
+    <td>20000</td>
+    <td>"yellow"</td>
+  </tr>
+  <tr>
+    <td>"Porsche"</td>
+    <td>30000</td>
+    <td>"green"</td>
+  </tr>
+</table>
+
+#### Input file, specify fields and write to file
+
+    json2csv -i input.json -f carModel,price,color -o out.csv
+    
+content of `out.csv` is
+    
+    carModel,price,color
+    "Audi",10000,"blue"
+    "BMW",15000,"red"
+    "Mercedes",20000,"yellow"
+    "Porsche",30000,"green"
+    
+#### Input file, use field list and write to file
+
+The file `fieldList` contains
+
+    carModel
+    price
+    color
+    
+Use the following command with the `-l` flag
+ 
+    json2csv -i input.json -l fieldList -o out.csv
+    
+Content of `out.csv` is
+    
+    carModel,price,color
+    "Audi",10000,"blue"
+    "BMW",15000,"red"
+    "Mercedes",20000,"yellow"
+    "Porsche",30000,"green"    
 
 ## Testing
 
@@ -78,6 +187,10 @@ Run
 or
 
     npm test
+    
+## ToDo
+
+- write a second module making use of streams (wait for final streaming api)
     
 ## License
 
