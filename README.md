@@ -30,14 +30,14 @@ npm install json2csv
 Include the module and run
 
 ```javascript
-json2csv = require('json2csv');
+var json2csv = require('json2csv');
     
 json2csv({data: someJSONData, fields: ['field1', 'field2', 'field3']}, function(csv) {
   console.log(csv);
 });
 ```
     
-## Example
+## Use as a module
 
 ### Example 1
 
