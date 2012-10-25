@@ -24,7 +24,7 @@ Usage for v1.0.0 and after is shown in the examples.
 Install
 
 ```bash
-npm install json2csv
+$ npm install json2csv
 ```
 
 Include the module and run
@@ -122,7 +122,7 @@ Use `-p` to show the result in a beautiful table inside the console.
 #### Input file and specify fields
 
 ```bash
-json2csv -i input.json -f carModel,price,color
+$ json2csv -i input.json -f carModel,price,color
 ```
 
 ```
@@ -136,7 +136,7 @@ carModel,price,color
 #### Input file, specify fields and use pretty logging
     
 ```bash
-json2csv -i input.json -f carModel,price,color -p
+$ json2csv -i input.json -f carModel,price,color -p
 ```
     
 ![Screenshot](https://s3.amazonaws.com/zeMirco/github/json2csv/json2csv-pretty.png)
@@ -144,7 +144,7 @@ json2csv -i input.json -f carModel,price,color -p
 #### Input file, specify fields and write to file
 
 ```bash
-json2csv -i input.json -f carModel,price,color -o out.csv
+$ json2csv -i input.json -f carModel,price,color -o out.csv
 ```
     
 content of `out.csv` is
@@ -170,7 +170,7 @@ color
 Use the following command with the `-l` flag
  
 ```bash
-json2csv -i input.json -l fieldList -o out.csv
+$ json2csv -i input.json -l fieldList -o out.csv
 ```
     
 Content of `out.csv` is
@@ -190,13 +190,13 @@ Requires mocha, should and async.
 Run
 
 ```bash
-make test
+$ make test
 ```
 
 or
 
 ```bash
-npm test
+$ npm test
 ```
     
 ## ToDo
