@@ -121,7 +121,7 @@ Use `-p` to show the result in a beautiful table inside the console.
 
 #### Input file and specify fields
 
-```javascript
+```bash
 json2csv -i input.json -f carModel,price,color
 ```
 
@@ -135,7 +135,7 @@ carModel,price,color
     
 #### Input file, specify fields and use pretty logging
     
-```javascript
+```bash
 json2csv -i input.json -f carModel,price,color -p
 ```
     
@@ -143,7 +143,7 @@ json2csv -i input.json -f carModel,price,color -p
 
 #### Input file, specify fields and write to file
 
-```javascript
+```bash
 json2csv -i input.json -f carModel,price,color -o out.csv
 ```
     
@@ -169,7 +169,7 @@ color
     
 Use the following command with the `-l` flag
  
-```javascript
+```bash
 json2csv -i input.json -l fieldList -o out.csv
 ```
     
