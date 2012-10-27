@@ -8,7 +8,7 @@ var program = require('commander'),
     Table = require('cli-table');
 
 program
-  .version('0.1.0')
+  .version('1.0.1')
   .option('-i, --input <input>', 'Path and name of the incoming json file.')
   .option('-o, --output [output]', 'Path and name of the resulting csv file. Defaults to console.')
   .option('-f, --fields <fields>', 'Specify the fields to convert.')
