@@ -10,9 +10,9 @@ var program = require('commander'),
 program
   .version('0.1.0')
   .option('-i, --input <input>', 'Path and name of the incoming json file.')
-  .option('-o, --output <output>', 'Path and name of the resulting csv file. Defaults to console.')
-  .option('-f, --fields [fields]', 'Specify the fields to convert.')
-  .option('-l, --fieldList <list>', 'Specify a file with a list of fields to include. One field per line.')
+  .option('-o, --output [output]', 'Path and name of the resulting csv file. Defaults to console.')
+  .option('-f, --fields <fields>', 'Specify the fields to convert.')
+  .option('-l, --fieldList [list]', 'Specify a file with a list of fields to include. One field per line.')
   .option('-p, --pretty', 'Use only when printing to console. Logs output in pretty tables.')
   .parse(process.argv);
 
