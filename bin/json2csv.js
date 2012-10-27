@@ -4,6 +4,7 @@ var program = require('commander'),
     fs = require('fs'),
     os = require('os'),
     json2csv = require('../lib/json2csv'),
+    path = require('path'),
     Table = require('cli-table');
 
 program
@@ -17,7 +18,7 @@ program
 
 if(!program.fields && !program.fieldList) throw new Error('Please specify fields with -f or a list of fields with -l. See json2csv --help');
 if(!program.input) throw new Error('Please select a json file with -i as input. See json2csv --help');
-var input = require(program.input);
+var input = require(path.join(process.cwd(), program.input));
 
 var getFields = function(callback) {
   if (program.fieldList) {
