@@ -36,6 +36,14 @@ json2csv({data: someJSONData, fields: ['field1', 'field2', 'field3']}, function(
   console.log(csv);
 });
 ```
+
+## Features
+
+- Uses proper line endings on various operating systems
+- Handles double quotes
+- Allows custom column selection
+- Reads column selection from file
+- Pretty writing to stdout
     
 ## Use as a module
 
@@ -108,9 +116,9 @@ Options:
   -h, --help              output usage information
   -V, --version           output the version number
   -i, --input <input>     Path and name of the incoming json file.
-  -o, --output <output>   Path and name of the resulting csv file. Defaults to console.
-  -f, --fields [fields]   Specify the fields to convert.
-  -l, --fieldList <list>  Specify a file with a list of fields to include. One field per line.
+  -o, --output [output]   Path and name of the resulting csv file. Defaults to console.
+  -f, --fields <fields>   Specify the fields to convert.
+  -l, --fieldList [list]  Specify a file with a list of fields to include. One field per line.
   -p, --pretty            Use only when printing to console. Logs output in pretty tables.
 ```
       
@@ -147,7 +155,7 @@ $ json2csv -i input.json -f carModel,price,color -p
 $ json2csv -i input.json -f carModel,price,color -o out.csv
 ```
     
-content of `out.csv` is
+Content of `out.csv` is
 
 ```
 carModel,price,color
