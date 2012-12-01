@@ -2,6 +2,8 @@
 
 Converts json into csv with column titles and proper line endings. Can be used as a module and from the command line.
 
+[![Build Status](https://travis-ci.org/zeMirco/json2csv.png)](https://travis-ci.org/zeMirco/json2csv)
+
 ## How to use
 
 Notice!
