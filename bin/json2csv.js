@@ -13,6 +13,7 @@ program
   .option('-o, --output [output]', 'Path and name of the resulting csv file. Defaults to console.')
   .option('-f, --fields <fields>', 'Specify the fields to convert.')
   .option('-l, --fieldList [list]', 'Specify a file with a list of fields to include. One field per line.')
+  .option('-d, --delimiter <delimiter>', 'Specify a delimiter other than the default comma to use.')
   .option('-p, --pretty', 'Use only when printing to console. Logs output in pretty tables.')
   .parse(process.argv);
 
@@ -52,7 +53,9 @@ var logPretty = function(csv, callback){
 
 getFields(function(err, fields) {
   if (err) throw new Error('Cannot read fields from file ' + program.fieldList);
-  json2csv({data: input, fields: fields}, function(csv) {
+  var opts = {data: input, fields: fields};
+  if (program.delimiter) opts.del = program.delimiter;
+  json2csv(opts, function(csv) {
     if (program.output) {
       fs.writeFile(program.output, csv, function(err) {
         if (err) throw new Error('Cannot save to ' + program.output);
