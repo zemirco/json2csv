@@ -96,7 +96,7 @@ json2csv({data: json, fields: ['car', 'color']}, function(csv) {
   console.log(csv);
 });
 ```
-  
+
 Results in
 
 ```
@@ -105,7 +105,30 @@ car, color
 "BMW", "black"
 "Porsche", "green"
 ```
+
+### Example 3
+
+Using a custom delimiter to create tsv files. We add it as the value of the del property on the parameters:
+
+```javascript
+json2csv({data: json, fields: ['car', 'color'], del: '\t'}, function(csv) {
+  console.log(csv);
+});
+```
     
+Will output:
+
+```
+carModel  price color
+"Audi"  10000 "blue"
+"BMW" 15000 "red"
+"Mercedes"  20000 "yellow"
+"Porsche" 30000 "green"
+```
+
+If no delimiter is specified, the default ',' is used
+
+
 ## Command Line Interface
 
 `json2csv` can also be called from the command line
@@ -121,6 +144,7 @@ Options:
   -o, --output [output]   Path and name of the resulting csv file. Defaults to console.
   -f, --fields <fields>   Specify the fields to convert.
   -l, --fieldList [list]  Specify a file with a list of fields to include. One field per line.
+  -d, --delimiter <delim> Specify a delimiter other than the default comma to use.
   -p, --pretty            Use only when printing to console. Logs output in pretty tables.
 ```
       
