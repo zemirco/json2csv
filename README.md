@@ -46,6 +46,7 @@ json2csv({data: someJSONData, fields: ['field1', 'field2', 'field3']}, function(
 - Allows custom column selection
 - Reads column selection from file
 - Pretty writing to stdout
+- Supports optional custom delimiters
     
 ## Use as a module
 
@@ -144,7 +145,7 @@ Options:
   -o, --output [output]   Path and name of the resulting csv file. Defaults to console.
   -f, --fields <fields>   Specify the fields to convert.
   -l, --fieldList [list]  Specify a file with a list of fields to include. One field per line.
-  -d, --delimiter <delim> Specify a delimiter other than the default comma to use.
+  -d, --delimiter [delim] Specify a delimiter other than the default comma to use.
   -p, --pretty            Use only when printing to console. Logs output in pretty tables.
 ```
       
