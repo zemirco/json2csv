@@ -101,7 +101,7 @@ describe('json2csv', function() {
     })
   });
 
-  it('should use a custom delimiter when "del" property is present', function(done) {
+  it('should use a custom delimiter when \'del\' property is present', function(done) {
     json2csv({data: _in, fields: ['carModel', 'price', 'color'], del:'\t'}, function(csv) {
       csv.should.equal(_out_tsv);
       done();
