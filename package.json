@@ -24,9 +24,6 @@
     "type": "git",
     "url": "https://github.com/zeMirco/json2csv"
   },
-  "engines": {
-    "node": "~0.8.0"
-  },
   "scripts": {
     "test": "make test"
   },
@@ -35,8 +32,8 @@
     "cli-table": "~0.2.0"
   },
   "devDependencies": {
-    "mocha": "~1.6.0",
-    "should": "~1.2.0",
+    "mocha": "~1.8.1",
+    "should": "~1.2.1",
     "async": "~0.1.22"
   }
 }
