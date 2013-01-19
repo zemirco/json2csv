@@ -108,14 +108,14 @@ car, color
 
 ### Example 3
 
-Using a custom delimiter to create tsv files. We add it as the value of the del property on the parameters:
+Use a custom delimiter to create tsv files. Add it as the value of the del property on the parameters:
 
 ```javascript
-json2csv({data: json, fields: ['car', 'color'], del: '\t'}, function(csv) {
-  console.log(csv);
+json2csv({data: json, fields: ['car', 'color'], del: '\t'}, function(tsv) {
+  console.log(tsv);
 });
 ```
-    
+ 
 Will output:
 
 ```
@@ -126,7 +126,7 @@ carModel  price color
 "Porsche" 30000 "green"
 ```
 
-If no delimiter is specified, the default ',' is used
+If no delimiter is specified, the default `,` is used
 
 
 ## Command Line Interface
