@@ -13,7 +13,7 @@ program
   .option('-o, --output [output]', 'Path and name of the resulting csv file. Defaults to console.')
   .option('-f, --fields <fields>', 'Specify the fields to convert.')
   .option('-l, --fieldList [list]', 'Specify a file with a list of fields to include. One field per line.')
-  .option('-d, --delimiter <delimiter>', 'Specify a delimiter other than the default comma to use.')
+  .option('-d, --delimiter [delimiter]', 'Specify a delimiter other than the default comma to use.')
   .option('-p, --pretty', 'Use only when printing to console. Logs output in pretty tables.')
   .parse(process.argv);
 
