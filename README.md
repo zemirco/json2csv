@@ -129,6 +129,26 @@ carModel  price color
 
 If no delimiter is specified, the default `,` is used
 
+### Example 4
+    
+You can choose custom column names for the exported file.
+
+```javascript
+json2csv({data: json, fields: ['car', 'price'], fieldNames: ['Car Name', 'Price USD']}, function(csv) {
+  console.log(csv);
+});
+```
+
+Results in
+
+```
+"Car Name", "Price USD"
+"Audi", "blue"
+"BMW", "black"
+"Porsche", "green"
+```
+
+
 
 ## Command Line Interface
 
