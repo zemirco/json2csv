@@ -18,8 +18,6 @@ program
   .parse(process.argv);
 
 if(!program.fields && !program.fieldList) throw new Error('Please specify fields with -f or a list of fields with -l. See json2csv --help');
-if(!program.input) throw new Error('Please select a json file with -i as input. See json2csv --help');
-var input = require(path.join(process.cwd(), program.input));
 
 var getFields = function(callback) {
   if (program.fieldList) {
@@ -33,6 +31,26 @@ var getFields = function(callback) {
     fields = program.fields.split(',');
     callback(null, fields);
   }
+};
+
+var getInput = function(callback){
+  var input;
+  if(program.input){
+    input = require(path.join(process.cwd(), program.input));
+    return callback(null, input);
+  }
+
+  input = '';
+  process.stdin.on('data', function(chunk){
+    input += chunk;
+  });
+  process.stdin.on('error', function(err){
+    console.error('Could not read from stdin', err);
+  });
+  process.stdin.on('end', function(){
+    callback(null, JSON.parse(input));
+  });
+  process.stdin.resume();
 };
 
 var logPretty = function(csv, callback){
@@ -53,23 +71,25 @@ var logPretty = function(csv, callback){
 
 getFields(function(err, fields) {
   if (err) throw new Error('Cannot read fields from file ' + program.fieldList);
-  var opts = {data: input, fields: fields};
-  if (program.delimiter) opts.del = program.delimiter;
-  json2csv(opts, function(csv) {
-    if (program.output) {
-      fs.writeFile(program.output, csv, function(err) {
-        if (err) throw new Error('Cannot save to ' + program.output);
-        console.log(program.input + ' successfully converted to ' + program.output);
-      });
-    } else {
-      if(program.pretty) {
-        logPretty(csv, function(res) {
-          console.log(res);
+  getInput(function(err, input){
+
+    var opts = {data: input, fields: fields};
+    if (program.delimiter) opts.del = program.delimiter;
+    json2csv(opts, function(csv) {
+      if (program.output) {
+        fs.writeFile(program.output, csv, function(err) {
+          if (err) throw new Error('Cannot save to ' + program.output);
+          console.log(program.input + ' successfully converted to ' + program.output);
         });
       } else {
-        console.log(csv);
+        if(program.pretty) {
+          logPretty(csv, function(res) {
+            console.log(res);
+          });
+        } else {
+          console.log(csv);
+        }
       }
-    }
+    });
   });
-  
 });
