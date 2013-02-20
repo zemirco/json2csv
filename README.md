@@ -238,6 +238,21 @@ carModel,price,color
 "Porsche",30000,"green"
 ```
 
+#### Read from stdin
+
+```bash
+$ json2csv -f price
+[{"price":1000},{"price":2000}]
+```
+
+Hit <kbd>Enter</kbd> and afterwards <kbd>CTRL</kbd> + <kbd>D</kbd> to end reading from stdin. The terminal should show
+
+```
+price
+1000
+2000
+```
+
 ## Testing
 
 Requires mocha, should and async.
