@@ -112,7 +112,7 @@ car, color
 Use a custom delimiter to create tsv files. Add it as the value of the del property on the parameters:
 
 ```javascript
-json2csv({data: json, fields: ['car', 'color'], del: '\t'}, function(tsv) {
+json2csv({data: json, fields: ['car', 'price', 'color'], del: '\t'}, function(tsv) {
   console.log(tsv);
 });
 ```
@@ -120,7 +120,7 @@ json2csv({data: json, fields: ['car', 'color'], del: '\t'}, function(tsv) {
 Will output:
 
 ```
-carModel  price color
+car price color
 "Audi"  10000 "blue"
 "BMW" 15000 "red"
 "Mercedes"  20000 "yellow"
