@@ -16,7 +16,7 @@ program
   .option('-d, --delimiter [delimiter]', 'Specify a delimiter other than the default comma to use.')
   .option('-p, --pretty', 'Use only when printing to console. Logs output in pretty tables.')
   .parse(process.argv);
-
+  
 if(!program.fields && !program.fieldList) throw new Error('Please specify fields with -f or a list of fields with -l. See json2csv --help');
 
 var getFields = function(callback) {
@@ -41,6 +41,9 @@ var getInput = function(callback){
   }
 
   input = '';
+  process.stdin.resume();
+  process.stdin.setEncoding('utf8');
+  
   process.stdin.on('data', function(chunk){
     input += chunk;
   });
@@ -50,7 +53,6 @@ var getInput = function(callback){
   process.stdin.on('end', function(){
     callback(null, JSON.parse(input));
   });
-  process.stdin.resume();
 };
 
 var logPretty = function(csv, callback){
