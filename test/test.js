@@ -67,57 +67,56 @@ describe('json2csv', function() {
   });
   
   it('should parse json to csv', function(done) {
-    json2csv({data: _in, fields: ['carModel', 'price', 'color']}, function(csv) {
+    json2csv({data: _in, fields: ['carModel', 'price', 'color']}, function(err, csv) {
       csv.should.equal(_out);
       done();
     })
   });
   
-  it('should throw an error if field is not a key in the json data', function(done) {
-    (function() {json2csv({
-      data: _in, 
-      fields: ['carModel', 'location', 'color']});
-    }).should.throwError('Cannot find location as a json key');
-    done();
+  it('should callback an error if field is not a key in the json data', function(done) {
+    json2csv({data: _in, fields: ['carModel', 'location', 'color']}, function(err, csv) {
+      err.message.should.equal('Cannot find location as a json key');
+      done();
+    })
   });
   
   it('should output only selected fields', function(done) {
-    json2csv({data: _in, fields: ['carModel', 'price']}, function(csv) {
+    json2csv({data: _in, fields: ['carModel', 'price']}, function(err, csv) {
       csv.should.equal(_out_selected);
       done();
     })
   });
         
   it('should output reversed order', function(done) {
-    json2csv({data: _in, fields: ['price', 'carModel']}, function(csv) {
+    json2csv({data: _in, fields: ['price', 'carModel']}, function(err, csv) {
       csv.should.equal(_out_reversed);
       done();
     })
   });
   
   it('should output a string', function(done) {
-    json2csv({data: _in, fields: ['carModel', 'price', 'color']}, function(csv) {
+    json2csv({data: _in, fields: ['carModel', 'price', 'color']}, function(err, csv) {
       csv.should.be.a('string');
       done();
     })
   });
     
   it('should escape quotes with double quotes', function(done) {
-    json2csv({data: _in_quotes, fields: ['a string']}, function(csv) {
+    json2csv({data: _in_quotes, fields: ['a string']}, function(err, csv) {
       csv.should.equal(_out_quotes);
       done();
     })
   });
 
   it('should use a custom delimiter when \'del\' property is present', function(done) {
-    json2csv({data: _in, fields: ['carModel', 'price', 'color'], del:'\t'}, function(csv) {
+    json2csv({data: _in, fields: ['carModel', 'price', 'color'], del:'\t'}, function(err, csv) {
       csv.should.equal(_out_tsv);
       done();
     })
   })
   
   it('should name columns as specified in \'fieldNames\' property', function(done) {
-    json2csv({data: _in, fields: ['carModel', 'price'], fieldNames: ['Car Model', 'Price USD']}, function(csv) {
+    json2csv({data: _in, fields: ['carModel', 'price'], fieldNames: ['Car Model', 'Price USD']}, function(err, csv) {
       csv.should.equal(_out_fieldNames);
       done();
     })

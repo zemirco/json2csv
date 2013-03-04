@@ -6,23 +6,6 @@ Converts json into csv with column titles and proper line endings. Can be used a
 
 ## How to use
 
-Notice!
-
-With version 1.0.0 the API of json2csv was changed. Before `json2csv.parse()` returned the csv. From
-v1.0.0 on `json2csv()` returns a callback function with the csv as a parameter to follow node.js coding styles.
-
-Before
-
-```javascript
-var csv = json2csv.parse({      
-  data: [{"car": "Audi", "color": "blue"}, {"car": "Porsche", "color": "silver"}],
-  fields: ['car', 'color']
-});
-console.log(csv);
-```
-    
-Usage for v1.0.0 and after is shown in the examples.
-
 Install
 
 ```bash
@@ -34,7 +17,8 @@ Include the module and run
 ```javascript
 var json2csv = require('json2csv');
     
-json2csv({data: someJSONData, fields: ['field1', 'field2', 'field3']}, function(csv) {
+json2csv({data: someJSONData, fields: ['field1', 'field2', 'field3']}, function(err, csv) {
+  if (err) console.log(err);
   console.log(csv);
 });
 ```
@@ -71,7 +55,8 @@ var json = [
   }
 ];
 
-json2csv({data: json, fields: ['car', 'price', 'color']}, function(csv) {
+json2csv({data: json, fields: ['car', 'price', 'color']}, function(err, csv) {
+  if (err) console.log(err);
   fs.writeFile('file.csv', csv, function(err) {
     if (err) throw err;
     console.log('file saved');
@@ -93,7 +78,8 @@ car, price, color
 Similarly to [mongoexport](http://www.mongodb.org/display/DOCS/mongoexport) you can choose which fields to export
 
 ```javascript
-json2csv({data: json, fields: ['car', 'color']}, function(csv) {
+json2csv({data: json, fields: ['car', 'color']}, function(err, csv) {
+  if (err) console.log(err);
   console.log(csv);
 });
 ```
@@ -112,7 +98,8 @@ car, color
 Use a custom delimiter to create tsv files. Add it as the value of the del property on the parameters:
 
 ```javascript
-json2csv({data: json, fields: ['car', 'price', 'color'], del: '\t'}, function(tsv) {
+json2csv({data: json, fields: ['car', 'price', 'color'], del: '\t'}, function(err, tsv) {
+  if (err) console.log(err);
   console.log(tsv);
 });
 ```
@@ -134,7 +121,8 @@ If no delimiter is specified, the default `,` is used
 You can choose custom column names for the exported file.
 
 ```javascript
-json2csv({data: json, fields: ['car', 'price'], fieldNames: ['Car Name', 'Price USD']}, function(csv) {
+json2csv({data: json, fields: ['car', 'price'], fieldNames: ['Car Name', 'Price USD']}, function(err, csv) {
+  if (err) console.log(err);
   console.log(csv);
 });
 ```

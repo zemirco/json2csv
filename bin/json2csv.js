@@ -77,7 +77,8 @@ getFields(function(err, fields) {
 
     var opts = {data: input, fields: fields};
     if (program.delimiter) opts.del = program.delimiter;
-    json2csv(opts, function(csv) {
+    json2csv(opts, function(err, csv) {
+      if (err) console.log(err);
       if (program.output) {
         fs.writeFile(program.output, csv, function(err) {
           if (err) throw new Error('Cannot save to ' + program.output);

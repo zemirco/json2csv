@@ -29,11 +29,12 @@
   },
   "dependencies": {
     "commander": "~1.0.5",
-    "cli-table": "~0.2.0"
+    "cli-table": "~0.2.0",
+    "async": "~0.2.6"
   },
   "devDependencies": {
     "mocha": "~1.8.1",
     "should": "~1.2.1",
-    "async": "~0.1.22"
+    "async": "~0.2.6"
   }
 }
