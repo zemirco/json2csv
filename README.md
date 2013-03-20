@@ -257,9 +257,10 @@ or
 $ npm test
 ```
     
-## ToDo
+## But I want streams!
 
-- write a second module making use of streams (wait for final streaming api)
+Check out my other module [json2csv-stream](https://github.com/zeMirco/json2csv-stream). It transforms an incoming
+stream containing `json` data into an outgoing `csv` stream.
     
 ## License
 
