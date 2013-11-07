@@ -6,6 +6,8 @@ var should = require('should'),
 var _in = require('./fixtures/in'),
     _in_quotes = require('./fixtures/in-quotes'),
     _out = '',
+    _out_withoutTitle = '',
+    _out_withNotExistField = '',
     _out_quotes = '',
     _out_selected = '',
     _out_reversed = '',
@@ -20,6 +22,20 @@ describe('json2csv', function() {
           fs.readFile('test/fixtures/out.csv', function(err, data) {
             if (err) callback(err);
             _out = data.toString();
+            callback(null);
+          });
+        },
+        function(callback){
+          fs.readFile('test/fixtures/out-withoutTitle.csv', function(err, data) {
+            if (err) callback(err);
+            _out_withoutTitle = data.toString();
+            callback(null);
+          });
+        },
+        function(callback){
+          fs.readFile('test/fixtures/out-withNotExistField.csv', function(err, data) {
+            if (err) callback(err);
+            _out_withNotExistField = data.toString();
             callback(null);
           });
         },
@@ -73,9 +89,9 @@ describe('json2csv', function() {
     })
   });
   
-  it('should callback an error if field is not a key in the json data', function(done) {
-    json2csv({data: _in, fields: ['carModel', 'location', 'color']}, function(err, csv) {
-      err.message.should.equal('Cannot find location as a json key');
+  it('should parse json to csv without column title', function(done) {
+    json2csv({data: _in, fields: ['carModel', 'price', 'color'], hasCSVColumnTitle:false}, function(err, csv) {
+      csv.should.equal(_out_withoutTitle);
       done();
     })
   });
@@ -83,6 +99,13 @@ describe('json2csv', function() {
   it('should output only selected fields', function(done) {
     json2csv({data: _in, fields: ['carModel', 'price']}, function(err, csv) {
       csv.should.equal(_out_selected);
+      done();
+    })
+  });
+  
+  it('should output not exist field with empty value', function(done) {
+    json2csv({data: _in, fields: ['carModel', 'price', 'not exist field', 'color']}, function(err, csv) {
+      csv.should.equal(_out_withNotExistField);
       done();
     })
   });
@@ -96,7 +119,7 @@ describe('json2csv', function() {
   
   it('should output a string', function(done) {
     json2csv({data: _in, fields: ['carModel', 'price', 'color']}, function(err, csv) {
-      csv.should.be.a('string');
+      csv.should.be.type('string');
       done();
     })
   });
