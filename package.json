@@ -1,7 +1,7 @@
 {
   "name": "json2csv",
   "preferGlobal": "true",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Convert json to csv with column titles",
   "keywords": [
     "json",
@@ -30,11 +30,11 @@
   "dependencies": {
     "commander": "~1.0.5",
     "cli-table": "~0.2.0",
-    "async": "~0.2.6"
+    "async": "~0.2.9"
   },
   "devDependencies": {
-    "mocha": "~1.8.1",
-    "should": "~1.2.1",
-    "async": "~0.2.6"
+    "mocha": "~1.14.0",
+    "should": "~2.0.2",
+    "async": "~0.2.9"
   }
 }
