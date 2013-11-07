@@ -104,7 +104,7 @@ describe('json2csv', function() {
   });
   
   it('should output not exist field with empty value', function(done) {
-    json2csv({data: _in, fields: ['carModel', 'price', 'not exist field', 'color']}, function(err, csv) {
+    json2csv({data: _in, fields: ['first not exist field','carModel', 'price', 'not exist field', 'color']}, function(err, csv) {
       csv.should.equal(_out_withNotExistField);
       done();
     })
