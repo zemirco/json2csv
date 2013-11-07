@@ -31,6 +31,8 @@ json2csv({data: someJSONData, fields: ['field1', 'field2', 'field3']}, function(
 - Reads column selection from file
 - Pretty writing to stdout
 - Supports optional custom delimiters
+- Not create CSV column title by passing hasCSVColumnTitle: false, into params.
+- If field is not exist in object then the field value in CSV will be empty. 
     
 ## Use as a module
 
