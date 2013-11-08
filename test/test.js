@@ -1,3 +1,4 @@
+var os = require('os');
 var should = require('should'),
     json2csv = require('.././lib/json2csv'),
     fs = require('fs'),
@@ -96,6 +97,19 @@ describe('json2csv', function() {
     })
   });
   
+  it('should parse data:{} to csv with only column title', function(done) {
+    json2csv({data: {}, fields: ['carModel', 'price', 'color']}, function(err, csv) {
+      csv.should.equal('"carModel","price","color"');
+      done();
+    })
+  });
+  
+  it('should parse data:[null] to csv with only column title', function(done) {
+    json2csv({data: [null], fields: ['carModel', 'price', 'color']}, function(err, csv) {
+      csv.should.equal('"carModel","price","color"');
+      done();
+    })
+  });
   it('should output only selected fields', function(done) {
     json2csv({data: _in, fields: ['carModel', 'price']}, function(err, csv) {
       csv.should.equal(_out_selected);
