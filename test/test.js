@@ -1,4 +1,3 @@
-var os = require('os');
 var should = require('should'),
     json2csv = require('.././lib/json2csv'),
     fs = require('fs'),
