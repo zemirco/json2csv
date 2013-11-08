@@ -1,3 +1,10 @@
+2.2.0 / 2013-11-08
+==================
+
+ * not create CSV column title by passing hasCSVColumnTitle: false, into params.
+ * if field is not exist in object then the field value in CSV will be empty.
+ * fix data in object format - {...}
+
 2.1.0 / 2013-06-11
 ==================
 
