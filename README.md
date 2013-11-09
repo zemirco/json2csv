@@ -258,6 +258,21 @@ or
 ```bash
 $ npm test
 ```
+
+## Formatting json2csv
+
+Requires js-beautify (npm -g install js-beautify).
+
+Run
+
+```bash
+$ make format
+```
+## Contributors
+
+Could you please make sure code is formatted and test passed before submit Pull Requests?
+
+See Testing and Formatting json2csv above.
     
 ## But I want streams!
 
