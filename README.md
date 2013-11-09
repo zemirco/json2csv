@@ -245,7 +245,7 @@ price
 
 ## Testing
 
-Requires mocha, should and async.
+Requires mocha, should and async (mocha must be install at json2csv dir).
 
 Run
 
