@@ -1,7 +1,7 @@
 {
   "name": "json2csv",
   "preferGlobal": "true",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Convert json to csv with column titles",
   "keywords": [
     "json",
@@ -26,7 +26,7 @@
   },
   "scripts": {
     "test": "./node_modules/.bin/mocha --reporter spec",
-	"format": "node ./node_modules/js-beautify/js/bin/js-beautify.js lib/json2csv.js test/test.js -r --config js-beautify.json"
+    "format": "node ./node_modules/js-beautify/js/bin/js-beautify.js lib/json2csv.js test/test.js package.json -r --config js-beautify.json"
   },
   "dependencies": {
     "commander": "~1.0.5",
@@ -37,7 +37,7 @@
     "mocha": "~1.14.0",
     "should": "~2.0.2",
     "async": "~0.2.9",
-    "js-beautify":"~1.4.2" 
-    
+    "js-beautify": "~1.4.2"
+
   }
 }
