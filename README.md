@@ -282,7 +282,7 @@ Install require packages for development run following command under json2csv di
 Run
 
 ```bash
-$ npm install --save-dev
+$ npm install
 ```
 
 Could you please make sure code is formatted and test passed before submit Pull Requests?
