@@ -2,6 +2,7 @@ test:
 	./node_modules/.bin/mocha --reporter spec
 
 format:
-	js-beautify lib/json2csv.js -r --config js-beautify.json 
+	node ./node_modules/js-beautify/js/bin/js-beautify.js lib/json2csv.js test/test.js -r --config js-beautify.json 
 	
 .PHONY: test
+

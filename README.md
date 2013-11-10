@@ -245,7 +245,7 @@ price
 
 ## Testing
 
-Requires mocha, should and async (mocha must be install at json2csv dir).
+Requires mocha, should and async.
 
 Run
 
@@ -261,14 +261,29 @@ $ npm test
 
 ## Formatting json2csv
 
-Requires js-beautify (npm -g install js-beautify).
+Requires js-beautify.
 
 Run
 
 ```bash
 $ make format
 ```
+
+or
+
+```bash
+$ npm run-script format
+```
+
 ## Contributors
+
+Install require packages for development run following command under json2csv dir.
+
+Run
+
+```bash
+$ npm install --save-dev
+```
 
 Could you please make sure code is formatted and test passed before submit Pull Requests?
 
