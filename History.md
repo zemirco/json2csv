@@ -1,3 +1,8 @@
+2.2.1 / 2013-11-10
+==================
+
+ * mainly for development e.g. adding code format, update readme..
+
 2.2.0 / 2013-11-08
 ==================
 
