@@ -1,0 +1,30 @@
+[
+  {
+    "carModel": "Audi",
+    "priceRange": {
+      "min": 9000,
+      "max": 11000
+    }
+  },
+  {
+    "carModel": "BMW",
+    "priceRange": {
+      "min": 14000,
+      "max": 16000
+    }
+  },
+  {
+    "carModel": "Mercedes",
+    "priceRange": {
+      "min": 19000,
+      "max": 21000
+    }
+  },
+  {
+    "carModel": "Porsche",
+    "priceRange": {
+      "min": 29000,
+      "max": 31000
+    }
+  }
+]
