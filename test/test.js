@@ -5,6 +5,7 @@ var should = require('should'),
 
 var _in = require('./fixtures/in'),
   _in_quotes = require('./fixtures/in-quotes'),
+  _in_nested = require('./fixtures/in-nested'),
   _out = '',
   _out_withoutTitle = '',
   _out_withNotExistField = '',
@@ -12,7 +13,8 @@ var _in = require('./fixtures/in'),
   _out_selected = '',
   _out_reversed = '',
   _out_tsv = '',
-  _out_fieldNames = '';
+  _out_fieldNames = '',
+  _out_nested = '';
 
 describe('json2csv', function() {
 
@@ -72,6 +74,13 @@ describe('json2csv', function() {
           fs.readFile('test/fixtures/out-fieldNames.csv', function(err, data) {
             if (err) callback(err);
             _out_fieldNames = data.toString();
+            callback(null);
+          });
+        },
+        function(callback) {
+          fs.readFile('test/fixtures/out-nested.csv', function(err, data) {
+            if (err) callback(err);
+            _out_nested = data.toString();
             callback(null);
           });
         }
@@ -191,6 +200,17 @@ describe('json2csv', function() {
       fieldNames: ['Car Model', 'Price USD']
     }, function(err, csv) {
       csv.should.equal(_out_fieldNames);
+      done();
+    })
+  })
+
+  it('should parse nested properties', function(done) {
+    json2csv({
+      data: _in_nested,
+      fields: ['carModel', 'priceRange.min', 'priceRange.max'],
+      fieldNames: ['Car Model', 'Min Price', 'Max Price']
+    }, function(err, csv) {
+      csv.should.equal(_out_nested);
       done();
     })
   })
