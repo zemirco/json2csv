@@ -1,20 +1,21 @@
 {
-  "name": "json2csv",
+  "name": "deepjson2csv",
   "preferGlobal": "true",
-  "version": "2.2.1",
-  "description": "Convert json to csv with column titles",
+  "version": "1.0.0",
+  "description": "Convert deep json to csv with column titles",
   "keywords": [
     "json",
     "to",
     "csv",
     "export",
     "convert",
-    "parse"
+    "parse",
+    "deep"
   ],
   "author": {
-    "name": "Mirco Zeiss",
-    "email": "mirco.zeiss@gmail.com",
-    "twitter": "zeMirco"
+    "name": "Sebastian Bromberg",
+    "email": "seba@wagaduu.com",
+    "twitter": "@sebabromberg"
   },
   "bin": {
     "json2csv": "./bin/json2csv.js"
@@ -22,7 +23,7 @@
   "main": "./lib/json2csv.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/zeMirco/json2csv"
+    "url": "https://github.com/wagaduu/json2csv"
   },
   "scripts": {
     "test": "./node_modules/.bin/mocha --reporter spec",
