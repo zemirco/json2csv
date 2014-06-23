@@ -1,5 +1,5 @@
 var should = require('should'),
-  json2csv = require('.././lib/json2csv'),
+  deepjson2csv = require('.././lib/deepjson2csv'),
   fs = require('fs'),
   async = require('async');
 
@@ -14,7 +14,7 @@ var _in = require('./fixtures/in'),
   _out_tsv = '',
   _out_fieldNames = '';
 
-describe('json2csv', function() {
+describe('deepdeepjson2csv', function() {
 
   before(function(done) {
     async.parallel([
@@ -84,7 +84,7 @@ describe('json2csv', function() {
   });
 
   it('should parse json to csv', function(done) {
-    json2csv({
+    deepjson2csv({
       data: _in,
       fields: ['carModel', 'price', 'color']
     }, function(err, csv) {
@@ -94,7 +94,7 @@ describe('json2csv', function() {
   });
 
   it('should parse json to csv without column title', function(done) {
-    json2csv({
+    deepjson2csv({
       data: _in,
       fields: ['carModel', 'price', 'color'],
       hasCSVColumnTitle: false
@@ -105,7 +105,7 @@ describe('json2csv', function() {
   });
 
   it('should parse data:{} to csv with only column title', function(done) {
-    json2csv({
+    deepjson2csv({
       data: {},
       fields: ['carModel', 'price', 'color']
     }, function(err, csv) {
@@ -115,7 +115,7 @@ describe('json2csv', function() {
   });
 
   it('should parse data:[null] to csv with only column title', function(done) {
-    json2csv({
+    deepjson2csv({
       data: [null],
       fields: ['carModel', 'price', 'color']
     }, function(err, csv) {
@@ -124,7 +124,7 @@ describe('json2csv', function() {
     })
   });
   it('should output only selected fields', function(done) {
-    json2csv({
+    deepjson2csv({
       data: _in,
       fields: ['carModel', 'price']
     }, function(err, csv) {
@@ -134,7 +134,7 @@ describe('json2csv', function() {
   });
 
   it('should output not exist field with empty value', function(done) {
-    json2csv({
+    deepjson2csv({
       data: _in,
       fields: ['first not exist field', 'carModel', 'price', 'not exist field', 'color']
     }, function(err, csv) {
@@ -144,7 +144,7 @@ describe('json2csv', function() {
   });
 
   it('should output reversed order', function(done) {
-    json2csv({
+    deepjson2csv({
       data: _in,
       fields: ['price', 'carModel']
     }, function(err, csv) {
@@ -154,7 +154,7 @@ describe('json2csv', function() {
   });
 
   it('should output a string', function(done) {
-    json2csv({
+    deepjson2csv({
       data: _in,
       fields: ['carModel', 'price', 'color']
     }, function(err, csv) {
@@ -164,7 +164,7 @@ describe('json2csv', function() {
   });
 
   it('should escape quotes with double quotes', function(done) {
-    json2csv({
+    deepjson2csv({
       data: _in_quotes,
       fields: ['a string']
     }, function(err, csv) {
@@ -174,7 +174,7 @@ describe('json2csv', function() {
   });
 
   it('should use a custom delimiter when \'del\' property is present', function(done) {
-    json2csv({
+    deepjson2csv({
       data: _in,
       fields: ['carModel', 'price', 'color'],
       del: '\t'
@@ -185,7 +185,7 @@ describe('json2csv', function() {
   })
 
   it('should name columns as specified in \'fieldNames\' property', function(done) {
-    json2csv({
+    deepjson2csv({
       data: _in,
       fields: ['carModel', 'price'],
       fieldNames: ['Car Model', 'Price USD']
