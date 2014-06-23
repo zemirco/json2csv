@@ -4,6 +4,8 @@ Converts json into csv with column titles and proper line endings. Can be used a
 
 [![Build Status](https://travis-ci.org/zemirco/json2csv.png)](https://travis-ci.org/zemirco/json2csv)
 
+**Deprecated: No time for maintenance** - [see issue #26](https://github.com/zemirco/json2csv/issues/26#issue-21468863)
+
 ## How to use
 
 Install
