@@ -2,7 +2,7 @@
 
 Converts json into csv with column titles and proper line endings. Can be used as a module and from the command line.
 
-[![Build Status](https://travis-ci.org/zeMirco/json2csv.png)](https://travis-ci.org/zeMirco/json2csv)
+[![Build Status](https://travis-ci.org/zemirco/json2csv.png)](https://travis-ci.org/zemirco/json2csv)
 
 ## How to use
 
@@ -16,7 +16,7 @@ Include the module and run
 
 ```javascript
 var json2csv = require('json2csv');
-    
+
 json2csv({data: someJSONData, fields: ['field1', 'field2', 'field3']}, function(err, csv) {
   if (err) console.log(err);
   console.log(csv);
@@ -32,8 +32,8 @@ json2csv({data: someJSONData, fields: ['field1', 'field2', 'field3']}, function(
 - Pretty writing to stdout
 - Supports optional custom delimiters
 - Not create CSV column title by passing hasCSVColumnTitle: false, into params.
-- If field is not exist in object then the field value in CSV will be empty. 
-    
+- If field is not exist in object then the field value in CSV will be empty.
+
 ## Use as a module
 
 ### Example 1
@@ -65,7 +65,7 @@ json2csv({data: json, fields: ['car', 'price', 'color']}, function(err, csv) {
   });
 });
 ```
- 
+
 The content of the "file.csv" should be
 
 ```
@@ -76,7 +76,7 @@ car, price, color
 ```
 
 ### Example 2
-    
+
 Similarly to [mongoexport](http://www.mongodb.org/display/DOCS/mongoexport) you can choose which fields to export
 
 ```javascript
@@ -105,7 +105,7 @@ json2csv({data: json, fields: ['car', 'price', 'color'], del: '\t'}, function(er
   console.log(tsv);
 });
 ```
- 
+
 Will output:
 
 ```
@@ -119,7 +119,7 @@ car price color
 If no delimiter is specified, the default `,` is used
 
 ### Example 4
-    
+
 You can choose custom column names for the exported file.
 
 ```javascript
@@ -158,10 +158,10 @@ Options:
   -d, --delimiter [delim] Specify a delimiter other than the default comma to use.
   -p, --pretty            Use only when printing to console. Logs output in pretty tables.
 ```
-      
+
 An input file `-i` and fields `-f` are required. If no output `-o` is specified the result is logged to the console.
 Use `-p` to show the result in a beautiful table inside the console.
-      
+
 ### CLI examples
 
 #### Input file and specify fields
@@ -177,13 +177,13 @@ carModel,price,color
 "Mercedes",20000,"yellow"
 "Porsche",30000,"green"
 ```
-    
+
 #### Input file, specify fields and use pretty logging
-    
+
 ```bash
 $ json2csv -i input.json -f carModel,price,color -p
 ```
-    
+
 ![Screenshot](https://s3.amazonaws.com/zeMirco/github/json2csv/json2csv-pretty.png)
 
 #### Input file, specify fields and write to file
@@ -191,7 +191,7 @@ $ json2csv -i input.json -f carModel,price,color -p
 ```bash
 $ json2csv -i input.json -f carModel,price,color -o out.csv
 ```
-    
+
 Content of `out.csv` is
 
 ```
@@ -201,7 +201,7 @@ carModel,price,color
 "Mercedes",20000,"yellow"
 "Porsche",30000,"green"
 ```
-    
+
 #### Input file, use field list and write to file
 
 The file `fieldList` contains
@@ -211,13 +211,13 @@ carModel
 price
 color
 ```
-    
+
 Use the following command with the `-l` flag
- 
+
 ```bash
 $ json2csv -i input.json -l fieldList -o out.csv
 ```
-    
+
 Content of `out.csv` is
 
 ```
@@ -288,12 +288,12 @@ $ npm install
 Could you please make sure code is formatted and test passed before submit Pull Requests?
 
 See Testing and Formatting json2csv above.
-    
+
 ## But I want streams!
 
 Check out my other module [json2csv-stream](https://github.com/zeMirco/json2csv-stream). It transforms an incoming
 stream containing `json` data into an outgoing `csv` stream.
-    
+
 ## License
 
 Copyright (C) 2012 [Mirco Zeiss](mailto: mirco.zeiss@gmail.com)
