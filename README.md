@@ -140,7 +140,35 @@ Results in
 "Porsche", "green"
 ```
 
+### Example 5
 
+You can provide mapper functions to massage individual fields to be exported in a certain way.
+
+```javascript
+
+json2csv({data: json, fields: ['car', 'price'], 
+    mappers: {
+        price: function(price) {
+            return "$" + price;
+        }
+    }
+}, function(err,csv){
+    if(err) console.log(err);
+    console.log(csv);
+});
+
+```
+
+Results in
+
+```
+"car", "price"
+"Audi", "$10000"
+"BMW", "$15000"
+"Mercedes", "$20000"
+"Porsche", "$30000"
+
+```
 
 ## Command Line Interface
 
