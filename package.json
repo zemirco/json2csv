@@ -25,8 +25,8 @@
     "url": "https://github.com/zeMirco/json2csv"
   },
   "scripts": {
-    "test": "./node_modules/.bin/mocha --reporter spec",
-    "format": "node ./node_modules/js-beautify/js/bin/js-beautify.js lib/json2csv.js test/test.js package.json -r --config js-beautify.json"
+    "test": "grunt test",
+    "format": "grunt format"
   },
   "dependencies": {
     "commander": "~1.0.5",
@@ -34,10 +34,13 @@
     "async": "~0.2.9"
   },
   "devDependencies": {
-    "mocha": "~1.14.0",
+    "grunt": "^0.4.5",
+    "grunt-available-tasks": "^0.5.0",
+    "grunt-bump": "0.0.15",
+    "grunt-jsbeautifier": "^0.2.7",
+    "grunt-mocha-test": "^0.11.0",
+    "jit-grunt": "^0.8.0",
     "should": "~2.0.2",
-    "async": "~0.2.9",
-    "js-beautify": "~1.4.2"
-
+    "time-grunt": "^0.4.0"
   }
 }
