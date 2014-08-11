@@ -9,7 +9,13 @@ module.exports = function (grunt) {
   // Define the configuration for all the tasks
   grunt.initConfig({
 
-    
+    // grunt-bump: bump package version, create tag, commit, push...
+    bump: {
+      options: {
+        // remote git repo name
+        pushTo: 'origin'
+      }
+    }
     
   });
 
