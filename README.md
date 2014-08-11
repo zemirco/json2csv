@@ -247,12 +247,12 @@ price
 
 ## Testing
 
-Requires mocha, should and async.
+Requires `devDependencies`.
 
 Run
 
 ```bash
-$ make test
+$ grunt test
 ```
 
 or
@@ -263,12 +263,12 @@ $ npm test
 
 ## Formatting json2csv
 
-Requires js-beautify.
+Requires `devDependencies`.
 
 Run
 
 ```bash
-$ make format
+$ grunt format
 ```
 
 or
