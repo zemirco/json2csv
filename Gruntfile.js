@@ -1,5 +1,5 @@
-module.exports = function (grunt) {
-  
+module.exports = function(grunt) {
+
   // Time how long tasks take. Can help when optimizing build times
   require('time-grunt')(grunt);
 
@@ -29,16 +29,27 @@ module.exports = function (grunt) {
       }
     },
 
+    // format csv2json
+    jsbeautifier: {
+      files: [
+        'Gruntfile.js',
+        '{bin,lib,test}/**/*.js'
+      ],
+      options: {
+        config: 'js-beautify.json'
+      }
+    },
+
     // print available grunt tasks
     availabletasks: {
-        tasks: {
-          options: {
-            filter: 'include',
-            tasks: ['test', 'default', 'release']
-          }
+      tasks: {
+        options: {
+          filter: 'include',
+          tasks: ['test', 'default', 'release', 'format']
         }
+      }
     }
-    
+
   });
 
   // Define the grunt tasks
@@ -46,7 +57,12 @@ module.exports = function (grunt) {
     process.removeAllListeners('timegruntexit');
   });
   grunt.registerTask('test', 'Run mocha tests for json2csv.', ['mochaTest']);
-  grunt.registerTask('release', 'Bump version, commit, tag, push.', ['bump']);
+  grunt.registerTask('format', 'Formats the csv2json javascript files.', ['jsbeautifier']);
+  grunt.registerTask('release', 'Format, test, bump version, commit, tag, push.', [
+    'format',
+    'test',
+    'bump'
+  ]);
   grunt.registerTask('default', 'List available Grunt tasks & targets.', ['no-timer', 'availabletasks']);
 
 };
