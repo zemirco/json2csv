@@ -19,7 +19,7 @@ Include the module and run
 ```javascript
 var json2csv = require('json2csv');
 
-json2csv({data: someJSONData, fields: ['field1', 'field2', 'field3']}, function(err, csv) {
+json2csv({data: someObject, fields: ['field1', 'field2', 'field3']}, function(err, csv) {
   if (err) console.log(err);
   console.log(csv);
 });
@@ -43,7 +43,7 @@ json2csv({data: someJSONData, fields: ['field1', 'field2', 'field3']}, function(
 ```javascript
 var json2csv = require('json2csv');
 
-var json = [
+var customObj = [
   {
     "car": "Audi",
     "price": 40000,
@@ -59,7 +59,7 @@ var json = [
   }
 ];
 
-json2csv({data: json, fields: ['car', 'price', 'color']}, function(err, csv) {
+json2csv({data: customObj, fields: ['car', 'price', 'color']}, function(err, csv) {
   if (err) console.log(err);
   fs.writeFile('file.csv', csv, function(err) {
     if (err) throw err;
