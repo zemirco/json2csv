@@ -13,11 +13,13 @@ program
   .option('-o, --output [output]', 'Path and name of the resulting csv file. Defaults to console.')
   .option('-f, --fields <fields>', 'Specify the fields to convert.')
   .option('-l, --fieldList [list]', 'Specify a file with a list of fields to include. One field per line.')
-  .option('-d, --delimiter [delimiter]', 'Specify a delimiter other than the default comma to use.')
+  .option('-d, --delimiter [delimiter]', 'Specify a delimiter other than the default comma to use.', ',')
   .option('-p, --pretty', 'Use only when printing to console. Logs output in pretty tables.')
   .parse(process.argv);
   
 if(!program.fields && !program.fieldList) throw new Error('Please specify fields with -f or a list of fields with -l. See json2csv --help');
+
+var delimiter = program.delimiter;
 
 var getFields = function(callback) {
   if (program.fieldList) {
@@ -28,7 +30,7 @@ var getFields = function(callback) {
       callback(null, fields);
     });
   } else {
-    fields = program.fields.split(',');
+    fields = program.fields.split(delimiter);
     callback(null, fields);
   }
 };
@@ -58,13 +60,13 @@ var getInput = function(callback){
 var logPretty = function(csv, callback){
   var lines = csv.split(os.EOL);
   var table = new Table({
-    head: lines[0].split(','),
-    colWidths: lines[0].split(',').map(function(elem){
+    head: lines[0].split(delimiter),
+    colWidths: lines[0].split(delimiter).map(function(elem){
       return elem.length * 2;
     })
   });
   for (var i = 1; i < lines.length; i++) {
-    table.push(lines[i].split(','));
+    table.push(lines[i].split(delimiter));
     if (i === lines.length-1) {
       callback(table.toString());
     }
@@ -76,7 +78,7 @@ getFields(function(err, fields) {
   getInput(function(err, input){
 
     var opts = {data: input, fields: fields};
-    if (program.delimiter) opts.del = program.delimiter;
+    if (program.delimiter) opts.del = delimiter;
     json2csv(opts, function(err, csv) {
       if (err) console.log(err);
       if (program.output) {
