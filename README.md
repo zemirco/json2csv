@@ -1,4 +1,4 @@
-# Convert json to csv
+# json2csv
 
 Converts json into csv with column titles and proper line endings. Can be used as a module and from the command line.
 
