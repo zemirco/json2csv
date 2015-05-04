@@ -16,7 +16,7 @@ program
   .option('-d, --delimiter [delimiter]', 'Specify a delimiter other than the default comma to use.')
   .option('-p, --pretty', 'Use only when printing to console. Logs output in pretty tables.')
   .parse(process.argv);
-  
+
 if(!program.fields && !program.fieldList) throw new Error('Please specify fields with -f or a list of fields with -l. See json2csv --help');
 
 var getFields = function(callback) {
@@ -33,9 +33,10 @@ var getFields = function(callback) {
   }
 };
 
-var getInput = function(callback){
+var getInput = function(callback) {
   var input;
-  if(program.input){
+
+  if (program.input) {
     input = require(path.join(process.cwd(), program.input));
     return callback(null, input);
   }
@@ -43,29 +44,30 @@ var getInput = function(callback){
   input = '';
   process.stdin.resume();
   process.stdin.setEncoding('utf8');
-  
-  process.stdin.on('data', function(chunk){
+
+  process.stdin.on('data', function(chunk) {
     input += chunk;
   });
-  process.stdin.on('error', function(err){
+  process.stdin.on('error', function(err) {
     console.error('Could not read from stdin', err);
   });
-  process.stdin.on('end', function(){
+  process.stdin.on('end', function() {
     callback(null, JSON.parse(input));
   });
 };
 
-var logPretty = function(csv, callback){
+var logPretty = function(csv, callback) {
   var lines = csv.split(os.EOL);
   var table = new Table({
     head: lines[0].split(','),
-    colWidths: lines[0].split(',').map(function(elem){
+    colWidths: lines[0].split('","').map(function(elem) {
       return elem.length * 2;
     })
   });
+
   for (var i = 1; i < lines.length; i++) {
-    table.push(lines[i].split(','));
-    if (i === lines.length-1) {
+    table.push(lines[i].split('","'));
+    if (i === lines.length - 1) {
       callback(table.toString());
     }
   }
@@ -73,19 +75,22 @@ var logPretty = function(csv, callback){
 
 getFields(function(err, fields) {
   if (err) throw new Error('Cannot read fields from file ' + program.fieldList);
-  getInput(function(err, input){
 
+  getInput(function(err, input) {
     var opts = {data: input, fields: fields};
+
     if (program.delimiter) opts.del = program.delimiter;
+
     json2csv(opts, function(err, csv) {
       if (err) console.log(err);
+
       if (program.output) {
         fs.writeFile(program.output, csv, function(err) {
           if (err) throw new Error('Cannot save to ' + program.output);
           console.log(program.input + ' successfully converted to ' + program.output);
         });
       } else {
-        if(program.pretty) {
+        if (program.pretty) {
           logPretty(csv, function(res) {
             console.log(res);
           });
