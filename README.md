@@ -135,9 +135,9 @@ Results in
 
 ```
 "Car Name", "Price USD"
-"Audi", "blue"
-"BMW", "black"
-"Porsche", "green"
+"Audi", 10000
+"BMW", 15000
+"Porsche", 30000
 ```
 
 
