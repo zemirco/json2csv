@@ -16,8 +16,9 @@ Include the module and run
 
 ```javascript
 var json2csv = require('json2csv');
+var fields = ['field1', 'field2', 'field3'];
 
-json2csv({data: someJSONData, fields: ['field1', 'field2', 'field3']}, function(err, csv) {
+json2csv({ data: someJSONData, fields: fields }, function(err, csv) {
   if (err) console.log(err);
   console.log(csv);
 });
@@ -40,7 +41,7 @@ json2csv({data: someJSONData, fields: ['field1', 'field2', 'field3']}, function(
 
 ```javascript
 var json2csv = require('json2csv');
-
+var fields = ['car', 'price', 'color'];
 var json = [
   {
     "car": "Audi",
@@ -57,7 +58,7 @@ var json = [
   }
 ];
 
-json2csv({data: json, fields: ['car', 'price', 'color']}, function(err, csv) {
+json2csv({ data: json, fields: fields }, function(err, csv) {
   if (err) console.log(err);
   fs.writeFile('file.csv', csv, function(err) {
     if (err) throw err;
@@ -80,7 +81,10 @@ car, price, color
 Similarly to [mongoexport](http://www.mongodb.org/display/DOCS/mongoexport) you can choose which fields to export
 
 ```javascript
-json2csv({data: json, fields: ['car', 'color']}, function(err, csv) {
+var json2csv = require('json2csv');
+var fields = ['car', 'color'];
+
+json2csv({ data: json, fields: fields }, function(err, csv) {
   if (err) console.log(err);
   console.log(csv);
 });
@@ -100,7 +104,10 @@ car, color
 Use a custom delimiter to create tsv files. Add it as the value of the del property on the parameters:
 
 ```javascript
-json2csv({data: json, fields: ['car', 'price', 'color'], del: '\t'}, function(err, tsv) {
+var json2csv = require('json2csv');
+var fields = ['car', 'price', 'color'];
+
+json2csv({ data: json, fields: fields, del: '\t' }, function(err, tsv) {
   if (err) console.log(err);
   console.log(tsv);
 });
@@ -123,7 +130,11 @@ If no delimiter is specified, the default `,` is used
 You can choose custom column names for the exported file.
 
 ```javascript
-json2csv({data: json, fields: ['car', 'price'], fieldNames: ['Car Name', 'Price USD']}, function(err, csv) {
+var json2csv = require('json2csv');
+var fields = ['car', 'price'];
+var fieldNames = ['Car Name', 'Price USD'];
+
+json2csv({ data: json, fields: fields, fieldNames: fieldNames }, function(err, csv) {
   if (err) console.log(err);
   console.log(csv);
 });
@@ -250,12 +261,6 @@ Requires mocha, should and async.
 Run
 
 ```bash
-$ make test
-```
-
-or
-
-```bash
 $ npm test
 ```
 
@@ -266,13 +271,7 @@ Requires js-beautify.
 Run
 
 ```bash
-$ make format
-```
-
-or
-
-```bash
-$ npm run-script format
+$ npm run format
 ```
 
 ## Contributors
