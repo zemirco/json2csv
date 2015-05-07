@@ -9,7 +9,7 @@ Converts json into csv with column titles and proper line endings. Can be used a
 Install
 
 ```bash
-$ npm install json2csv
+$ npm install json2csv --save
 ```
 
 Include the module and run
@@ -18,7 +18,7 @@ Include the module and run
 var json2csv = require('json2csv');
 var fields = ['field1', 'field2', 'field3'];
 
-json2csv({ data: someJSONData, fields: fields }, function(err, csv) {
+json2csv({ data: myData, fields: fields }, function(err, csv) {
   if (err) console.log(err);
   console.log(csv);
 });
@@ -42,7 +42,7 @@ json2csv({ data: someJSONData, fields: fields }, function(err, csv) {
 ```javascript
 var json2csv = require('json2csv');
 var fields = ['car', 'price', 'color'];
-var json = [
+var myCars = [
   {
     "car": "Audi",
     "price": 40000,
@@ -58,7 +58,7 @@ var json = [
   }
 ];
 
-json2csv({ data: json, fields: fields }, function(err, csv) {
+json2csv({ data: myCars, fields: fields }, function(err, csv) {
   if (err) console.log(err);
   fs.writeFile('file.csv', csv, function(err) {
     if (err) throw err;
@@ -84,7 +84,7 @@ Similarly to [mongoexport](http://www.mongodb.org/display/DOCS/mongoexport) you 
 var json2csv = require('json2csv');
 var fields = ['car', 'color'];
 
-json2csv({ data: json, fields: fields }, function(err, csv) {
+json2csv({ data: myCars, fields: fields }, function(err, csv) {
   if (err) console.log(err);
   console.log(csv);
 });
@@ -107,7 +107,7 @@ Use a custom delimiter to create tsv files. Add it as the value of the del prope
 var json2csv = require('json2csv');
 var fields = ['car', 'price', 'color'];
 
-json2csv({ data: json, fields: fields, del: '\t' }, function(err, tsv) {
+json2csv({ data: myCars, fields: fields, del: '\t' }, function(err, tsv) {
   if (err) console.log(err);
   console.log(tsv);
 });
@@ -134,7 +134,7 @@ var json2csv = require('json2csv');
 var fields = ['car', 'price'];
 var fieldNames = ['Car Name', 'Price USD'];
 
-json2csv({ data: json, fields: fields, fieldNames: fieldNames }, function(err, csv) {
+json2csv({ data: myCars, fields: fields, fieldNames: fieldNames }, function(err, csv) {
   if (err) console.log(err);
   console.log(csv);
 });
