@@ -32,6 +32,7 @@ json2csv({ data: myData, fields: fields }, function(err, csv) {
 - Reads column selection from file
 - Pretty writing to stdout
 - Supports optional custom delimiters
+- Supports optional custom eol value
 - Not create CSV column title by passing hasCSVColumnTitle: false, into params.
 - If field is not exist in object then the field value in CSV will be empty.
 
@@ -167,6 +168,7 @@ Options:
   -f, --fields <fields>   Specify the fields to convert.
   -l, --fieldList [list]  Specify a file with a list of fields to include. One field per line.
   -d, --delimiter [delim] Specify a delimiter other than the default comma to use.
+  -e, --eol [value]       Specify an EOL value after each row.
   -p, --pretty            Use only when printing to console. Logs output in pretty tables.
 ```
 
