@@ -3,6 +3,7 @@
 Converts json into csv with column titles and proper line endings. Can be used as a module and from the command line.
 
 [![Build Status][travis-badge]][travis-badge-url]
+[![Coverage Status][coveralls-badge]][coveralls-badge-url]
 
 ## How to use
 
@@ -307,3 +308,5 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 [travis-badge]: https://travis-ci.org/zemirco/json2csv.svg
 [travis-badge-url]: https://travis-ci.org/zemirco/json2csv
+[coveralls-badge]: https://coveralls.io/repos/zemirco/json2csv/badge.svg?branch=master
+[coveralls-badge-url]: https://coveralls.io/r/zemirco/json2csv?branch=master

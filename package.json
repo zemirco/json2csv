@@ -25,8 +25,9 @@
     "url": "https://github.com/zeMirco/json2csv"
   },
   "scripts": {
-    "test": "./node_modules/.bin/mocha --reporter spec",
-    "format": "node ./node_modules/js-beautify/js/bin/js-beautify.js lib/json2csv.js test/test.js package.json -r --config js-beautify.json"
+    "test": "node test | tap-spec",
+    "format": "node ./node_modules/js-beautify/js/bin/js-beautify.js lib/json2csv.js test/test.js package.json -r --config js-beautify.json",
+    "test-coverage": "istanbul cover test/index.js --report lcovonly | tap-spec"
   },
   "dependencies": {
     "commander": "~1.0.5",
@@ -34,9 +35,10 @@
     "async": "~0.2.9"
   },
   "devDependencies": {
-    "mocha": "~1.14.0",
-    "should": "~2.0.2",
     "async": "~0.2.9",
-    "js-beautify": "~1.4.2"
+    "istanbul": "^0.3.14",
+    "js-beautify": "~1.4.2",
+    "tap-spec": "^3.0.0",
+    "tape": "^4.0.0"
   }
 }
