@@ -12,6 +12,7 @@ var _in = require('./fixtures/in'),
   _out_selected = '',
   _out_reversed = '',
   _out_tsv = '',
+  _out_eol = '',
   _out_fieldNames = '';
 
 describe('json2csv', function() {
@@ -65,6 +66,13 @@ describe('json2csv', function() {
           fs.readFile('test/fixtures/out.tsv', function(err, data) {
             if (err) callback(err);
             _out_tsv = data.toString();
+            callback(null);
+          });
+        },
+        function(callback) {
+          fs.readFile('test/fixtures/out-eol.csv', function(err, data) {
+            if (err) callback(err);
+            _out_eol = data.toString();
             callback(null);
           });
         },
@@ -180,6 +188,17 @@ describe('json2csv', function() {
       del: '\t'
     }, function(err, csv) {
       csv.should.equal(_out_tsv);
+      done();
+    })
+  })
+
+  it('should use a custom eol character when \'eol\' property is present', function(done) {
+    json2csv({
+      data: _in,
+      fields: ['carModel', 'price', 'color'],
+      eol: ';'
+    }, function(err, csv) {
+      csv.should.equal(_out_eol);
       done();
     })
   })
