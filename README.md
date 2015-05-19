@@ -1,4 +1,4 @@
-# json2csvstring
+# json2csv
 
 Converts json into csv with column titles and proper line endings. Can be used as a module and from the command line.
 
@@ -10,13 +10,13 @@ Converts json into csv with column titles and proper line endings. Can be used a
 Install
 
 ```bash
-$ npm install json2csvstring --save
+$ npm install json2csv --save
 ```
 
 Include the module and run
 
 ```javascript
-var json2csv = require('json2csvstring');
+var json2csv = require('json2csv');
 var fields = ['field1', 'field2', 'field3'];
 
 json2csv({ data: myData, fields: fields }, function(err, csv) {
@@ -42,7 +42,7 @@ json2csv({ data: myData, fields: fields }, function(err, csv) {
 ### Example 1
 
 ```javascript
-var json2csv = require('json2csvstring');
+var json2csv = require('json2csv');
 var fields = ['car', 'price', 'color'];
 var myCars = [
   {
@@ -83,7 +83,7 @@ car, price, color
 Similarly to [mongoexport](http://www.mongodb.org/display/DOCS/mongoexport) you can choose which fields to export
 
 ```javascript
-var json2csv = require('json2csvstring');
+var json2csv = require('json2csv');
 var fields = ['car', 'color'];
 
 json2csv({ data: myCars, fields: fields }, function(err, csv) {
@@ -106,7 +106,7 @@ car, color
 Use a custom delimiter to create tsv files. Add it as the value of the del property on the parameters:
 
 ```javascript
-var json2csv = require('json2csvstring');
+var json2csv = require('json2csv');
 var fields = ['car', 'price', 'color'];
 
 json2csv({ data: myCars, fields: fields, del: '\t' }, function(err, tsv) {
@@ -132,7 +132,7 @@ If no delimiter is specified, the default `,` is used
 You can choose custom column names for the exported file.
 
 ```javascript
-var json2csv = require('json2csvstring');
+var json2csv = require('json2csv');
 var fields = ['car', 'price'];
 var fieldNames = ['Car Name', 'Price USD'];
 
@@ -155,7 +155,7 @@ Results in
 
 ## Command Line Interface
 
-`json2csvstring` can also be called from the command line
+`json2csv` can also be called from the command line
 
 ```bash
 Usage: json2csv [options]
@@ -198,7 +198,7 @@ carModel,price,color
 $ json2csv -i input.json -f carModel,price,color -p
 ```
 
-![Screenshot](https://s3.amazonaws.com/zeMirco/github/json2csvstring/json2csv-pretty.png)
+![Screenshot](https://s3.amazonaws.com/zeMirco/github/json2csv/json2csv-pretty.png)
 
 #### Input file, specify fields and write to file
 
@@ -267,7 +267,7 @@ Run
 $ npm test
 ```
 
-## Formatting json2csvstring
+## Formatting json2csv
 
 Requires js-beautify.
 
@@ -279,7 +279,7 @@ $ npm run format
 
 ## Contributors
 
-Install require packages for development run following command under json2csvstring dir.
+Install require packages for development run following command under json2csv dir.
 
 Run
 
@@ -289,7 +289,7 @@ $ npm install
 
 Could you please make sure code is formatted and test passed before submit Pull Requests?
 
-See Testing and Formatting json2csvstring above.
+See Testing and Formatting json2csv above.
 
 ## But I want streams!
 
