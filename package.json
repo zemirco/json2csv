@@ -1,5 +1,5 @@
 {
-  "name": "json2csvstring",
+  "name": "json2csv",
   "preferGlobal": "true",
   "version": "2.3.0",
   "description": "Convert json to csv with column titles (while keeping the escape char)",
@@ -22,7 +22,7 @@
   "main": "./lib/json2csv.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/zeMirco/json2csvstring"
+    "url": "https://github.com/zeMirco/json2csv"
   },
   "scripts": {
     "test": "node test | tap-spec",
