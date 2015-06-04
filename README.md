@@ -170,6 +170,7 @@ Options:
   -l, --fieldList [list]  Specify a file with a list of fields to include. One field per line.
   -d, --delimiter [delim] Specify a delimiter other than the default comma to use.
   -e, --eol [value]       Specify an EOL value after each row.
+  -t, --header            Disable the column name header
   -p, --pretty            Use only when printing to console. Logs output in pretty tables.
 ```
 

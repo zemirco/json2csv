@@ -16,7 +16,7 @@ program
   .option('-l, --fieldList [list]', 'Specify a file with a list of fields to include. One field per line.')
   .option('-d, --delimiter [delimiter]', 'Specify a delimiter other than the default comma to use.')
   .option('-e, --eol [value]', 'Specify an EOL value after each row.')
-  .option('-h, --header', 'Disable the column name header')
+  .option('-t, --header', 'Disable the column name header')
   .option('-p, --pretty', 'Use only when printing to console. Logs output in pretty tables.')
   .parse(process.argv);
 
