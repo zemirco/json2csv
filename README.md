@@ -258,6 +258,18 @@ price
 2000
 ```
 
+#### Appending to existing CSV
+
+Sometimes you want to add some additional rows with the same columns.
+This is how you can do that.
+
+```bash
+# Initial creation of csv with headings
+$ json2csv -i test.json -f name,version > test.csv
+# Append additional rows
+$ json2csv -i test.json -f name,version --no-header >> test.csv
+```
+
 ## Testing
 
 Requires mocha, should and async.
