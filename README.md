@@ -158,20 +158,20 @@ Results in
 `json2csv` can also be called from the command line
 
 ```bash
-Usage: json2csv [options]
+Usage: json2csv.js [options]
 
 Options:
 
-  -h, --help              output usage information
-  -V, --version           output the version number
-  -i, --input <input>     Path and name of the incoming json file.
-  -o, --output [output]   Path and name of the resulting csv file. Defaults to console.
-  -f, --fields <fields>   Specify the fields to convert.
-  -l, --fieldList [list]  Specify a file with a list of fields to include. One field per line.
-  -d, --delimiter [delim] Specify a delimiter other than the default comma to use.
-  -e, --eol [value]       Specify an EOL value after each row.
-  -t, --header            Disable the column name header
-  -p, --pretty            Use only when printing to console. Logs output in pretty tables.
+  -h, --help                   output usage information
+  -V, --version                output the version number
+  -i, --input <input>          Path and name of the incoming json file.
+  -o, --output [output]        Path and name of the resulting csv file. Defaults to console.
+  -f, --fields <fields>        Specify the fields to convert.
+  -l, --fieldList [list]       Specify a file with a list of fields to include. One field per line.
+  -d, --delimiter [delimiter]  Specify a delimiter other than the default comma to use.
+  -e, --eol [value]            Specify an EOL value after each row.
+  -n, --no-header              Disable the column name header
+  -p, --pretty                 Use only when printing to console. Logs output in pretty tables.
 ```
 
 An input file `-i` and fields `-f` are required. If no output `-o` is specified the result is logged to the console.
