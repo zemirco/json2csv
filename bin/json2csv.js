@@ -1,20 +1,22 @@
 #!/usr/bin/env node
 
-var program = require('commander'),
-    fs = require('fs'),
-    os = require('os'),
-    json2csv = require('../lib/json2csv'),
-    path = require('path'),
-    Table = require('cli-table');
+var fs = require('fs');
+var os = require('os');
+var path = require('path');
+var program = require('commander');
+var Table = require('cli-table');
+var json2csv = require('../lib/json2csv');
+var pkg = require('../package');
 
 program
-  .version('1.0.1')
+  .version(pkg.version)
   .option('-i, --input <input>', 'Path and name of the incoming json file.')
   .option('-o, --output [output]', 'Path and name of the resulting csv file. Defaults to console.')
   .option('-f, --fields <fields>', 'Specify the fields to convert.')
   .option('-l, --fieldList [list]', 'Specify a file with a list of fields to include. One field per line.')
   .option('-d, --delimiter [delimiter]', 'Specify a delimiter other than the default comma to use.')
   .option('-e, --eol [value]', 'Specify an EOL value after each row.')
+  .option('-h, --header', 'Disable the column name header')
   .option('-p, --pretty', 'Use only when printing to console. Logs output in pretty tables.')
   .parse(process.argv);
 
@@ -80,6 +82,7 @@ getFields(function(err, fields) {
   getInput(function(err, input) {
     var opts = {data: input, fields: fields};
 
+    if (program.header) opts.hasCSVColumnTitle = program.header;
     if (program.delimiter) opts.del = program.delimiter;
     if (program.eol) opts.eol = program.eol;
 
