@@ -35,7 +35,6 @@
     "async": "~0.2.9"
   },
   "devDependencies": {
-    "async": "~0.2.9",
     "istanbul": "^0.3.14",
     "js-beautify": "~1.4.2",
     "tap-spec": "^3.0.0",
