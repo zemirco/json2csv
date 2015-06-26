@@ -25,6 +25,10 @@ json2csv({ data: myData, fields: fields }, function(err, csv) {
 });
 ```
 
+or [use it from the CLI](https://github.com/zemirco/json2csv#command-line-interface).
+
+
+
 ## Features
 
 - Uses proper line endings on various operating systems
