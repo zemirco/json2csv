@@ -38,6 +38,7 @@ or [use it from the CLI](https://github.com/zemirco/json2csv#command-line-interf
 - Pretty writing to stdout
 - Supports optional custom delimiters
 - Supports optional custom eol value
+- Supports optional custom quotation marks
 - Not create CSV column title by passing hasCSVColumnTitle: false, into params.
 - If field is not exist in object then the field value in CSV will be empty.
 
@@ -146,13 +147,34 @@ json2csv({ data: myCars, fields: fields, fieldNames: fieldNames }, function(err,
 });
 ```
 
+### Example 5
+
+You can choose custom quotation marks.
+
+```javascript
+var json2csv = require('json2csv');
+var fields = ['car', 'price'];
+var fieldNames = ['Car Name', 'Price USD'];
+var opts = {
+  data: myCars,
+  fields: fields,
+  fieldNames: fieldNames,
+  quotes: ''
+};
+
+json2csv(opts, function(err, csv) {
+  if (err) console.log(err);
+  console.log(csv);
+});
+```
+
 Results in
 
 ```
-"Car Name", "Price USD"
-"Audi", 10000
-"BMW", 15000
-"Porsche", 30000
+Car Name, Price USD
+Audi, 10000
+BMW, 15000
+Porsche, 30000
 ```
 
 
