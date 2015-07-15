@@ -15,7 +15,9 @@ var _in = require('./fixtures/in'),
   _out_reversed = '',
   _out_tsv = '',
   _out_eol = '',
-  _out_fieldNames = '';
+  _out_fieldNames = '',
+  _out_withoutQuotes = '',
+  _out_withSimpleQuotes = '';
 
 async.parallel([
   function(callback) {
@@ -78,6 +80,20 @@ async.parallel([
     fs.readFile('test/fixtures/out-fieldNames.csv', function(err, data) {
       if (err) callback(err);
       _out_fieldNames = data.toString();
+      callback(null);
+    });
+  },
+  function(callback) {
+    fs.readFile('test/fixtures/out-withoutQuotes.csv', function(err, data) {
+      if (err) callback(err);
+      _out_withoutQuotes = data.toString();
+      callback(null);
+    });
+  },
+  function(callback) {
+    fs.readFile('test/fixtures/out-withSimpleQuotes.csv', function(err, data) {
+      if (err) callback(err);
+      _out_withSimpleQuotes = data.toString();
       callback(null);
     });
   }
@@ -176,6 +192,28 @@ function(err, results) {
     });
   });
 
+  test('should use a custom delimiter when \'quotes\' property is present', function(t) {
+    json2csv({
+      data: _in,
+      fields: ['carModel', 'price'],
+      quotes: '\''
+    }, function(err, csv) {
+      t.equal(csv, _out_withSimpleQuotes);
+      t.end();
+    });
+  });
+
+  test('should be able to don\'t output quotes when using \'quotes\' property', function(t) {
+    json2csv({
+      data: _in,
+      fields: ['carModel', 'price'],
+      quotes: ''
+    }, function(err, csv) {
+      t.equal(csv, _out_withoutQuotes);
+      t.end();
+    });
+  });
+
   test('should use a custom delimiter when \'del\' property is present', function(t) {
     json2csv({
       data: _in,
@@ -209,5 +247,3 @@ function(err, results) {
     })
   });
 });
-
-
