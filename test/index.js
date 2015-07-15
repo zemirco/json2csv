@@ -47,7 +47,7 @@ async.parallel([
       _out_quotes = data.toString();
       callback(null);
     });
-  }, 
+  },
   function(callback) {
     fs.readFile('test/fixtures/out-selected.csv', function(err, data) {
       if (err) callback(err);
@@ -247,5 +247,3 @@ function(err, results) {
     })
   });
 });
-
-
