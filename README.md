@@ -34,6 +34,7 @@ or [use it from the CLI](https://github.com/zemirco/json2csv#command-line-interf
 - Uses proper line endings on various operating systems
 - Handles double quotes
 - Allows custom column selection
+- Allows specifying nested properties
 - Reads column selection from file
 - Pretty writing to stdout
 - Supports optional custom delimiters
@@ -186,6 +187,47 @@ Car Name, Price USD
 Audi, 10000
 BMW, 15000
 Porsche, 30000
+```
+
+### Example 6
+
+You can also specify nested properties using dot notation.
+
+```javascript
+var json2csv = require('json2csv');
+var fields = ['car.make', 'car.model', 'price', 'color'];
+var myCars = [
+  {
+    "car": {"make": "Audi", "model": "A3"},
+    "price": 40000,
+    "color": "blue"
+  }, {
+    "car": {"make": "BMW", "model": "F20"},
+    "price": 35000,
+    "color": "black"
+  }, {
+    "car": {"make": "Porsche", "model": "9PA AF1"},
+    "price": 60000,
+    "color": "green"
+  }
+];
+
+json2csv({ data: myCars, fields: fields }, function(err, csv) {
+  if (err) console.log(err);
+  fs.writeFile('file.csv', csv, function(err) {
+    if (err) throw err;
+    console.log('file saved');
+  });
+});
+```
+
+The content of the "file.csv" should be
+
+```
+car.make, car.model, price, color
+"Audi", "A3", 40000, "blue"
+"BMW", "F20", 35000, "black"
+"Porsche", "9PA AF1", 60000, "green"
 ```
 
 

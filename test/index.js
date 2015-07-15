@@ -7,10 +7,12 @@ var json2csv = require('.././lib/json2csv');
 
 var _in = require('./fixtures/in');
 var _inQuotes = require('./fixtures/in-quotes');
+var _inNested = require('./fixtures/in-nested');
 var _out = '';
 var _outWithoutTitle = '';
 var _outWithNotExistField = '';
 var _outQuotes = '';
+var _outNested = '';
 var _outSelected = '';
 var _outReversed = '';
 var _outTsv = '';
@@ -127,6 +129,13 @@ async.parallel([
       }
 
       _outWithSimpleQuotes = data.toString();
+      callback(null);
+    });
+  },
+  function (callback) {
+    fs.readFile('test/fixtures/out-nested.csv', function (err, data) {
+      if (err) callback(err);
+      _outNested = data.toString();
       callback(null);
     });
   }
@@ -296,5 +305,17 @@ function (err) {
       t.equal(csv, _outFieldNames);
       t.end();
     });
+  });
+
+  test('should output nested properties', function (t) {
+    json2csv({
+      data: _inNested,
+      fields: ['car.make', 'car.model', 'price', 'color', 'car.ye.ar'],
+      fieldNames: ['Make', 'Model', 'Price', 'Color', 'Year']
+    }, function (error, csv) {
+      t.error(error);
+      t.equal(csv, _outNested);
+      t.end();
+    })
   });
 });
