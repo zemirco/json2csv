@@ -17,6 +17,7 @@ program
   .option('-l, --fieldList [list]', 'Specify a file with a list of fields to include. One field per line.')
   .option('-d, --delimiter [delimiter]', 'Specify a delimiter other than the default comma to use.')
   .option('-e, --eol [value]', 'Specify an EOL value after each row.')
+  .option('-q, --quote [value]', 'Specify an alternate quote value.')
   .option('-n, --no-header', 'Disable the column name header')
   .option('-p, --pretty', 'Use only when printing to console. Logs output in pretty tables.')
   .parse(process.argv);
@@ -101,6 +102,7 @@ getFields(function (err, fields) {
     };
 
     opts.hasCSVColumnTitle = program.header;
+    opts.quotes = program.quote;
 
     if (program.delimiter) {
       opts.del = program.delimiter;
