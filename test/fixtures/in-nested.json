@@ -1,0 +1,6 @@
+[
+    { "car" : { "make" : "Audi",     "model" : "A3", "ye": {"ar": "2001"}},      "price" : 10000,  "color" : "blue" }
+  , { "car" : { "make" : "BMW",      "model" : "F20", "ye": {"ar": "2002"}},     "price" : 15000,  "color" : "red" }
+  , { "car" : { "make" : "Mercedes", "model" : "SLS", "ye": {"ar": "2003"}},     "price" : 20000,  "color" : "yellow" }
+  , { "car" : { "make" : "Porsche",  "model" : "9PA AF1", "ye": {"ar": "2004"}}, "price" : 30000,  "color" : "green" }
+]
