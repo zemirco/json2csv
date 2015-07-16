@@ -44,6 +44,17 @@ or [use it from the CLI](https://github.com/zemirco/json2csv#command-line-interf
 
 ## Use as a module
 
+### Available Options
+
+- `options` - Options hash.
+  - `data` - **Required**; Array of JSON objects.
+  - `fields` - **Required**; Array of Strings, JSON attribute names to use as columns.
+  - `fieldNames` Array of Strings, names for the fields at the same indexes.
+    Must be the same length as `fields` array.
+  - `del` - String, delimiter of columns. Defaults to `,` if not specified.
+  - `quotes` - String, quotes around cell values and column names. Defaults to `"` if not specified.
+- `callback` - **Required**; `function (error, csvString) {}`.
+
 ### Example 1
 
 ```javascript
