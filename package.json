@@ -16,6 +16,7 @@
     "email": "mirco.zeiss@gmail.com",
     "twitter": "zeMirco"
   },
+  "license": "SEE LICENSE IN LICENSE.md",
   "bin": {
     "json2csv": "./bin/json2csv.js"
   },
