@@ -30,12 +30,12 @@
     "test-coverage": "istanbul cover test/index.js --report lcovonly | tap-spec"
   },
   "dependencies": {
-    "async": "~0.2.9",
     "cli-table": "~0.2.0",
     "commander": "~1.0.5",
     "debug": "^2.2.0"
   },
   "devDependencies": {
+    "async": "~0.2.9",
     "eslint": "^1.0.0-rc-1",
     "istanbul": "^0.3.14",
     "js-beautify": "~1.4.2",
