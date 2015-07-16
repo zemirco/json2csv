@@ -213,7 +213,7 @@ var myCars = [
   }
 ];
 
-json2csv({ data: myCars, fields: fields }, function(err, csv) {
+json2csv({ data: myCars, fields: fields, nested: true }, function(err, csv) {
   if (err) console.log(err);
   fs.writeFile('file.csv', csv, function(err) {
     if (err) throw err;
