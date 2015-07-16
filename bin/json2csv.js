@@ -23,10 +23,6 @@ program
   .option('-p, --pretty', 'Use only when printing to console. Logs output in pretty tables.')
   .parse(process.argv);
 
-if(!program.fields && !program.fieldList) {
-  throw new Error('Please specify fields with -f or a list of fields with -l. See json2csv --help');
-}
-
 function getFields(callback) {
   var fields;
 
@@ -41,7 +37,7 @@ function getFields(callback) {
       callback(null, fields);
     });
   } else {
-    fields = program.fields.split(',');
+    fields = program.fields ? program.fields.split(',') : undefined;
     callback(null, fields);
   }
 }

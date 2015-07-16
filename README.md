@@ -49,7 +49,7 @@ or [use it from the CLI](https://github.com/zemirco/json2csv#command-line-interf
 
 - `options` - **Required**; Options hash.
   - `data` - **Required**; Array of JSON objects.
-  - `fields` - **Required**; Array of Strings, JSON attribute names to use as columns.
+  - `fields` - Array of Strings, JSON attribute names to use as columns. Defaults to toplevel JSON attributes.
   - `fieldNames` Array of Strings, names for the fields at the same indexes.
     Must be the same length as `fields` array.
   - `del` - String, delimiter of columns. Defaults to `,` if not specified.
