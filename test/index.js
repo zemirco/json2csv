@@ -3,144 +3,14 @@
 var fs = require('fs');
 var test = require('tape');
 var async = require('async');
-var json2csv = require('.././lib/json2csv');
+var json2csv = require('../lib/json2csv');
+var loadFixtures = require('./helpers/load-fixtures');
+var jsonDefault = require('./fixtures/json/default');
+var jsonQuotes = require('./fixtures/json/quotes');
+var jsonNested = require('./fixtures/json/nested');
+var csvFixtures = {};
 
-var _in = require('./fixtures/in');
-var _inQuotes = require('./fixtures/in-quotes');
-var _inNested = require('./fixtures/in-nested');
-var _out = '';
-var _outWithoutTitle = '';
-var _outWithNotExistField = '';
-var _outQuotes = '';
-var _outNested = '';
-var _outSelected = '';
-var _outReversed = '';
-var _outTsv = '';
-var _outEol = '';
-var _outFieldNames = '';
-var _outWithoutQuotes = '';
-var _outWithSimpleQuotes = '';
-
-async.parallel([
-  function (callback) {
-    fs.readFile('test/fixtures/out.csv', function (err, data) {
-      if (err) {
-        callback(err);
-      }
-
-      _out = data.toString();
-      callback(null);
-    });
-  },
-  function (callback) {
-    fs.readFile('test/fixtures/out-withoutTitle.csv', function (err, data) {
-      if (err) {
-        callback(err);
-      }
-
-      _outWithoutTitle = data.toString();
-      callback(null);
-    });
-  },
-  function (callback) {
-    fs.readFile('test/fixtures/out-withNotExistField.csv', function (err, data) {
-      if (err) {
-        callback(err);
-      }
-
-      _outWithNotExistField = data.toString();
-      callback(null);
-    });
-  },
-  function (callback) {
-    fs.readFile('test/fixtures/out-quotes.csv', function (err, data) {
-      if (err) {
-        callback(err);
-      }
-
-      _outQuotes = data.toString();
-      callback(null);
-    });
-  },
-  function (callback) {
-    fs.readFile('test/fixtures/out-selected.csv', function (err, data) {
-      if (err) {
-        callback(err);
-      }
-
-      _outSelected = data.toString();
-      callback(null);
-    });
-  },
-  function (callback) {
-    fs.readFile('test/fixtures/out-reversed.csv', function (err, data) {
-      if (err) {
-        callback(err);
-      }
-
-      _outReversed = data.toString();
-      callback(null);
-    });
-  },
-  function (callback) {
-    fs.readFile('test/fixtures/out.tsv', function (err, data) {
-      if (err) {
-        callback(err);
-      }
-
-      _outTsv = data.toString();
-      callback(null);
-    });
-  },
-  function (callback) {
-    fs.readFile('test/fixtures/out-eol.csv', function (err, data) {
-      if (err) {
-        callback(err);
-      }
-
-      _outEol = data.toString();
-      callback(null);
-    });
-  },
-  function (callback) {
-    fs.readFile('test/fixtures/out-fieldNames.csv', function (err, data) {
-      if (err) {
-        callback(err);
-      }
-
-      _outFieldNames = data.toString();
-      callback(null);
-    });
-  },
-  function (callback) {
-    fs.readFile('test/fixtures/out-withoutQuotes.csv', function (err, data) {
-      if (err) {
-        callback(err);
-      }
-
-      _outWithoutQuotes = data.toString();
-      callback(null);
-    });
-  },
-  function (callback) {
-    fs.readFile('test/fixtures/out-withSimpleQuotes.csv', function (err, data) {
-      if (err) {
-        callback(err);
-      }
-
-      _outWithSimpleQuotes = data.toString();
-      callback(null);
-    });
-  },
-  function (callback) {
-    fs.readFile('test/fixtures/out-nested.csv', function (err, data) {
-      if (err) callback(err);
-      _outNested = data.toString();
-      callback(null);
-    });
-  }
-],
-function (err) {
+async.parallel(loadFixtures(csvFixtures), function (err) {
   if (err) {
     /*eslint-disable no-console*/
     console.log(err);
@@ -149,23 +19,23 @@ function (err) {
 
   test('should parse json to csv', function (t) {
     json2csv({
-      data: _in,
+      data: jsonDefault,
       fields: ['carModel', 'price', 'color']
     }, function (error, csv) {
       t.error(error);
-      t.equal(csv, _out);
+      t.equal(csv, csvFixtures.default);
       t.end();
     });
   });
 
   test('should parse json to csv without column title', function (t) {
     json2csv({
-      data: _in,
+      data: jsonDefault,
       fields: ['carModel', 'price', 'color'],
       hasCSVColumnTitle: false
     }, function (error, csv) {
       t.error(error);
-      t.equal(csv, _outWithoutTitle);
+      t.equal(csv, csvFixtures.withoutTitle);
       t.end();
     });
   });
@@ -194,40 +64,40 @@ function (err) {
 
   test('should output only selected fields', function (t) {
     json2csv({
-      data: _in,
+      data: jsonDefault,
       fields: ['carModel', 'price']
     }, function (error, csv) {
       t.error(error);
-      t.equal(csv, _outSelected);
+      t.equal(csv, csvFixtures.selected);
       t.end();
     });
   });
 
   test('should output not exist field with empty value', function (t) {
     json2csv({
-      data: _in,
+      data: jsonDefault,
       fields: ['first not exist field', 'carModel', 'price', 'not exist field', 'color']
     }, function (error, csv) {
       t.error(error);
-      t.equal(csv, _outWithNotExistField);
+      t.equal(csv, csvFixtures.withNotExistField);
       t.end();
     });
   });
 
   test('should output reversed order', function (t) {
     json2csv({
-      data: _in,
+      data: jsonDefault,
       fields: ['price', 'carModel']
     }, function (error, csv) {
       t.error(error);
-      t.equal(csv, _outReversed);
+      t.equal(csv, csvFixtures.reversed);
       t.end();
     });
   });
 
   test('should output a string', function (t) {
     json2csv({
-      data: _in,
+      data: jsonDefault,
       fields: ['carModel', 'price', 'color']
     }, function (error, csv) {
       t.error(error);
@@ -238,85 +108,85 @@ function (err) {
 
   test('should escape quotes with double quotes', function (t) {
     json2csv({
-      data: _inQuotes,
+      data: jsonQuotes,
       fields: ['a string']
     }, function (error, csv) {
       t.error(error);
-      t.equal(csv, _outQuotes);
+      t.equal(csv, csvFixtures.quotes);
       t.end();
     });
   });
 
   test('should use a custom delimiter when \'quotes\' property is present', function (t) {
     json2csv({
-      data: _in,
+      data: jsonDefault,
       fields: ['carModel', 'price'],
       quotes: '\''
     }, function (error, csv) {
       t.error(error);
-      t.equal(csv, _outWithSimpleQuotes);
+      t.equal(csv, csvFixtures.withSimpleQuotes);
       t.end();
     });
   });
 
   test('should be able to don\'t output quotes when using \'quotes\' property', function (t) {
     json2csv({
-      data: _in,
+      data: jsonDefault,
       fields: ['carModel', 'price'],
       quotes: ''
     }, function (error, csv) {
       t.error(error);
-      t.equal(csv, _outWithoutQuotes);
+      t.equal(csv, csvFixtures.withoutQuotes);
       t.end();
     });
   });
 
   test('should use a custom delimiter when \'del\' property is present', function (t) {
     json2csv({
-      data: _in,
+      data: jsonDefault,
       fields: ['carModel', 'price', 'color'],
       del: '\t'
     }, function (error, csv) {
       t.error(error);
-      t.equal(csv, _outTsv);
+      t.equal(csv, csvFixtures.tsv);
       t.end();
     });
   });
 
   test('should use a custom eol character when \'eol\' property is present', function (t) {
     json2csv({
-      data: _in,
+      data: jsonDefault,
       fields: ['carModel', 'price', 'color'],
       eol: ';'
     }, function (error, csv) {
       t.error(error);
-      t.equal(csv, _outEol);
+      t.equal(csv, csvFixtures.eol);
       t.end();
     });
   });
 
   test('should name columns as specified in \'fieldNames\' property', function (t) {
     json2csv({
-      data: _in,
+      data: jsonDefault,
       fields: ['carModel', 'price'],
       fieldNames: ['Car Model', 'Price USD']
     }, function (error, csv) {
       t.error(error);
-      t.equal(csv, _outFieldNames);
+      t.equal(csv, csvFixtures.fieldNames);
       t.end();
     });
   });
 
   test('should output nested properties', function (t) {
     json2csv({
-      data: _inNested,
+      data: jsonNested,
       fields: ['car.make', 'car.model', 'price', 'color', 'car.ye.ar'],
       fieldNames: ['Make', 'Model', 'Price', 'Color', 'Year'],
       nested: true
     }, function (error, csv) {
       t.error(error);
-      t.equal(csv, _outNested);
+      t.equal(csv, csvFixtures.nested);
       t.end();
-    })
+    });
   });
 });
