@@ -25,16 +25,18 @@
     "url": "https://github.com/zeMirco/json2csv"
   },
   "scripts": {
-    "test": "node test | tap-spec",
+    "test": "eslint . && node test | tap-spec",
     "format": "node ./node_modules/js-beautify/js/bin/js-beautify.js lib/json2csv.js test/test.js package.json -r --config js-beautify.json",
     "test-coverage": "istanbul cover test/index.js --report lcovonly | tap-spec"
   },
   "dependencies": {
-    "commander": "~1.0.5",
+    "async": "~0.2.9",
     "cli-table": "~0.2.0",
-    "async": "~0.2.9"
+    "commander": "~1.0.5",
+    "debug": "^2.2.0"
   },
   "devDependencies": {
+    "eslint": "^1.0.0-rc-1",
     "istanbul": "^0.3.14",
     "js-beautify": "~1.4.2",
     "tap-spec": "^3.0.0",
