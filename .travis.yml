@@ -6,3 +6,4 @@ script:
   - "npm run test-coverage"
 after_script:
   - "npm install coveralls@2 && cat ./coverage/lcov.info | ./node_modules/.bin/coveralls"
+sudo: false
