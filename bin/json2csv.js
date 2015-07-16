@@ -18,6 +18,7 @@ program
   .option('-d, --delimiter [delimiter]', 'Specify a delimiter other than the default comma to use.')
   .option('-e, --eol [value]', 'Specify an EOL value after each row.')
   .option('-q, --quote [value]', 'Specify an alternate quote value.')
+  .option('-x, --nested', 'Allow fields to be nested via dot notation, e.g. \'car.make\'.')
   .option('-n, --no-header', 'Disable the column name header')
   .option('-p, --pretty', 'Use only when printing to console. Logs output in pretty tables.')
   .parse(process.argv);
@@ -103,6 +104,7 @@ getFields(function (err, fields) {
 
     opts.hasCSVColumnTitle = program.header;
     opts.quotes = program.quote;
+    opts.nested = program.nested;
 
     if (program.delimiter) {
       opts.del = program.delimiter;

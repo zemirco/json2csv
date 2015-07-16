@@ -311,7 +311,8 @@ function (err) {
     json2csv({
       data: _inNested,
       fields: ['car.make', 'car.model', 'price', 'color', 'car.ye.ar'],
-      fieldNames: ['Make', 'Model', 'Price', 'Color', 'Year']
+      fieldNames: ['Make', 'Model', 'Price', 'Color', 'Year'],
+      nested: true
     }, function (error, csv) {
       t.error(error);
       t.equal(csv, _outNested);

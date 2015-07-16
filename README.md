@@ -47,13 +47,14 @@ or [use it from the CLI](https://github.com/zemirco/json2csv#command-line-interf
 
 ### Available Options
 
-- `options` - Options hash.
+- `options` - **Required**; Options hash.
   - `data` - **Required**; Array of JSON objects.
   - `fields` - **Required**; Array of Strings, JSON attribute names to use as columns.
   - `fieldNames` Array of Strings, names for the fields at the same indexes.
     Must be the same length as `fields` array.
   - `del` - String, delimiter of columns. Defaults to `,` if not specified.
   - `quotes` - String, quotes around cell values and column names. Defaults to `"` if not specified.
+  - `nested` - Boolean, enables nested fields for getting JSON data. Defaults to `false` if not specified.
 - `callback` - **Required**; `function (error, csvString) {}`.
 
 ### Example 1
@@ -234,23 +235,25 @@ car.make, car.model, price, color
 
 ## Command Line Interface
 
-`json2csv` can also be called from the command line
+`json2csv` can also be called from the command line if installed with `-g`.
 
 ```bash
-Usage: json2csv.js [options]
+Usage: json2csv [options]
 
-Options:
+  Options:
 
-  -h, --help                   output usage information
-  -V, --version                output the version number
-  -i, --input <input>          Path and name of the incoming json file.
-  -o, --output [output]        Path and name of the resulting csv file. Defaults to console.
-  -f, --fields <fields>        Specify the fields to convert.
-  -l, --fieldList [list]       Specify a file with a list of fields to include. One field per line.
-  -d, --delimiter [delimiter]  Specify a delimiter other than the default comma to use.
-  -e, --eol [value]            Specify an EOL value after each row.
-  -n, --no-header              Disable the column name header
-  -p, --pretty                 Use only when printing to console. Logs output in pretty tables.
+    -h, --help                   output usage information
+    -V, --version                output the version number
+    -i, --input <input>          Path and name of the incoming json file.
+    -o, --output [output]        Path and name of the resulting csv file. Defaults to console.
+    -f, --fields <fields>        Specify the fields to convert.
+    -l, --fieldList [list]       Specify a file with a list of fields to include. One field per line.
+    -d, --delimiter [delimiter]  Specify a delimiter other than the default comma to use.
+    -e, --eol [value]            Specify an EOL value after each row.
+    -q, --quote [value]          Specify an alternate quote value.
+    -x, --nested                 Allow fields to be nested via dot notation, e.g. 'car.make'.
+    -n, --no-header              Disable the column name header
+    -p, --pretty                 Use only when printing to console. Logs output in pretty tables.
 ```
 
 An input file `-i` and fields `-f` are required. If no output `-o` is specified the result is logged to the console.
