@@ -1,6 +1,5 @@
 'use strict';
 
-var fs = require('fs');
 var test = require('tape');
 var async = require('async');
 var json2csv = require('../lib/json2csv');
@@ -17,10 +16,41 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
     /*eslint-enable no-console*/
   }
 
+  test('should throw if no callback', function (t) {
+    t.throws(function () {
+      json2csv({
+        data: jsonDefault
+      });
+    }, /Callback is required/);
+    t.end();
+  });
+
+  test('should error if fieldNames don\'t line up to fields', function (t) {
+    json2csv({
+      data: jsonDefault,
+      field: ['carModel'],
+      fieldNames: ['test', 'blah']
+    }, function (error, csv) {
+      t.equal(error.message, 'fieldNames and fields should be of the same length, if fieldNames is provided.');
+      t.notOk(csv);
+      t.end();
+    });
+  });
+
   test('should parse json to csv', function (t) {
     json2csv({
       data: jsonDefault,
       fields: ['carModel', 'price', 'color']
+    }, function (error, csv) {
+      t.error(error);
+      t.equal(csv, csvFixtures.default);
+      t.end();
+    });
+  });
+
+  test('should parse json to csv without fields', function (t) {
+    json2csv({
+      data: jsonDefault
     }, function (error, csv) {
       t.error(error);
       t.equal(csv, csvFixtures.default);
