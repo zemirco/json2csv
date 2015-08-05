@@ -16,6 +16,7 @@ program
   .option('-f, --fields <fields>', 'Specify the fields to convert.')
   .option('-l, --fieldList [list]', 'Specify a file with a list of fields to include. One field per line.')
   .option('-d, --delimiter [delimiter]', 'Specify a delimiter other than the default comma to use.')
+  .option('-v, --defaultValue [defaultValue]', 'Specify a default value other than empty string.')
   .option('-e, --eol [value]', 'Specify an EOL value after each row.')
   .option('-q, --quote [value]', 'Specify an alternate quote value.')
   .option('-x, --nested', 'Allow fields to be nested via dot notation, e.g. \'car.make\'.')
@@ -101,6 +102,7 @@ getFields(function (err, fields) {
     opts.hasCSVColumnTitle = program.header;
     opts.quotes = program.quote;
     opts.nested = program.nested;
+    opts.defaultValue = program.defaultValue;
 
     if (program.delimiter) {
       opts.del = program.delimiter;
