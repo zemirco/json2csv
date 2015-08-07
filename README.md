@@ -53,6 +53,7 @@ or [use it from the CLI](https://github.com/zemirco/json2csv#command-line-interf
   - `fieldNames` Array of Strings, names for the fields at the same indexes.
     Must be the same length as `fields` array.
   - `del` - String, delimiter of columns. Defaults to `,` if not specified.
+  - `defaultValue` - String, default value to use when missing data. Defaults to `` if not specified.
   - `quotes` - String, quotes around cell values and column names. Defaults to `"` if not specified.
   - `nested` - Boolean, enables nested fields for getting JSON data. Defaults to `false` if not specified.
 - `callback` - **Required**; `function (error, csvString) {}`.

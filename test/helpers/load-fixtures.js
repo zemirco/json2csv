@@ -14,7 +14,8 @@ var fixtures = [
   'eol',
   'fieldNames',
   'withSimpleQuotes',
-  'nested'
+  'nested',
+  'defaultValue'
 ];
 
 /*eslint-disable no-console*/
