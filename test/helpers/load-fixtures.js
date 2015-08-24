@@ -12,7 +12,6 @@ var fixtures = [
   'reversed',
   'tsv',
   'eol',
-  'newLine',
   'fieldNames',
   'withSimpleQuotes',
   'nested',
