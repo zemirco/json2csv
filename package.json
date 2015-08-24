@@ -33,8 +33,7 @@
     "cli-table": "~0.2.0",
     "commander": "~1.0.5",
     "debug": "^2.2.0",
-    "lodash.get": "^3.7.0",
-    "path-is-absolute": "^1.0.0"
+    "lodash.get": "^3.7.0"
   },
   "devDependencies": {
     "async": "~0.2.9",
