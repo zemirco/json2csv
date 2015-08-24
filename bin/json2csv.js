@@ -3,9 +3,10 @@
 var fs = require('fs');
 var os = require('os');
 var path = require('path');
-var debug = require('debug')('json2csv:cli');
-var program = require('commander');
 var Table = require('cli-table');
+var program = require('commander');
+var debug = require('debug')('json2csv:cli');
+var pathIsAbsolute = require('path-is-absolute');
 var json2csv = require('../lib/json2csv');
 var pkg = require('../package');
 
@@ -44,10 +45,12 @@ function getFields(callback) {
 }
 
 function getInput(callback) {
-  var input;
+  var input, isAbsolute;
 
   if (program.input) {
-    input = require(path.join(process.cwd(), program.input));
+    isAbsolute = pathIsAbsolute(program.input);
+    input = require(isAbsolute ? program.input : path.join(process.cwd(), program.input));
+
     return callback(null, input);
   }
 
