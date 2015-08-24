@@ -2,7 +2,7 @@
   "name": "json2csv",
   "preferGlobal": "true",
   "version": "2.10.0",
-  "description": "Convert json to csv with column titles",
+  "description": "Convert JSON to CSV",
   "keywords": [
     "json",
     "to",
@@ -23,11 +23,10 @@
   "main": "./lib/json2csv.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/zeMirco/json2csv"
+    "url": "https://github.com/zemirco/json2csv"
   },
   "scripts": {
     "test": "eslint . && node test | tap-spec",
-    "format": "node ./node_modules/js-beautify/js/bin/js-beautify.js lib/json2csv.js test/test.js package.json -r --config js-beautify.json",
     "test-coverage": "istanbul cover test/index.js --report lcovonly | tap-spec"
   },
   "dependencies": {
