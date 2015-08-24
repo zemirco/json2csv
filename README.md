@@ -56,6 +56,7 @@ or [use it from the CLI](https://github.com/zemirco/json2csv#command-line-interf
   - `defaultValue` - String, default value to use when missing data. Defaults to `` if not specified.
   - `quotes` - String, quotes around cell values and column names. Defaults to `"` if not specified.
   - `nested` - Boolean, enables nested fields for getting JSON data. Defaults to `false` if not specified.
+  - `eol` - String, end-of-line marker. Defaults to the OS default.
 - `callback` - **Required**; `function (error, csvString) {}`.
 
 ### Example 1
