@@ -253,6 +253,7 @@ Usage: json2csv [options]
     -l, --fieldList [list]       Specify a file with a list of fields to include. One field per line.
     -d, --delimiter [delimiter]  Specify a delimiter other than the default comma to use.
     -e, --eol [value]            Specify an EOL value after each row.
+    -z, --newLine [value]        Specify an new line value for separating rows.
     -q, --quote [value]          Specify an alternate quote value.
     -x, --nested                 Allow fields to be nested via dot notation, e.g. 'car.make'.
     -n, --no-header              Disable the column name header

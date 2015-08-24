@@ -18,6 +18,7 @@ program
   .option('-d, --delimiter [delimiter]', 'Specify a delimiter other than the default comma to use.')
   .option('-v, --defaultValue [defaultValue]', 'Specify a default value other than empty string.')
   .option('-e, --eol [value]', 'Specify an EOL value after each row.')
+  .option('-z, --newLine [value]', 'Specify an new line value for separating rows.')
   .option('-q, --quote [value]', 'Specify an alternate quote value.')
   .option('-x, --nested', 'Allow fields to be nested via dot notation, e.g. \'car.make\'.')
   .option('-n, --no-header', 'Disable the column name header')
@@ -112,6 +113,10 @@ getFields(function (err, fields) {
 
     if (program.eol) {
       opts.eol = program.eol;
+    }
+
+    if (program.newLine) {
+      opts.newLine = program.newLine;
     }
 
     json2csv(opts, function (csvError, csv) {
