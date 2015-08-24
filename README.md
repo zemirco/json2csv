@@ -392,6 +392,10 @@ See Testing and Formatting json2csv above.
 Check out my other module [json2csv-stream](https://github.com/zemirco/json2csv-stream). It transforms an incoming
 stream containing `json` data into an outgoing `csv` stream.
 
+## Similar Projects
+
+* [Papa Parse](http://papaparse.com/)
+
 ## License
 
 See [LICENSE.md](LICENSE.md).
