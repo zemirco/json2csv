@@ -196,6 +196,18 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
     });
   });
 
+  test('should use a custom eol character when \'newLine\' property is present', function (t) {
+    json2csv({
+      data: jsonDefault,
+      fields: ['carModel', 'price', 'color'],
+      newLine: '\r\n'
+    }, function (error, csv) {
+      t.error(error);
+      t.equal(csv, csvFixtures.newLine);
+      t.end();
+    });
+  });
+
   test('should name columns as specified in \'fieldNames\' property', function (t) {
     json2csv({
       data: jsonDefault,
