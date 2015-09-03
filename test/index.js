@@ -244,4 +244,16 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
       t.end();
     });
   });
+
+  test('should error if params is not an object', function (t) {
+    json2csv({
+      data: 'none an object',
+      field: ['carModel'],
+      fieldNames: ['test', 'blah']
+    }, function (error, csv) {
+      t.equal(error.message, 'params should be a valid object.');
+      t.notOk(csv);
+      t.end();
+    });
+  });
 });
