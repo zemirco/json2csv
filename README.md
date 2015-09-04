@@ -2,6 +2,7 @@
 
 Converts json into csv with column titles and proper line endings. Can be used as a module and from the command line.
 
+[![npm version][npm-badge]][npm-badge-url]
 [![Build Status][travis-badge]][travis-badge-url]
 [![Coverage Status][coveralls-badge]][coveralls-badge-url]
 
@@ -403,6 +404,8 @@ stream containing `json` data into an outgoing `csv` stream.
 
 See [LICENSE.md](LICENSE.md).
 
+[npm-badge]: https://badge.fury.io/js/json2csv.svg
+[npm-badge-url]: http://badge.fury.io/js/json2csv
 [travis-badge]: https://travis-ci.org/zemirco/json2csv.svg
 [travis-badge-url]: https://travis-ci.org/zemirco/json2csv
 [coveralls-badge]: https://coveralls.io/repos/zemirco/json2csv/badge.svg?branch=master
