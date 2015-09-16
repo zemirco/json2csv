@@ -3,6 +3,7 @@
 var test = require('tape');
 var async = require('async');
 var json2csv = require('../lib/json2csv');
+var parseLdJson = require('../lib/parse-ldjson');
 var loadFixtures = require('./helpers/load-fixtures');
 var jsonDefault = require('./fixtures/json/default');
 var jsonQuotes = require('./fixtures/json/quotes');
@@ -256,4 +257,17 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
       t.end();
     });
   });
+
+  test('should parse line-delimited JSON', function (t) {
+    var input = '{"foo":"bar"}\n{"foo":"qux"}';
+    try {
+      var parsed = parseLdJson(input);
+      t.equal(parsed.length, 2, 'parsed input has correct length');
+      t.end();
+    } catch(e) {
+      t.error(e);
+      t.end();
+    }
+  });
+
 });
