@@ -7,6 +7,7 @@ var Table = require('cli-table');
 var program = require('commander');
 var debug = require('debug')('json2csv:cli');
 var json2csv = require('../lib/json2csv');
+var parseLdJson = require('../lib/parse-ldjson');
 var pkg = require('../package');
 
 program
@@ -67,17 +68,7 @@ function getInput(callback) {
   });
   process.stdin.on('end', function () {
     if (program.ldjson) {
-      rows = input
-        .split('\n')
-        .map(function(line) {
-          return line.trim();
-        })
-        .filter(function(line) {
-          return line !== '';
-        })
-        .map(function(line) {
-          return JSON.parse(line);
-        });
+      rows = parseLdJson(input);
     } else {
       rows = JSON.parse(input);
     }
