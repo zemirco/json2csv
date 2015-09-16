@@ -258,6 +258,7 @@ Usage: json2csv [options]
     -q, --quote [value]          Specify an alternate quote value.
     -x, --nested                 Allow fields to be nested via dot notation, e.g. 'car.make'.
     -n, --no-header              Disable the column name header
+    -L, --ldjson                 Treat the input as Line-Delimited JSON.
     -p, --pretty                 Use only when printing to console. Logs output in pretty tables.
 ```
 
