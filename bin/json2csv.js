@@ -7,6 +7,7 @@ var Table = require('cli-table');
 var program = require('commander');
 var debug = require('debug')('json2csv:cli');
 var json2csv = require('../lib/json2csv');
+var parseLdJson = require('../lib/parse-ldjson');
 var pkg = require('../package');
 
 program
@@ -22,6 +23,7 @@ program
   .option('-q, --quote [value]', 'Specify an alternate quote value.')
   .option('-x, --nested', 'Allow fields to be nested via dot notation, e.g. \'car.make\'.')
   .option('-n, --no-header', 'Disable the column name header')
+  .option('-L, --ldjson', 'Treat the input as Line-Delimited JSON.')
   .option('-p, --pretty', 'Use only when printing to console. Logs output in pretty tables.')
   .parse(process.argv);
 
@@ -45,7 +47,7 @@ function getFields(callback) {
 }
 
 function getInput(callback) {
-  var input, isAbsolute;
+  var input, isAbsolute, rows;
 
   if (program.input) {
     isAbsolute = path.isAbsolute(program.input);
@@ -65,7 +67,13 @@ function getInput(callback) {
     debug('Could not read from stdin', err);
   });
   process.stdin.on('end', function () {
-    callback(null, JSON.parse(input));
+    if (program.ldjson) {
+      rows = parseLdJson(input);
+    } else {
+      rows = JSON.parse(input);
+    }
+
+    callback(null, rows);
   });
 }
 
