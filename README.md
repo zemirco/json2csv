@@ -360,22 +360,10 @@ $ json2csv -i test.json -f name,version --no-header >> test.csv
 
 ## Testing
 
-Requires mocha, should and async.
-
 Run
 
 ```bash
 $ npm test
-```
-
-## Formatting json2csv
-
-Requires js-beautify.
-
-Run
-
-```bash
-$ npm run format
 ```
 
 ## Contributors
