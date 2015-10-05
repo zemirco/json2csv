@@ -252,6 +252,8 @@ Usage: json2csv [options]
     -f, --fields <fields>        Specify the fields to convert.
     -l, --fieldList [list]       Specify a file with a list of fields to include. One field per line.
     -d, --delimiter [delimiter]  Specify a delimiter other than the default comma to use.
+    -v, --defaultValue [defaultValue] Specify a default value other than empty string.')
+    -a, --defaultValues <defaultValues> Specify a (typed) default value for each other than empty string.')
     -e, --eol [value]            Specify an EOL value after each row.
     -z, --newLine [value]        Specify an new line value for separating rows.
     -q, --quote [value]          Specify an alternate quote value.
