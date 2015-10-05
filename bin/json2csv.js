@@ -18,6 +18,7 @@ program
   .option('-l, --fieldList [list]', 'Specify a file with a list of fields to include. One field per line.')
   .option('-d, --delimiter [delimiter]', 'Specify a delimiter other than the default comma to use.')
   .option('-v, --defaultValue [defaultValue]', 'Specify a default value other than empty string.')
+  .option('-a, --defaultValues <defaultValues>', 'Specify a (typed) default value for each other than empty string.')
   .option('-e, --eol [value]', 'Specify an EOL value after each row.')
   .option('-z, --newLine [value]', 'Specify an new line value for separating rows.')
   .option('-q, --quote [value]', 'Specify an alternate quote value.')
@@ -112,6 +113,16 @@ getFields(function (err, fields) {
     opts.hasCSVColumnTitle = program.header;
     opts.quotes = program.quote;
     opts.defaultValue = program.defaultValue;
+    if (program.defaultValues) {
+      opts.defaultValues = program.defaultValues.split(',');
+      opts.defaultValues.forEach( function (val, index) {
+        try {
+          opts.defaultValues[index] = JSON.parse(val);
+        } catch(_) {
+          opts.defaultValues[index] = val;
+        }
+      });
+    }
 
     if (program.delimiter) {
       opts.del = program.delimiter;

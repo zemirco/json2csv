@@ -9,6 +9,7 @@ var jsonDefault = require('./fixtures/json/default');
 var jsonQuotes = require('./fixtures/json/quotes');
 var jsonNested = require('./fixtures/json/nested');
 var jsonDefaultValue = require('./fixtures/json/defaultValue');
+var jsonDefaultValues = require('./fixtures/json/defaultValues');
 var csvFixtures = {};
 
 async.parallel(loadFixtures(csvFixtures), function (err) {
@@ -245,13 +246,49 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
     });
   });
 
+  test('should output default values for each column when missing data', function (t) {
+    json2csv({
+      data: jsonDefaultValues,
+      fields: ['carModel', 'price'],
+      defaultValues: ['unknown', -1],
+    }, function (error, csv) {
+      t.error(error);
+      t.equal(csv, csvFixtures.defaultValues);
+      t.end();
+    });
+  });
+
   test('should error if params is not an object', function (t) {
     json2csv({
       data: 'none an object',
-      field: ['carModel'],
-      fieldNames: ['test', 'blah']
+      fields: ['carModel'],
+      fieldNames: ['test']
     }, function (error, csv) {
       t.equal(error.message, 'params should be a valid object.');
+      t.notOk(csv);
+      t.end();
+    });
+  });
+
+  test('should error if params.defaultValues is not an Array', function (t) {
+    json2csv({
+      data: jsonDefaultValues,
+      fields: ['carModel'],
+      defaultValues: {}
+    }, function (error, csv) {
+      t.equal(error.message, 'defaultValues must be an Array, if defaultValues is provided.');
+      t.notOk(csv);
+      t.end();
+    });
+  });
+
+  test('should error if params.defaultValues and fields have not same length', function (t) {
+    json2csv({
+      data: jsonDefaultValues,
+      fields: ['carModel', 'price'],
+      defaultValues: [1]
+    }, function (error, csv) {
+      t.equal(error.message, 'defaultValues and fields should be of the same length, if defaultValues is provided.');
       t.notOk(csv);
       t.end();
     });
