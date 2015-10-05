@@ -115,7 +115,7 @@ getFields(function (err, fields) {
     opts.defaultValue = program.defaultValue;
     if (program.defaultValues) {
       opts.defaultValues = program.defaultValues.split(',');
-      opts.defaultValues.forEach( function(val, index) {
+      opts.defaultValues.forEach( function (val, index) {
         try {
           opts.defaultValues[index] = JSON.parse(val);
         } catch(_) {
