@@ -56,7 +56,6 @@ or [use it from the CLI](https://github.com/zemirco/json2csv#command-line-interf
   - `del` - String, delimiter of columns. Defaults to `,` if not specified.
   - `defaultValue` - String, default value to use when missing data. Defaults to `` if not specified.
   - `quotes` - String, quotes around cell values and column names. Defaults to `"` if not specified.
-  - `nested` - Boolean, enables nested fields for getting JSON data. Defaults to `false` if not specified.
   - `eol` - String, it gets added to each row of data. Defaults to `` if not specified.
   - `newLine` - String, overrides the default OS line ending (i.e. `\n` on Unix and `\r\n` on Windows).
 - `callback` - **Required**; `function (error, csvString) {}`.
@@ -217,7 +216,7 @@ var myCars = [
   }
 ];
 
-json2csv({ data: myCars, fields: fields, nested: true }, function(err, csv) {
+json2csv({ data: myCars, fields: fields }, function(err, csv) {
   if (err) console.log(err);
   fs.writeFile('file.csv', csv, function(err) {
     if (err) throw err;
@@ -256,7 +255,6 @@ Usage: json2csv [options]
     -e, --eol [value]            Specify an EOL value after each row.
     -z, --newLine [value]        Specify an new line value for separating rows.
     -q, --quote [value]          Specify an alternate quote value.
-    -x, --nested                 Allow fields to be nested via dot notation, e.g. 'car.make'.
     -n, --no-header              Disable the column name header
     -L, --ldjson                 Treat the input as Line-Delimited JSON.
     -p, --pretty                 Use only when printing to console. Logs output in pretty tables.

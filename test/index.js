@@ -225,8 +225,7 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
     json2csv({
       data: jsonNested,
       fields: ['car.make', 'car.model', 'price', 'color', 'car.ye.ar'],
-      fieldNames: ['Make', 'Model', 'Price', 'Color', 'Year'],
-      nested: true
+      fieldNames: ['Make', 'Model', 'Price', 'Color', 'Year']
     }, function (error, csv) {
       t.error(error);
       t.equal(csv, csvFixtures.nested);
