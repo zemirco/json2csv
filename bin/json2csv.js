@@ -21,7 +21,6 @@ program
   .option('-e, --eol [value]', 'Specify an EOL value after each row.')
   .option('-z, --newLine [value]', 'Specify an new line value for separating rows.')
   .option('-q, --quote [value]', 'Specify an alternate quote value.')
-  .option('-x, --nested', 'Allow fields to be nested via dot notation, e.g. \'car.make\'.')
   .option('-n, --no-header', 'Disable the column name header')
   .option('-L, --ldjson', 'Treat the input as Line-Delimited JSON.')
   .option('-p, --pretty', 'Use only when printing to console. Logs output in pretty tables.')
@@ -112,7 +111,6 @@ getFields(function (err, fields) {
 
     opts.hasCSVColumnTitle = program.header;
     opts.quotes = program.quote;
-    opts.nested = program.nested;
     opts.defaultValue = program.defaultValue;
 
     if (program.delimiter) {
