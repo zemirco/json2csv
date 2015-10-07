@@ -247,11 +247,11 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
 
   test('should error if params is not an object', function (t) {
     json2csv({
-      data: 'none an object',
+      data: 'not an object',
       field: ['carModel'],
       fieldNames: ['test', 'blah']
     }, function (error, csv) {
-      t.equal(error.message, 'params should be a valid object.');
+      t.equal(error.message, 'params should include "fields" and/or non-empty "data" array of objects');
       t.notOk(csv);
       t.end();
     });
