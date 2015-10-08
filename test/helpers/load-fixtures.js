@@ -17,6 +17,7 @@ var fixtures = [
   'withSimpleQuotes',
   'nested',
   'defaultValue',
+  'embeddedjson',
   'fancyfields'
 ];
 
