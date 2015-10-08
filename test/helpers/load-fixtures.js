@@ -17,7 +17,8 @@ var fixtures = [
   'withSimpleQuotes',
   'nested',
   'defaultValue',
-  'embeddedjson'
+  'embeddedjson',
+  'fancyfields'
 ];
 
 /*eslint-disable no-console*/

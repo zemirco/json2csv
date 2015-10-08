@@ -247,11 +247,11 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
 
   test('should error if params is not an object', function (t) {
     json2csv({
-      data: 'none an object',
+      data: 'not an object',
       field: ['carModel'],
       fieldNames: ['test', 'blah']
     }, function (error, csv) {
-      t.equal(error.message, 'params should be a valid object.');
+      t.equal(error.message, 'params should include "fields" and/or non-empty "data" array of objects');
       t.notOk(csv);
       t.end();
     });
@@ -275,6 +275,53 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
     }, function (error, csv) {
       t.error(error);
       t.equal(csv, csvFixtures.embeddedjson);
+      t.end();
+    });
+  });
+  
+  test('should process fancy fields option', function (t) {
+    json2csv({
+      data: [{
+        path1: 'hello ',
+        path2: 'world!',
+        bird: {
+          nest1: 'chirp',
+          nest2: 'cheep'
+        },
+        fake: {
+          path: 'overrides default'
+        }
+      }, {
+        path1: 'good ',
+        path2: 'bye!',
+        bird: {
+          nest1: 'meep',
+          nest2: 'meep'
+        }
+      }],
+      fields: [{
+        label: 'PATH1',
+        value: 'path1'
+      }, {
+        label: 'PATH1+PATH2',
+        value: function (row) {
+          return row.path1+row.path2;
+        }
+      }, {
+        label: 'NEST1',
+        value: 'bird.nest1'
+      }, 
+      'bird.nest2',
+      {
+        label: 'nonexistent',
+        value: 'fake.path',
+        default: 'col specific default value'
+      }
+      ],
+      defaultValue: 'NULL'
+    }, function (error, csv) {
+      t.error(error);
+      t.equal(csv, csvFixtures.fancyfields);
       t.end();
     });
   });

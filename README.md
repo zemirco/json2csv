@@ -50,15 +50,43 @@ or [use it from the CLI](https://github.com/zemirco/json2csv#command-line-interf
 
 - `options` - **Required**; Options hash.
   - `data` - **Required**; Array of JSON objects.
-  - `fields` - Array of Strings, JSON attribute names to use as columns. Defaults to toplevel JSON attributes.
+  - `fields` - Array of Objects/Strings. Defaults to toplevel JSON attributes. See example below.
   - `fieldNames` Array of Strings, names for the fields at the same indexes.
-    Must be the same length as `fields` array.
+    Must be the same length as `fields` array. (Optional. Maintained for backwards compatibility. Use `fields` config object for more features)
   - `del` - String, delimiter of columns. Defaults to `,` if not specified.
-  - `defaultValue` - String, default value to use when missing data. Defaults to `` if not specified.
+  - `defaultValue` - String, default value to use when missing data. Defaults to `<empty>` if not specified. (Overridden by `fields[].default`)
   - `quotes` - String, quotes around cell values and column names. Defaults to `"` if not specified.
   - `eol` - String, it gets added to each row of data. Defaults to `` if not specified.
   - `newLine` - String, overrides the default OS line ending (i.e. `\n` on Unix and `\r\n` on Windows).
 - `callback` - **Required**; `function (error, csvString) {}`.
+
+#### Example `fields` option
+``` javascript
+{
+  fields: [
+    
+    // Supports label -> simple path
+    {
+      label: 'some label', // (optional, column will be labeled 'path.to.something' if not defined)
+      value: 'path.to.something', // data.path.to.something
+      default: 'NULL' // default if value is not found (optional, overrides `defaultValue` for column)
+    },
+    
+    // Supports label -> derived value
+    {
+      label: 'some label', // Supports duplicate labels (required, else your column will be labeled [function]) 
+      value: function(row) {
+        return row.path1 + row.path2;
+      },
+      default: 'NULL' // default if value fn returns falsy
+    },
+    
+    // Support pathname -> pathvalue
+    'simplepath' // equivalent to {value:'simplepath'}
+    'path.to.value' // also equivalent to {label:'path.to.value', value:'path.to.value'}
+  ]
+}
+```
 
 ### Example 1
 
