@@ -277,6 +277,9 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
         bird: {
           nest1: 'chirp',
           nest2: 'cheep'
+        },
+        fake: {
+          path: 'overrides default'
         }
       }, {
         path1: 'good ',
@@ -298,7 +301,12 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
         label: 'NEST1',
         value: 'bird.nest1'
       }, 
-      'bird.nest2'
+      'bird.nest2',
+      {
+        label: 'nonexistent',
+        value: 'fake.path',
+        default: 'col specific default value'
+      }
       ],
       defaultValue: 'NULL'
     }, function (error, csv) {
