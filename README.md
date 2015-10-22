@@ -59,29 +59,28 @@ or [use it from the CLI](https://github.com/zemirco/json2csv#command-line-interf
   - `hasCSVColumnTitle` - Boolean, determines whether or not CSV file will contain a title column. Defaults to `true` if not specified.
   - `eol` - String, it gets added to each row of data. Defaults to `` if not specified.
   - `newLine` - String, overrides the default OS line ending (i.e. `\n` on Unix and `\r\n` on Windows).
-- `callback` - **Required**; `function (error, csvString) {}`.
+- `callback` - **Required**; `function (error, csvString) {}`. To create a promise, you can use `var toCSV = Bluebird.promisify(json2csv)`, see [Bluebird] docs.
 
 #### Example `fields` option
 ``` javascript
 {
   fields: [
-    
     // Supports label -> simple path
     {
       label: 'some label', // (optional, column will be labeled 'path.to.something' if not defined)
       value: 'path.to.something', // data.path.to.something
       default: 'NULL' // default if value is not found (optional, overrides `defaultValue` for column)
     },
-    
+
     // Supports label -> derived value
     {
-      label: 'some label', // Supports duplicate labels (required, else your column will be labeled [function]) 
+      label: 'some label', // Supports duplicate labels (required, else your column will be labeled [function])
       value: function(row) {
         return row.path1 + row.path2;
       },
       default: 'NULL' // default if value fn returns falsy
     },
-    
+
     // Support pathname -> pathvalue
     'simplepath' // equivalent to {value:'simplepath'}
     'path.to.value' // also equivalent to {label:'path.to.value', value:'path.to.value'}
@@ -426,3 +425,4 @@ See [LICENSE.md](LICENSE.md).
 [travis-badge-url]: https://travis-ci.org/zemirco/json2csv
 [coveralls-badge]: https://coveralls.io/repos/zemirco/json2csv/badge.svg?branch=master
 [coveralls-badge-url]: https://coveralls.io/r/zemirco/json2csv?branch=master
+[Bluebird]: http://bluebirdjs.com/docs/api/promise.promisify.html
