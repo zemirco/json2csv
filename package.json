@@ -29,6 +29,9 @@
     "test": "eslint . && node test | tap-spec",
     "test-coverage": "istanbul cover test/index.js --report lcovonly | tap-spec"
   },
+  "engines": {
+    "node": ">=0.12"
+  },
   "dependencies": {
     "cli-table": "^0.3.1",
     "commander": "^2.8.1",
