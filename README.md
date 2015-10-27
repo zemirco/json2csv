@@ -8,7 +8,7 @@ Converts json into csv with column titles and proper line endings. Can be used a
 
 ## How to use
 
-Install
+Install (requires Node 0.12+)
 
 ```bash
 $ npm install json2csv --save
