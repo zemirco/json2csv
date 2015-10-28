@@ -18,7 +18,8 @@ var fixtures = [
   'nested',
   'defaultValue',
   'embeddedjson',
-  'fancyfields'
+  'fancyfields',
+  'trailingBackslash'
 ];
 
 /*eslint-disable no-console*/
