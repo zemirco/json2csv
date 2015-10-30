@@ -3,6 +3,7 @@
 var fs = require('fs');
 var os = require('os');
 var path = require('path');
+var isAbsolutePath = require('path-is-absolute');
 var Table = require('cli-table');
 var program = require('commander');
 var debug = require('debug')('json2csv:cli');
@@ -49,7 +50,7 @@ function getInput(callback) {
   var input, isAbsolute, rows;
 
   if (program.input) {
-    isAbsolute = path.isAbsolute(program.input);
+    isAbsolute = isAbsolutePath(program.input);
     input = require(isAbsolute ? program.input : path.join(process.cwd(), program.input));
 
     return callback(null, input);
