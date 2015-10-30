@@ -9,6 +9,7 @@ var jsonDefault = require('./fixtures/json/default');
 var jsonQuotes = require('./fixtures/json/quotes');
 var jsonNested = require('./fixtures/json/nested');
 var jsonDefaultValue = require('./fixtures/json/defaultValue');
+var jsonTrailingBackslash = require('./fixtures/json/trailingBackslash');
 var csvFixtures = {};
 
 async.parallel(loadFixtures(csvFixtures), function (err) {
@@ -278,7 +279,7 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
       t.end();
     });
   });
-  
+
   test('should process fancy fields option', function (t) {
     json2csv({
       data: [{
@@ -310,7 +311,7 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
       }, {
         label: 'NEST1',
         value: 'bird.nest1'
-      }, 
+      },
       'bird.nest2',
       {
         label: 'nonexistent',
@@ -326,4 +327,14 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
     });
   });
 
+  test('should parse JSON values with trailing backslashes', function (t) {
+    json2csv({
+      data: jsonTrailingBackslash,
+      fields: ['carModel', 'price', 'color']
+    }, function (error, csv) {
+      t.error(error);
+      t.equal(csv, csvFixtures.trailingBackslash);
+      t.end();
+    });
+  });
 });
