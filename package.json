@@ -29,14 +29,12 @@
     "test": "eslint . && node test | tap-spec",
     "test-coverage": "istanbul cover test/index.js --report lcovonly | tap-spec"
   },
-  "engines": {
-    "node": ">=0.12"
-  },
   "dependencies": {
     "cli-table": "^0.3.1",
     "commander": "^2.8.1",
     "debug": "^2.2.0",
-    "lodash.get": "^3.7.0"
+    "lodash.get": "^3.7.0",
+    "path-is-absolute": "^1.0.0"
   },
   "devDependencies": {
     "async": "^1.4.2",
