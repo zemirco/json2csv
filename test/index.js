@@ -9,6 +9,7 @@ var jsonDefault = require('./fixtures/json/default');
 var jsonQuotes = require('./fixtures/json/quotes');
 var jsonNested = require('./fixtures/json/nested');
 var jsonDefaultValue = require('./fixtures/json/defaultValue');
+var jsonDefaultValueEmpty = require('./fixtures/json/defaultValueEmpty');
 var jsonTrailingBackslash = require('./fixtures/json/trailingBackslash');
 var csvFixtures = {};
 
@@ -242,6 +243,18 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
     }, function (error, csv) {
       t.error(error);
       t.equal(csv, csvFixtures.defaultValue);
+      t.end();
+    });
+  });
+
+  test('should output default values when default value is set to empty string', function (t) {
+    json2csv({
+      data: jsonDefaultValueEmpty,
+      fields: ['carModel', 'price'],
+      defaultValue: ''
+    }, function (error, csv) {
+      t.error(error);
+      t.equal(csv, csvFixtures.defaultValueEmpty);
       t.end();
     });
   });

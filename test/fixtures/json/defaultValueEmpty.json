@@ -1,0 +1,6 @@
+[
+  { "carModel": "Audi",      "price": 0 },
+  { "carModel": "BMW",       "price": 15000 },
+  { "carModel": "Mercedes",  "price": null },
+  { "carModel": "Porsche",   "price": 30000 }
+]
