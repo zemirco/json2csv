@@ -293,6 +293,17 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
     });
   });
 
+  test('should flatten embedded JSON', function (t) {
+    json2csv({
+      data: {'field1': {embeddedField1: 'embeddedValue1', embeddedField2: 'embeddedValue2'}},
+      flatten: true
+    }, function (error, csv) {
+      t.error(error);
+      t.equal(csv, csvFixtures.flattenedEmbeddedJson);
+      t.end();
+    });
+  });
+
   test('should process fancy fields option', function (t) {
     json2csv({
       data: [{

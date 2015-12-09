@@ -19,6 +19,7 @@ var fixtures = [
   'defaultValue',
   'defaultValueEmpty',
   'embeddedjson',
+  'flattenedEmbeddedJson',
   'fancyfields',
   'trailingBackslash'
 ];
