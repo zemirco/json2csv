@@ -92,6 +92,7 @@ or [use it from the CLI](https://github.com/zemirco/json2csv#command-line-interf
 
 ```javascript
 var json2csv = require('json2csv');
+var fs = require('fs');
 var fields = ['car', 'price', 'color'];
 var myCars = [
   {
@@ -227,6 +228,7 @@ You can also specify nested properties using dot notation.
 
 ```javascript
 var json2csv = require('json2csv');
+var fs = require('fs');
 var fields = ['car.make', 'car.model', 'price', 'color'];
 var myCars = [
   {
