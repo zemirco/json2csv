@@ -23,6 +23,7 @@ program
   .option('-z, --newLine [value]', 'Specify an new line value for separating rows.')
   .option('-q, --quote [value]', 'Specify an alternate quote value.')
   .option('-n, --no-header', 'Disable the column name header')
+  .option('-F, --flatten', 'Flatten nested objects')
   .option('-L, --ldjson', 'Treat the input as Line-Delimited JSON.')
   .option('-p, --pretty', 'Use only when printing to console. Logs output in pretty tables.')
   .parse(process.argv);
@@ -113,6 +114,7 @@ getFields(function (err, fields) {
     opts.hasCSVColumnTitle = program.header;
     opts.quotes = program.quote;
     opts.defaultValue = program.defaultValue;
+    opts.flatten = program.flatten;
 
     if (program.delimiter) {
       opts.del = program.delimiter;
