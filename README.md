@@ -59,6 +59,7 @@ or [use it from the CLI](https://github.com/zemirco/json2csv#command-line-interf
   - `hasCSVColumnTitle` - Boolean, determines whether or not CSV file will contain a title column. Defaults to `true` if not specified.
   - `eol` - String, it gets added to each row of data. Defaults to `` if not specified.
   - `newLine` - String, overrides the default OS line ending (i.e. `\n` on Unix and `\r\n` on Windows).
+  - `flatten` - Boolean, flattens nested JSON using [flat]. Defaults to `false`.
 - `callback` - **Required**; `function (error, csvString) {}`. To create a promise, you can use `var toCSV = Bluebird.promisify(json2csv)`, see [Bluebird] docs.
 
 #### Example `fields` option
@@ -286,6 +287,7 @@ Usage: json2csv [options]
     -z, --newLine [value]        Specify an new line value for separating rows.
     -q, --quote [value]          Specify an alternate quote value.
     -n, --no-header              Disable the column name header
+    -F, --flatten                Flatten nested objects
     -L, --ldjson                 Treat the input as Line-Delimited JSON.
     -p, --pretty                 Use only when printing to console. Logs output in pretty tables.
 ```
@@ -428,3 +430,4 @@ See [LICENSE.md](LICENSE.md).
 [coveralls-badge]: https://coveralls.io/repos/zemirco/json2csv/badge.svg?branch=master
 [coveralls-badge-url]: https://coveralls.io/r/zemirco/json2csv?branch=master
 [Bluebird]: http://bluebirdjs.com/docs/api/promise.promisify.html
+[flat]: https://www.npmjs.com/package/flat
