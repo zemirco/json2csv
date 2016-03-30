@@ -361,4 +361,15 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
       t.end();
     });
   });
+  
+  test('should add a \\ to escape \\" when doubleQuotes is set to \\"', function(t){
+    json2csv({
+      data: [{field: '\\"'}],
+      doubleQuotes:'\\"'
+    }, function(error, csv){
+      t.error(error);
+      t.equal(csv, '"field"\n"\\\\"');
+      t.end();
+    });
+  });
 });
