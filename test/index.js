@@ -367,7 +367,7 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
       data: [{field: '\\"'}]
     }, function(error, csv){
       t.error(error);
-      t.equal(csv, '"field"\n"\\"""');
+      t.equal(csv, '"field"\n"\\""');
       t.end();
     });
   });
