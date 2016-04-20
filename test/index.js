@@ -361,4 +361,14 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
       t.end();
     });
   });
+  
+  test('should escape " when preceeded by \\', function(t){
+    json2csv({
+      data: [{field: '\\"'}]
+    }, function(error, csv){
+      t.error(error);
+      t.equal(csv, '"field"\n"\\""');
+      t.end();
+    });
+  });
 });
