@@ -11,7 +11,6 @@ var jsonNested = require('./fixtures/json/nested');
 var jsonDefaultValue = require('./fixtures/json/defaultValue');
 var jsonDefaultValueEmpty = require('./fixtures/json/defaultValueEmpty');
 var jsonTrailingBackslash = require('./fixtures/json/trailingBackslash');
-var console = require('console');
 var csvFixtures = {};
 
 async.parallel(loadFixtures(csvFixtures), function (err) {
