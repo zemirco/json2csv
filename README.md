@@ -61,6 +61,7 @@ or [use it from the CLI](https://github.com/zemirco/json2csv#command-line-interf
   - `eol` - String, it gets added to each row of data. Defaults to `` if not specified.
   - `newLine` - String, overrides the default OS line ending (i.e. `\n` on Unix and `\r\n` on Windows).
   - `flatten` - Boolean, flattens nested JSON using [flat]. Defaults to `false`.
+  - `excelStrings` - Boolean, converts string data into normalized Excel style data.
 - `callback` - **Required**; `function (error, csvString) {}`. To create a promise, you can use `var toCSV = Bluebird.promisify(json2csv)`, see [Bluebird] docs.
 
 #### Example `fields` option
