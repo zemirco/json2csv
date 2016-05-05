@@ -21,7 +21,8 @@ var fixtures = [
   'embeddedjson',
   'flattenedEmbeddedJson',
   'fancyfields',
-  'trailingBackslash'
+  'trailingBackslash',
+  'excelStrings'
 ];
 
 /*eslint-disable no-console*/

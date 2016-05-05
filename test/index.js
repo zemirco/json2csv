@@ -51,6 +51,7 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
       t.end();
     });
   });
+  
 
   test('should parse json to csv without fields', function (t) {
     json2csv({
@@ -362,12 +363,24 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
     });
   });
   
-  test('should escape " when preceeded by \\', function(t){
+  test('should escape " when preceeded by \\', function (t){
     json2csv({
       data: [{field: '\\"'}]
-    }, function(error, csv){
+    }, function (error, csv){
       t.error(error);
       t.equal(csv, '"field"\n"\\""');
+      t.end();
+    });
+  });
+  
+  test('should format strings to force excel to view the values as strings', function (t) {
+    json2csv({
+      data: jsonDefault,
+      excelStrings:true,
+      fields: ['carModel', 'price', 'color']
+    }, function (error, csv) {
+      t.error(error);
+      t.equal(csv, csvFixtures.excelStrings);
       t.end();
     });
   });
