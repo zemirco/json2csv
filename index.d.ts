@@ -1,8 +1,30 @@
-declare module 'json2csv' {
-  interface CSVCallback {
-    (error: Error, csv: string): void;
+declare namespace json2csv {
+  interface IField {
+    label?: string;
+    value: string;
+    default?: string;
   }
 
-  function json2csv(options: any, callback: CSVCallback): string;
-  export = json2csv;
+  interface IOptions {
+    data: any[];
+    fields?: (string | IField)[];
+    filedNames?: string[];
+    del?: string;
+    defaultValue?: string;
+    quotes?: string;
+    doubleQuotes?: string;
+    hasCSVColumnTitle?: boolean;
+    eol?: string;
+    newLine?: string;
+    flatten?: boolean;
+    excelStrings?: boolean;
+  }
+
+  interface ICallback {
+    (error: Error, csv: string): void;
+  }
+  
+  export function json2csv(options: IOptions, callback: ICallback): string;
 }
+
+export = json2csv.json2csv;
