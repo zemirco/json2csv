@@ -11,6 +11,7 @@ var jsonNested = require('./fixtures/json/nested');
 var jsonDefaultValue = require('./fixtures/json/defaultValue');
 var jsonDefaultValueEmpty = require('./fixtures/json/defaultValueEmpty');
 var jsonTrailingBackslash = require('./fixtures/json/trailingBackslash');
+var jsonNewlines = require('./fixtures/json/newlines');
 var csvFixtures = {};
 
 async.parallel(loadFixtures(csvFixtures), function (err) {
@@ -51,7 +52,7 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
       t.end();
     });
   });
-  
+
 
   test('should parse json to csv without fields', function (t) {
     json2csv({
@@ -362,7 +363,7 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
       t.end();
     });
   });
-  
+
   test('should escape " when preceeded by \\', function (t){
     json2csv({
       data: [{field: '\\"'}]
@@ -372,7 +373,7 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
       t.end();
     });
   });
-  
+
   test('should format strings to force excel to view the values as strings', function (t) {
     json2csv({
       data: jsonDefault,
@@ -381,6 +382,16 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
     }, function (error, csv) {
       t.error(error);
       t.equal(csv, csvFixtures.excelStrings);
+      t.end();
+    });
+  });
+
+  test('should preserve newlines within cell content', function (t) {
+    json2csv({
+      data: jsonNewlines
+    }, function (error, csv) {
+      t.error(error);
+      t.equal(csv, csvFixtures.newLineCellContent);
       t.end();
     });
   });
