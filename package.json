@@ -33,14 +33,14 @@
     "cli-table": "^0.3.1",
     "commander": "^2.8.1",
     "debug": "^2.2.0",
-    "flat": "^1.6.0",
-    "lodash.get": "^3.7.0",
+    "flat": "^2.0.0",
+    "lodash.get": "^4.3.0",
     "path-is-absolute": "^1.0.0"
   },
   "devDependencies": {
-    "async": "^1.4.2",
-    "eslint": "^1.0.0-rc-1",
-    "istanbul": "^0.3.14",
+    "async": "^1.5.2",
+    "eslint": "^2.12.0",
+    "istanbul": "^0.4.3",
     "tap-spec": "^4.1.0",
     "tape": "^4.0.0"
   }
