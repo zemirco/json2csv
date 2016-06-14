@@ -5,6 +5,7 @@ Converts json into csv with column titles and proper line endings. Can be used a
 [![npm version][npm-badge]][npm-badge-url]
 [![Build Status][travis-badge]][travis-badge-url]
 [![Coverage Status][coveralls-badge]][coveralls-badge-url]
+[![Dependency Status][dev-badge]][dev-badge-url]
 
 ## How to use
 
@@ -431,5 +432,7 @@ See [LICENSE.md](LICENSE.md).
 [travis-badge-url]: https://travis-ci.org/zemirco/json2csv
 [coveralls-badge]: https://coveralls.io/repos/zemirco/json2csv/badge.svg?branch=master
 [coveralls-badge-url]: https://coveralls.io/r/zemirco/json2csv?branch=master
+[dev-badge]: https://david-dm.org/zemirco/json2csv.svg
+[dev-badge-url]: https://david-dm.org/zemirco/json2csv
 [Bluebird]: http://bluebirdjs.com/docs/api/promise.promisify.html
 [flat]: https://www.npmjs.com/package/flat
