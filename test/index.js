@@ -419,4 +419,33 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
       t.end();
     });
   });
+
+  test('should use options.defaultValue when using function with no field.default', function (t) {
+    json2csv({
+      data: jsonOverriddenDefaultValue,
+      fields: [
+        {
+          value: 'carModel',
+        },
+        {
+          label: 'price',
+          value: function (row) {
+            return row.price;
+          },
+          default: 1
+        },
+        {
+          label: 'color',
+          value: function (row) {
+            return row.color;
+          },
+        }
+      ],
+      defaultValue: ''
+    }, function (error, csv) {
+      t.error(error);
+      t.equal(csv, csvFixtures.overriddenDefaultValue);
+      t.end();
+    });
+  });
 });
