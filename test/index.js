@@ -12,6 +12,7 @@ var jsonDefaultValue = require('./fixtures/json/defaultValue');
 var jsonDefaultValueEmpty = require('./fixtures/json/defaultValueEmpty');
 var jsonTrailingBackslash = require('./fixtures/json/trailingBackslash');
 var jsonNewlines = require('./fixtures/json/newlines');
+var jsonOverriddenDefaultValue = require('./fixtures/json/overridenDefaultValue');
 var csvFixtures = {};
 
 async.parallel(loadFixtures(csvFixtures), function (err) {
@@ -392,6 +393,58 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
     }, function (error, csv) {
       t.error(error);
       t.equal(csv, csvFixtures.newLineCellContent);
+      t.end();
+    });
+  });
+
+  test('should override defaultValue with field.defaultValue', function (t) {
+    json2csv({
+      data: jsonOverriddenDefaultValue,
+      fields: [
+        {
+          value: 'carModel',
+        },
+        {
+          value: 'price',
+          default: 1
+        },
+        {
+          value: 'color',
+        }
+      ],
+      defaultValue: ''
+    }, function (error, csv) {
+      t.error(error);
+      t.equal(csv, csvFixtures.overriddenDefaultValue);
+      t.end();
+    });
+  });
+
+  test('should use options.defaultValue when using function with no field.default', function (t) {
+    json2csv({
+      data: jsonOverriddenDefaultValue,
+      fields: [
+        {
+          value: 'carModel',
+        },
+        {
+          label: 'price',
+          value: function (row) {
+            return row.price;
+          },
+          default: 1
+        },
+        {
+          label: 'color',
+          value: function (row) {
+            return row.color;
+          },
+        }
+      ],
+      defaultValue: ''
+    }, function (error, csv) {
+      t.error(error);
+      t.equal(csv, csvFixtures.overriddenDefaultValue);
       t.end();
     });
   });
