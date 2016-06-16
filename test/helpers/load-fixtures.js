@@ -23,7 +23,8 @@ var fixtures = [
   'fancyfields',
   'trailingBackslash',
   'excelStrings',
-  'newLineCellContent'
+  'newLineCellContent',
+  'overriddenDefaultValue',
 ];
 
 /*eslint-disable no-console*/
