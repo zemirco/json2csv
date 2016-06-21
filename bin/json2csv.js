@@ -26,6 +26,7 @@ program
   .option('-F, --flatten', 'Flatten nested objects')
   .option('-L, --ldjson', 'Treat the input as Line-Delimited JSON.')
   .option('-p, --pretty', 'Use only when printing to console. Logs output in pretty tables.')
+  .option('-a, --include-empty-rows', 'Includes empty rows in the resulting CSV output.')
   .parse(process.argv);
 
 function getFields(callback) {
@@ -108,13 +109,13 @@ getFields(function (err, fields) {
 
     var opts = {
       data: input,
-      fields: fields
+      fields: fields,
+      hasCSVColumnTitle: program.header,
+      quotes: program.quote,
+      defaultValue: program.defaultValue,
+      flatten: program.flatten,
+      includeEmptyRows: program.includeEmptyRows
     };
-
-    opts.hasCSVColumnTitle = program.header;
-    opts.quotes = program.quote;
-    opts.defaultValue = program.defaultValue;
-    opts.flatten = program.flatten;
 
     if (program.delimiter) {
       opts.del = program.delimiter;

@@ -27,7 +27,7 @@ json2csv({ data: myData, fields: fields }, function(err, csv) {
 });
 ```
 
-or [use it from the CLI](https://github.com/zemirco/json2csv#command-line-interface).
+or [use it from the Command Line](https://github.com/zemirco/json2csv#command-line-interface).
 
 
 
@@ -294,6 +294,7 @@ Usage: json2csv [options]
     -F, --flatten                Flatten nested objects
     -L, --ldjson                 Treat the input as Line-Delimited JSON.
     -p, --pretty                 Use only when printing to console. Logs output in pretty tables.
+    -a, --include-empty-rows     Includes empty rows in the resulting CSV output.
 ```
 
 An input file `-i` and fields `-f` are required. If no output `-o` is specified the result is logged to the console.
