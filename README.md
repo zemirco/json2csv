@@ -7,6 +7,8 @@ Converts json into csv with column titles and proper line endings. Can be used a
 [![Coverage Status][coveralls-badge]][coveralls-badge-url]
 [![Dependency Status][dev-badge]][dev-badge-url]
 
+See the [CHANGELOG] for details about the latest release.
+
 ## How to use
 
 Install
@@ -395,7 +397,7 @@ $ json2csv -i test.json -f name,version --no-header >> test.csv
 
 ## Testing
 
-Run
+Run the following command to test and return coverage
 
 ```bash
 $ npm test
@@ -413,7 +415,7 @@ $ npm install
 
 Could you please make sure code is formatted and test passed before submit Pull Requests?
 
-See Testing and Formatting json2csv above.
+See Testing section above.
 
 ## But I want streams!
 
@@ -436,5 +438,6 @@ See [LICENSE.md](LICENSE.md).
 [coveralls-badge-url]: https://coveralls.io/r/zemirco/json2csv?branch=master
 [dev-badge]: https://david-dm.org/zemirco/json2csv.svg
 [dev-badge-url]: https://david-dm.org/zemirco/json2csv
+[CHANGELOG]: CHANGELOG.md
 [Bluebird]: http://bluebirdjs.com/docs/api/promise.promisify.html
 [flat]: https://www.npmjs.com/package/flat
