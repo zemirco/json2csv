@@ -17,7 +17,7 @@ Install
 $ npm install json2csv --save
 ```
 
-Include the module and run
+Include the module and run or [use it from the Command Line](https://github.com/zemirco/json2csv#command-line-interface).
 
 ```javascript
 var json2csv = require('json2csv');
@@ -28,10 +28,6 @@ json2csv({ data: myData, fields: fields }, function(err, csv) {
   console.log(csv);
 });
 ```
-
-or [use it from the Command Line](https://github.com/zemirco/json2csv#command-line-interface).
-
-
 
 ## Features
 
