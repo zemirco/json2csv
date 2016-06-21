@@ -1,6 +1,4 @@
 test
-Makefile
-js-beautify.json
 History.md
 .travis.yml
 coverage
