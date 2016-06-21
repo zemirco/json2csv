@@ -13,6 +13,7 @@ var jsonDefaultValueEmpty = require('./fixtures/json/defaultValueEmpty');
 var jsonTrailingBackslash = require('./fixtures/json/trailingBackslash');
 var jsonNewlines = require('./fixtures/json/newlines');
 var jsonOverriddenDefaultValue = require('./fixtures/json/overridenDefaultValue');
+var jsonEmptyRow = require('./fixtures/json/emptyRow');
 var csvFixtures = {};
 
 async.parallel(loadFixtures(csvFixtures), function (err) {
@@ -445,6 +446,131 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
     }, function (error, csv) {
       t.error(error);
       t.equal(csv, csvFixtures.overriddenDefaultValue);
+      t.end();
+    });
+  });
+
+  test('should include empty rows when options.includeEmptyRows is true', function (t) {
+    json2csv({
+      data: jsonEmptyRow,
+      fields: [
+        {
+          value: 'carModel',
+        },
+        {
+          label: 'price',
+          value: function (row) {
+            return row.price;
+          },
+        },
+        {
+          label: 'color',
+          value: function (row) {
+            return row.color;
+          },
+        }
+      ],
+      includeEmptyRows: true,
+    }, function (error, csv) {
+      t.error(error);
+      t.equal(csv, csvFixtures.emptyRow);
+      t.end();
+    });
+  });
+
+  test('should not include empty rows when options.includeEmptyRows is false', function (t) {
+    json2csv({
+      data: jsonEmptyRow,
+      fields: [
+        {
+          value: 'carModel',
+        },
+        {
+          label: 'price',
+          value: function (row) {
+            return row.price;
+          },
+        },
+        {
+          label: 'color',
+          value: function (row) {
+            return row.color;
+          },
+        }
+      ],
+      includeEmptyRows: false,
+    }, function (error, csv) {
+      t.error(error);
+      t.equal(csv, csvFixtures.emptyRowNotIncluded);
+      t.end();
+    });
+  });
+
+  test('should not include empty rows when options.includeEmptyRows is not specified', function (t) {
+    json2csv({
+      data: jsonEmptyRow,
+      fields: [
+        {
+          value: 'carModel',
+        },
+        {
+          label: 'price',
+          value: function (row) {
+            return row.price;
+          },
+        },
+        {
+          label: 'color',
+          value: function (row) {
+            return row.color;
+          },
+        }
+      ],
+    }, function (error, csv) {
+      t.error(error);
+      t.equal(csv, csvFixtures.emptyRowNotIncluded);
+      t.end();
+    });
+  });
+
+  test('should include empty rows when options.includeEmptyRows is true, with default values', function (t) {
+    json2csv({
+      data: jsonEmptyRow,
+      fields: [
+        {
+          value: 'carModel',
+        },
+        {
+          label: 'price',
+          value: function (row) {
+            return row.price;
+          },
+          default: 1
+        },
+        {
+          label: 'color',
+          value: function (row) {
+            return row.color;
+          },
+        }
+      ],
+      defaultValue: 'NULL',
+      includeEmptyRows: true,
+    }, function (error, csv) {
+      t.error(error);
+      t.equal(csv, csvFixtures.emptyRowDefaultValues);
+      t.end();
+    });
+  });
+
+  test('should parse data:[null] to csv with only column title, despite options.includeEmptyRows', function (t) {
+    json2csv({
+      data: [null],
+      fields: ['carModel', 'price', 'color'],
+      includeEmptyRows: true,
+    }, function (error, csv) {
+      t.error(error);
+      t.equal(csv, '"carModel","price","color"');
       t.end();
     });
   });

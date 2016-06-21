@@ -18,12 +18,13 @@ declare namespace json2csv {
     newLine?: string;
     flatten?: boolean;
     excelStrings?: boolean;
+    includeEmptyRows?: boolean;
   }
 
   interface ICallback {
     (error: Error, csv: string): void;
   }
-  
+
   export function json2csv(options: IOptions, callback: ICallback): string;
 }
 

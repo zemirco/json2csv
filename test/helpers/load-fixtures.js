@@ -25,6 +25,9 @@ var fixtures = [
   'excelStrings',
   'newLineCellContent',
   'overriddenDefaultValue',
+  'emptyRow',
+  'emptyRowNotIncluded',
+  'emptyRowDefaultValues',
 ];
 
 /*eslint-disable no-console*/
