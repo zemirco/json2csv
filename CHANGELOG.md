@@ -1,7 +1,14 @@
+## 3.5.1 / 2016-06-29
+
+  * Revert [#114](https://github.com/zemirco/json2csv/pull/114), due to more issues
+  * Update npmignore
+  * Add a changelog
+  * Updatee readme
+
 ## 3.5.0 / 2016-06-21
 
- * `includeEmptyRows` options added, see [#122](https://github.com/zemirco/json2csv/pull/122) (Thanks @glutentag)
- * `-a` or `--include-empty-rows` added for the CLI.
+  * `includeEmptyRows` options added, see [#122](https://github.com/zemirco/json2csv/pull/122) (Thanks @glutentag)
+  * `-a` or `--include-empty-rows` added for the CLI.
 
 ## 2.2.1 / 2013-11-10
 
