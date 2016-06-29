@@ -23,7 +23,6 @@ var fixtures = [
   'fancyfields',
   'trailingBackslash',
   'excelStrings',
-  'newLineCellContent',
   'overriddenDefaultValue',
   'emptyRow',
   'emptyRowNotIncluded',
