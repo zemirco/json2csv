@@ -1,3 +1,10 @@
+## 3.6.0 / 2016-07-07
+
+  * Make callback optional
+  * Make callback use `process.nextTick`, so it's not sync
+
+  Thanks @STRML!
+
 ## 3.5.1 / 2016-06-29
 
   * Revert [#114](https://github.com/zemirco/json2csv/pull/114), due to more issues
