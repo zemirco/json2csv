@@ -25,7 +25,8 @@ declare namespace json2csv {
     (error: Error, csv: string): void;
   }
 
-  export function json2csv(options: IOptions, callback: ICallback): string;
+  export function json2csv(options: IOptions, callback: ICallback): void;
+  export function json2csv(options: IOptions): string;
 }
 
 export = json2csv.json2csv;
