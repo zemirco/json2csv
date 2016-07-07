@@ -24,7 +24,8 @@ var json2csv = require('json2csv');
 var fields = ['field1', 'field2', 'field3'];
 
 try {
-  console.log(json2csv({ data: myData, fields: fields }));
+  var result = json2csv({ data: myData, fields: fields });
+  console.log(result);
 } catch (err) {
   // Errors are thrown for bad options, or if the data is empty and no fields are provided.
   // Be sure to provide fields if it is possible that your data array will be empty.
@@ -115,8 +116,8 @@ var myCars = [
     "color": "green"
   }
 ];
-
 var csv = json2csv({ data: myCars, fields: fields });
+
 fs.writeFile('file.csv', csv, function(err) {
   if (err) throw err;
   console.log('file saved');
@@ -134,7 +135,8 @@ car, price, color
 
 ### Example 2
 
-Similarly to [mongoexport](http://www.mongodb.org/display/DOCS/mongoexport) you can choose which fields to export
+Similarly to [mongoexport](http://www.mongodb.org/display/DOCS/mongoexport) you can choose which fields to export.
+Note: this example uses the optional callback format.
 
 ```javascript
 var json2csv = require('json2csv');
@@ -162,8 +164,8 @@ Use a custom delimiter to create tsv files. Add it as the value of the del prope
 ```javascript
 var json2csv = require('json2csv');
 var fields = ['car', 'price', 'color'];
-
 var tsv = json2csv({ data: myCars, fields: fields, del: '\t' });
+
 console.log(tsv);
 ```
 
@@ -187,8 +189,8 @@ You can choose custom column names for the exported file.
 var json2csv = require('json2csv');
 var fields = ['car', 'price'];
 var fieldNames = ['Car Name', 'Price USD'];
-
 var csv = json2csv({ data: myCars, fields: fields, fieldNames: fieldNames });
+
 console.log(csv);
 ```
 
@@ -206,8 +208,8 @@ var opts = {
   fieldNames: fieldNames,
   quotes: ''
 };
-
 var csv = json2csv(opts);
+
 console.log(csv);
 ```
 
@@ -243,8 +245,8 @@ var myCars = [
     "color": "green"
   }
 ];
-
 var csv = json2csv({ data: myCars, fields: fields });
+
 fs.writeFile('file.csv', csv, function(err) {
   if (err) throw err;
   console.log('file saved');
