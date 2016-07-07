@@ -22,16 +22,44 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
     /*eslint-enable no-console*/
   }
 
-  test('should throw if no callback', function (t) {
-    t.throws(function () {
-      json2csv({
-        data: jsonDefault
-      });
-    }, /Callback is required/);
+  test('should work synchronously', function (t) {
+    var csv = json2csv({
+      data: jsonDefault
+    });
+    t.equal(csv, csvFixtures.default);
     t.end();
   });
 
-  test('should error if fieldNames don\'t line up to fields', function (t) {
+  test('should work asynchronously and not release zalgo', function (t) {
+    var releasedZalgo = true;
+    json2csv({
+      data: jsonDefault
+    }, function (err, csv) {
+      t.equal(csv, csvFixtures.default);
+      t.notOk(releasedZalgo);
+      t.end();
+    });
+
+    releasedZalgo = false;
+  });
+
+  test('should error synchronously if fieldNames don\'t line up to fields', function (t) {
+    var csv;
+    try {
+      csv = json2csv({
+        data: jsonDefault,
+        field: ['carModel'],
+        fieldNames: ['test', 'blah']
+      });
+      t.notOk(true);
+    } catch (error) {
+      t.equal(error.message, 'fieldNames and fields should be of the same length, if fieldNames is provided.');
+      t.notOk(csv);
+      t.end();
+    }
+  });
+
+  test('should error asynchronously if fieldNames don\'t line up to fields', function (t) {
     json2csv({
       data: jsonDefault,
       field: ['carModel'],
@@ -53,7 +81,6 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
       t.end();
     });
   });
-  
 
   test('should parse json to csv without fields', function (t) {
     json2csv({
@@ -364,7 +391,7 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
       t.end();
     });
   });
-  
+
   test('should escape " when preceeded by \\', function (t){
     json2csv({
       data: [{field: '\\"'}]
@@ -374,7 +401,7 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
       t.end();
     });
   });
-  
+
   test('should format strings to force excel to view the values as strings', function (t) {
     json2csv({
       data: jsonDefault,
