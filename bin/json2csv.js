@@ -13,8 +13,8 @@ var pkg = require('../package');
 
 program
   .version(pkg.version)
-  .option('-i, --input <input>', 'Path and name of the incoming json file.')
-  .option('-o, --output [output]', 'Path and name of the resulting csv file. Defaults to console.')
+  .option('-i, --input <input>', 'Path and name of the incoming json file. If not provided, will read from stdin.')
+  .option('-o, --output [output]', 'Path and name of the resulting csv file. Defaults to stdout.')
   .option('-f, --fields <fields>', 'Specify the fields to convert.')
   .option('-l, --fieldList [list]', 'Specify a file with a list of fields to include. One field per line.')
   .option('-d, --delimiter [delimiter]', 'Specify a delimiter other than the default comma to use.')
@@ -79,7 +79,7 @@ function getInput(callback) {
   });
 }
 
-function logPretty(csv, callback) {
+function logPretty(csv) {
   var lines = csv.split(os.EOL);
   var table = new Table({
     head: lines[0].split(','),
@@ -90,11 +90,8 @@ function logPretty(csv, callback) {
 
   for (var i = 1; i < lines.length; i++) {
     table.push(lines[i].split('","'));
-
-    if (i === lines.length - 1) {
-      callback(table.toString());
-    }
   }
+  return table.toString();
 }
 
 getFields(function (err, fields) {
@@ -129,30 +126,23 @@ getFields(function (err, fields) {
       opts.newLine = program.newLine;
     }
 
-    json2csv(opts, function (csvError, csv) {
-      if (csvError) {
-        debug(csvError);
-      }
-
-      if (program.output) {
-        fs.writeFile(program.output, csv, function (writeError) {
-          if (writeError) {
-            throw new Error('Cannot save to ' + program.output + ': ' + writeError);
-          }
-
-          debug(program.input + ' successfully converted to ' + program.output);
-        });
-      } else {
-        /*eslint-disable no-console */
-        if (program.pretty) {
-          logPretty(csv, function (res) {
-            console.log(res);
-          });
-        } else {
-          console.log(csv);
+    var csv = json2csv(opts);
+    if (program.output) {
+      fs.writeFile(program.output, csv, function (writeError) {
+        if (writeError) {
+          throw new Error('Cannot save to ' + program.output + ': ' + writeError);
         }
-        /*eslint-enable no-console */
+
+        debug(program.input + ' successfully converted to ' + program.output);
+      });
+    } else {
+      /*eslint-disable no-console */
+      if (program.pretty) {
+        console.log(logPretty(csv));
+      } else {
+        console.log(csv);
       }
-    });
+      /*eslint-enable no-console */
+    }
   });
 });

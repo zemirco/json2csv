@@ -23,10 +23,13 @@ Include the module and run or [use it from the Command Line](https://github.com/
 var json2csv = require('json2csv');
 var fields = ['field1', 'field2', 'field3'];
 
-json2csv({ data: myData, fields: fields }, function(err, csv) {
-  if (err) console.log(err);
-  console.log(csv);
-});
+try {
+  console.log(json2csv({ data: myData, fields: fields }));
+} catch (err) {
+  // Errors are thrown for bad options, or if the data is empty and no fields are provided.
+  // Be sure to provide fields if it is possible that your data array will be empty.
+  console.error(err);
+}
 ```
 
 ## Features
@@ -62,7 +65,7 @@ json2csv({ data: myData, fields: fields }, function(err, csv) {
   - `flatten` - Boolean, flattens nested JSON using [flat]. Defaults to `false`.
   - `excelStrings` - Boolean, converts string data into normalized Excel style data.
   - `includeEmptyRows` - Boolean, includes empty rows. Defaults to `false`.
-- `callback` - **Required**; `function (error, csvString) {}`. To create a promise, you can use `var toCSV = Bluebird.promisify(json2csv)`, see [Bluebird] docs.
+- `callback` - `function (error, csvString) {}`. If provided, will callback asynchronously. Only supported for compatibility reasons.
 
 #### Example `fields` option
 ``` javascript
@@ -113,12 +116,10 @@ var myCars = [
   }
 ];
 
-json2csv({ data: myCars, fields: fields }, function(err, csv) {
-  if (err) console.log(err);
-  fs.writeFile('file.csv', csv, function(err) {
-    if (err) throw err;
-    console.log('file saved');
-  });
+var csv = json2csv({ data: myCars, fields: fields });
+fs.writeFile('file.csv', csv, function(err) {
+  if (err) throw err;
+  console.log('file saved');
 });
 ```
 
@@ -162,10 +163,8 @@ Use a custom delimiter to create tsv files. Add it as the value of the del prope
 var json2csv = require('json2csv');
 var fields = ['car', 'price', 'color'];
 
-json2csv({ data: myCars, fields: fields, del: '\t' }, function(err, tsv) {
-  if (err) console.log(err);
-  console.log(tsv);
-});
+var tsv = json2csv({ data: myCars, fields: fields, del: '\t' });
+console.log(tsv);
 ```
 
 Will output:
@@ -189,10 +188,8 @@ var json2csv = require('json2csv');
 var fields = ['car', 'price'];
 var fieldNames = ['Car Name', 'Price USD'];
 
-json2csv({ data: myCars, fields: fields, fieldNames: fieldNames }, function(err, csv) {
-  if (err) console.log(err);
-  console.log(csv);
-});
+var csv = json2csv({ data: myCars, fields: fields, fieldNames: fieldNames });
+console.log(csv);
 ```
 
 ### Example 5
@@ -210,10 +207,8 @@ var opts = {
   quotes: ''
 };
 
-json2csv(opts, function(err, csv) {
-  if (err) console.log(err);
-  console.log(csv);
-});
+var csv = json2csv(opts);
+console.log(csv);
 ```
 
 Results in
@@ -249,12 +244,10 @@ var myCars = [
   }
 ];
 
-json2csv({ data: myCars, fields: fields }, function(err, csv) {
-  if (err) console.log(err);
-  fs.writeFile('file.csv', csv, function(err) {
-    if (err) throw err;
-    console.log('file saved');
-  });
+var csv = json2csv({ data: myCars, fields: fields });
+fs.writeFile('file.csv', csv, function(err) {
+  if (err) throw err;
+  console.log('file saved');
 });
 ```
 
@@ -435,5 +428,4 @@ See [LICENSE.md](LICENSE.md).
 [dev-badge]: https://david-dm.org/zemirco/json2csv.svg
 [dev-badge-url]: https://david-dm.org/zemirco/json2csv
 [CHANGELOG]: CHANGELOG.md
-[Bluebird]: http://bluebirdjs.com/docs/api/promise.promisify.html
 [flat]: https://www.npmjs.com/package/flat
