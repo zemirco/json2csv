@@ -74,7 +74,7 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
   test('should parse json to csv', function (t) {
     json2csv({
       data: jsonDefault,
-      fields: ['carModel', 'price', 'color']
+      fields: ['carModel', 'price', 'color', 'transmission']
     }, function (error, csv) {
       t.error(error);
       t.equal(csv, csvFixtures.default);
