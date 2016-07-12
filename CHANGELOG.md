@@ -1,6 +1,6 @@
 ## 3.6.1 / 2016-07-12
 
-  * Fix auto-fields returning all avilable fields, even if not available on the first object, see #104
+  * Fix auto-fields returning all available fields, even if not available on the first object, see #104
 
 ## 3.6.0 / 2016-07-07
 
