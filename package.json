@@ -32,6 +32,7 @@
   "dependencies": {
     "cli-table": "^0.3.1",
     "commander": "^2.8.1",
+    "csvtojson": "^1.0.0",
     "debug": "^2.2.0",
     "flat": "^2.0.0",
     "lodash.flatten": "^4.2.0",

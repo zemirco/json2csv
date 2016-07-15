@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+var Converter = require("csvtojson").Converter;
+var csvtojson = new Converter({});
 var fs = require('fs');
 var os = require('os');
 var path = require('path');
@@ -126,16 +128,48 @@ getFields(function (err, fields) {
       opts.newLine = program.newLine;
     }
 
-    var csv = json2csv(opts);
     if (program.output) {
-      fs.writeFile(program.output, csv, function (writeError) {
-        if (writeError) {
-          throw new Error('Cannot save to ' + program.output + ': ' + writeError);
-        }
+      // Check for existing file.
+      fs.readFile(program.output, 'utf-8', function (err, file) {
+        if (!err) {
+          //console.log("FILE EXISTS")
+          //console.log(file)
+          csvtojson.fromString(file, function(err, additionalJSON) {
+            //console.log("THE opts")
+            //console.log(opts)
+            //console.log("additionalJSON")
+            //console.log(additionalJSON)
+            //console.log(typeof additionalJSON)
+            additionalJSON.forEach(function(item) {
+              opts.data.push(item)
+            })
+            //console.log("NEW opts")
+            //console.log(opts)
+            var csv = json2csv(opts);
+            fs.writeFile(program.output, csv, function (writeError) {
+              if (writeError) {
+                throw new Error('Cannot save to ' + program.output + ': ' + writeError);
+              }
 
-        debug(program.input + ' successfully converted to ' + program.output);
-      });
+              debug(program.input + ' successfully converted to ' + program.output);
+            })
+          })
+        } else {
+          //console.log("FILE DOES NOT EXIST")
+          var csv = json2csv(opts);
+          fs.writeFile(program.output, csv, function (writeError) {
+            if (writeError) {
+              throw new Error('Cannot save to ' + program.output + ': ' + writeError);
+            }
+
+            debug(program.input + ' successfully converted to ' + program.output);
+          })
+        }
+      })
+
+
     } else {
+      var csv = json2csv(opts);
       /*eslint-disable no-console */
       if (program.pretty) {
         console.log(logPretty(csv));
