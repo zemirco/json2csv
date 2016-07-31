@@ -1,3 +1,8 @@
+## 3.6.2 / 2016-07-22
+
+  * Remove debugger, see [#132](https://github.com/zemirco/json2csv/pull/132)
+  * Fix changelog typo
+
 ## 3.6.1 / 2016-07-12
 
   * Fix auto-fields returning all available fields, even if not available on the first object, see #104
