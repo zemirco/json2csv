@@ -136,6 +136,13 @@ getFields(function (err, fields) {
         debug(program.input + ' successfully converted to ' + program.output);
       });
     } else {
+      // don't fail if piped to e.g. head
+      process.stdout.on('error', function (error) {
+        if (error.code === 'EPIPE') {
+          process.exit();
+        }
+      })
+
       /*eslint-disable no-console */
       if (program.pretty) {
         console.log(logPretty(csv));
