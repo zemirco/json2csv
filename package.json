@@ -26,6 +26,7 @@
     "url": "https://github.com/zemirco/json2csv"
   },
   "scripts": {
+    "build": "webpack",
     "test": "eslint . && node test | tap-spec",
     "test-coverage": "istanbul cover test/index.js --report lcovonly | tap-spec"
   },
@@ -44,6 +45,7 @@
     "eslint": "^2.12.0",
     "istanbul": "^0.4.3",
     "tap-spec": "^4.1.0",
-    "tape": "^4.0.0"
+    "tape": "^4.0.0",
+    "webpack": "^1.13.1"
   }
 }
