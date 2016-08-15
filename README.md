@@ -399,7 +399,7 @@ If it's not possible to work with node modules, `json2csv` can be declared as a 
 
 ### Building
 
-When developing, it's necessary to run `webpack` to prepare the built script. This can be done easily with `npm build`.
+When developing, it's necessary to run `webpack` to prepare the built script. This can be done easily with `npm run build`.
 
 If `webpack` is not already available from the command line, use `npm install -g webpack`.
 

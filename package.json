@@ -27,6 +27,7 @@
   },
   "scripts": {
     "build": "webpack",
+    "prepublish": "npm run build",
     "test": "eslint . && node test | tap-spec",
     "test-coverage": "istanbul cover test/index.js --report lcovonly | tap-spec"
   },
