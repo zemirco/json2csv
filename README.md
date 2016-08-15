@@ -17,7 +17,7 @@ Install
 $ npm install json2csv --save
 ```
 
-Include the module and run or [use it from the Command Line](https://github.com/zemirco/json2csv#command-line-interface).
+Include the module and run or [use it from the Command Line](https://github.com/zemirco/json2csv#command-line-interface). It's also possible to include `json2csv` as a global using an HTML script tag, though it's normally recommended that modules are used.
 
 ```javascript
 var json2csv = require('json2csv');
@@ -385,6 +385,23 @@ $ json2csv -i test.json -f name,version > test.csv
 # Append additional rows
 $ json2csv -i test.json -f name,version --no-header >> test.csv
 ```
+
+## Include using a script tag (not recommended)
+
+If it's not possible to work with node modules, `json2csv` can be declared as a global by requesting `dist/json2csv.js` via an HTML script tag:
+
+```
+<script src="node_modules/json2csv/dist/json2csv.js"></script>
+<script>
+  console.log(typeof json2csv === 'function'); // true
+</script>
+```
+
+### Building
+
+When developing, it's necessary to run `webpack` to prepare the built script. This can be done easily with `npm run build`.
+
+If `webpack` is not already available from the command line, use `npm install -g webpack`.
 
 ## Testing
 
