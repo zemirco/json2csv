@@ -1,0 +1,229 @@
+{
+  "toc": {
+    "sections": [
+      {
+        "title": "json2csv",
+        "source": "README.md",
+        "expand": true,
+        "url": "index.html",
+        "slug": "index",
+        "headings": [
+          {
+            "title": "How to use",
+            "depth": 2,
+            "id": "how-to-use"
+          },
+          {
+            "title": "Features",
+            "depth": 2,
+            "id": "features"
+          },
+          {
+            "title": "Use as a module",
+            "depth": 2,
+            "id": "use-as-a-module",
+            "headings": [
+              {
+                "title": "Available Options",
+                "depth": 3,
+                "id": "available-options"
+              },
+              {
+                "title": "Example 1",
+                "depth": 3,
+                "id": "example-1"
+              },
+              {
+                "title": "Example 2",
+                "depth": 3,
+                "id": "example-2"
+              },
+              {
+                "title": "Example 3",
+                "depth": 3,
+                "id": "example-3"
+              },
+              {
+                "title": "Example 4",
+                "depth": 3,
+                "id": "example-4"
+              },
+              {
+                "title": "Example 5",
+                "depth": 3,
+                "id": "example-5"
+              },
+              {
+                "title": "Example 6",
+                "depth": 3,
+                "id": "example-6"
+              }
+            ]
+          },
+          {
+            "title": "Command Line Interface",
+            "depth": 2,
+            "id": "command-line-interface",
+            "headings": [
+              {
+                "title": "CLI examples",
+                "depth": 3,
+                "id": "cli-examples"
+              }
+            ]
+          },
+          {
+            "title": "Include using a script tag (not recommended)",
+            "depth": 2,
+            "id": "include-using-a-script-tag-(not-recommended)",
+            "headings": [
+              {
+                "title": "Building",
+                "depth": 3,
+                "id": "building"
+              }
+            ]
+          },
+          {
+            "title": "Testing",
+            "depth": 2,
+            "id": "testing"
+          },
+          {
+            "title": "Contributors",
+            "depth": 2,
+            "id": "contributors"
+          },
+          {
+            "title": "But I want streams!",
+            "depth": 2,
+            "id": "but-i-want-streams!"
+          },
+          {
+            "title": "Similar Projects",
+            "depth": 2,
+            "id": "similar-projects"
+          },
+          {
+            "title": "License",
+            "depth": 2,
+            "id": "license"
+          }
+        ]
+      }
+    ]
+  },
+  "index": {
+    "index.html": {
+      "source": "README.md",
+      "title": "json2csv",
+      "slug": "index",
+      "headings": [
+        {
+          "title": "How to use",
+          "depth": 2,
+          "id": "how-to-use"
+        },
+        {
+          "title": "Features",
+          "depth": 2,
+          "id": "features"
+        },
+        {
+          "title": "Use as a module",
+          "depth": 2,
+          "id": "use-as-a-module",
+          "headings": [
+            {
+              "title": "Available Options",
+              "depth": 3,
+              "id": "available-options"
+            },
+            {
+              "title": "Example 1",
+              "depth": 3,
+              "id": "example-1"
+            },
+            {
+              "title": "Example 2",
+              "depth": 3,
+              "id": "example-2"
+            },
+            {
+              "title": "Example 3",
+              "depth": 3,
+              "id": "example-3"
+            },
+            {
+              "title": "Example 4",
+              "depth": 3,
+              "id": "example-4"
+            },
+            {
+              "title": "Example 5",
+              "depth": 3,
+              "id": "example-5"
+            },
+            {
+              "title": "Example 6",
+              "depth": 3,
+              "id": "example-6"
+            }
+          ]
+        },
+        {
+          "title": "Command Line Interface",
+          "depth": 2,
+          "id": "command-line-interface",
+          "headings": [
+            {
+              "title": "CLI examples",
+              "depth": 3,
+              "id": "cli-examples"
+            }
+          ]
+        },
+        {
+          "title": "Include using a script tag (not recommended)",
+          "depth": 2,
+          "id": "include-using-a-script-tag-(not-recommended)",
+          "headings": [
+            {
+              "title": "Building",
+              "depth": 3,
+              "id": "building"
+            }
+          ]
+        },
+        {
+          "title": "Testing",
+          "depth": 2,
+          "id": "testing"
+        },
+        {
+          "title": "Contributors",
+          "depth": 2,
+          "id": "contributors"
+        },
+        {
+          "title": "But I want streams!",
+          "depth": 2,
+          "id": "but-i-want-streams!"
+        },
+        {
+          "title": "Similar Projects",
+          "depth": 2,
+          "id": "similar-projects"
+        },
+        {
+          "title": "License",
+          "depth": 2,
+          "id": "license"
+        }
+      ]
+    }
+  },
+  "sources": {
+    "README.md": "index.html"
+  }
+}
