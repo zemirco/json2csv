@@ -6,3 +6,4 @@ server.*
 published
 *.log
 dist
+_docpress

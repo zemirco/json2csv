@@ -436,7 +436,7 @@ stream containing `json` data into an outgoing `csv` stream.
 
 ## License
 
-See [LICENSE.md](LICENSE.md).
+See [LICENSE.md].
 
 [npm-badge]: https://badge.fury.io/js/json2csv.svg
 [npm-badge-url]: http://badge.fury.io/js/json2csv
@@ -446,5 +446,6 @@ See [LICENSE.md](LICENSE.md).
 [coveralls-badge-url]: https://coveralls.io/r/zemirco/json2csv?branch=master
 [dev-badge]: https://david-dm.org/zemirco/json2csv.svg
 [dev-badge-url]: https://david-dm.org/zemirco/json2csv
-[CHANGELOG]: CHANGELOG.md
+[CHANGELOG]: https://github.com/zemirco/json2csv/blob/master/CHANGELOG.md
+[LICENSE.md]: https://github.com/zemirco/json2csv/blob/master/LICENSE.md
 [flat]: https://www.npmjs.com/package/flat
