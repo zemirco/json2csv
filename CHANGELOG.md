@@ -1,3 +1,9 @@
+## 3.6.3 / 2016-08-17
+
+  * Fix crashing on EPIPE error [#134](https://github.com/zemirco/json2csv/pull/134)
+  * Add UMD build for browser usage [#136](https://github.com/zemirco/json2csv/pull/136)
+  * Add docs during prepublish
+
 ## 3.6.2 / 2016-07-22
 
   * Remove debugger, see [#132](https://github.com/zemirco/json2csv/pull/132)

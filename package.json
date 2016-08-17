@@ -1,7 +1,7 @@
 {
   "name": "json2csv",
   "preferGlobal": "true",
-  "version": "3.6.2",
+  "version": "3.6.3",
   "description": "Convert JSON to CSV",
   "keywords": [
     "json",
