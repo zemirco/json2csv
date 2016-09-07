@@ -82,10 +82,12 @@ try {
     // Supports label -> derived value
     {
       label: 'some label', // Supports duplicate labels (required, else your column will be labeled [function])
-      value: function(row) {
+      value: function(row, field, data) {
+        // field = { label, default }
+        // data = full data object
         return row.path1 + row.path2;
       },
-      default: 'NULL' // default if value fn returns falsy
+      default: 'NULL' // default if value function returns null or undefined
     },
 
     // Support pathname -> pathvalue
