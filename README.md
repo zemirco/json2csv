@@ -64,6 +64,7 @@ try {
   - `eol` - String, it gets added to each row of data. Defaults to `` if not specified.
   - `newLine` - String, overrides the default OS line ending (i.e. `\n` on Unix and `\r\n` on Windows).
   - `flatten` - Boolean, flattens nested JSON using [flat]. Defaults to `false`.
+  - `unwindPath` - String, creates multiple rows from a single JSON document similar to MongoDB's $unwind
   - `excelStrings` - Boolean, converts string data into normalized Excel style data.
   - `includeEmptyRows` - Boolean, includes empty rows. Defaults to `false`.
 - `callback` - `function (error, csvString) {}`. If provided, will callback asynchronously. Only supported for compatibility reasons.
@@ -264,7 +265,42 @@ car.make, car.model, price, color
 "Porsche", "9PA AF1", 60000, "green"
 ```
 
+### Example 7
 
+You can unwind arrays similar to MongoDB's $unwind operation using the `unwindPath` option.
+
+```javascript
+var json2csv = require('json2csv');
+var fs = require('fs');
+var fields = ['carModel', 'price', 'colors'];
+var myCars = [
+               { "carModel": "Audi",      "price": 0,      "colors": ["blue","green","yellow"] },
+               { "carModel": "BMW",       "price": 15000,  "colors": ["red","blue"] },
+               { "carModel": "Mercedes",  "price": 20000,  "colors": "yellow" },
+               { "carModel": "Porsche",   "price": 30000,  "colors": ["green","teal","aqua"] }
+             ];
+var csv = json2csv({ data: myCars, fields: fields, unwindPath: 'colors' });
+
+fs.writeFile('file.csv', csv, function(err) {
+  if (err) throw err;
+  console.log('file saved');
+});
+```
+
+The content of the "file.csv" should be
+
+```
+"carModel","price","colors"
+"Audi",0,"blue"
+"Audi",0,"green"
+"Audi",0,"yellow"
+"BMW",15000,"red"
+"BMW",15000,"blue"
+"Mercedes",20000,"yellow"
+"Porsche",30000,"green"
+"Porsche",30000,"teal"
+"Porsche",30000,"aqua"
+```
 
 ## Command Line Interface
 

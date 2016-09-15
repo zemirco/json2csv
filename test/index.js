@@ -13,6 +13,7 @@ var jsonDefaultValueEmpty = require('./fixtures/json/defaultValueEmpty');
 var jsonTrailingBackslash = require('./fixtures/json/trailingBackslash');
 var jsonOverriddenDefaultValue = require('./fixtures/json/overridenDefaultValue');
 var jsonEmptyRow = require('./fixtures/json/emptyRow');
+var jsonUnwind = require('./fixtures/json/unwind');
 var csvFixtures = {};
 
 async.parallel(loadFixtures(csvFixtures), function (err) {
@@ -366,12 +367,12 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
         label: 'NEST1',
         value: 'bird.nest1'
       },
-      'bird.nest2',
-      {
-        label: 'nonexistent',
-        value: 'fake.path',
-        default: 'col specific default value'
-      }
+        'bird.nest2',
+        {
+          label: 'nonexistent',
+          value: 'fake.path',
+          default: 'col specific default value'
+        }
       ],
       defaultValue: 'NULL'
     }, function (error, csv) {
@@ -589,5 +590,17 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
       t.equal(csv, '"carModel","price","color"');
       t.end();
     });
+  });
+
+  test('should unwind an array into multiple rows', function(t) {
+    json2csv({
+      data: jsonUnwind,
+      fields: ['carModel', 'price', 'colors'],
+      unwindPath: 'colors'
+    }, function(error, csv) {
+      t.error(error);
+      t.equal(csv, csvFixtures.unwind);
+      t.end()
+    })
   });
 });

@@ -27,6 +27,7 @@ var fixtures = [
   'emptyRow',
   'emptyRowNotIncluded',
   'emptyRowDefaultValues',
+  'unwind'
 ];
 
 /*eslint-disable no-console*/
