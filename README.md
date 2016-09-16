@@ -274,11 +274,24 @@ var json2csv = require('json2csv');
 var fs = require('fs');
 var fields = ['carModel', 'price', 'colors'];
 var myCars = [
-               { "carModel": "Audi",      "price": 0,      "colors": ["blue","green","yellow"] },
-               { "carModel": "BMW",       "price": 15000,  "colors": ["red","blue"] },
-               { "carModel": "Mercedes",  "price": 20000,  "colors": "yellow" },
-               { "carModel": "Porsche",   "price": 30000,  "colors": ["green","teal","aqua"] }
-             ];
+  {
+    "carModel": "Audi",
+    "price": 0,
+    "colors": ["blue","green","yellow"]
+  }, {
+    "carModel": "BMW",
+    "price": 15000,
+    "colors": ["red","blue"]
+  }, {
+    "carModel": "Mercedes",
+    "price": 20000,
+    "colors": "yellow"
+  }, {
+    "carModel": "Porsche",
+    "price": 30000,
+    "colors": ["green","teal","aqua"]
+  }
+];
 var csv = json2csv({ data: myCars, fields: fields, unwindPath: 'colors' });
 
 fs.writeFile('file.csv', csv, function(err) {
