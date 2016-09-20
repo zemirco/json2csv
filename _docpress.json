@@ -57,6 +57,11 @@
                 "title": "Example 6",
                 "depth": 3,
                 "id": "example-6"
+              },
+              {
+                "title": "Example 7",
+                "depth": 3,
+                "id": "example-7"
               }
             ]
           },
@@ -168,6 +173,11 @@
               "title": "Example 6",
               "depth": 3,
               "id": "example-6"
+            },
+            {
+              "title": "Example 7",
+              "depth": 3,
+              "id": "example-7"
             }
           ]
         },

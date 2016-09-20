@@ -70,6 +70,7 @@ Must be the same length as <code>fields</code> array. (Optional. Maintained for 
 <li><code>eol</code> - String, it gets added to each row of data. Defaults to `` if not specified.</li>
 <li><code>newLine</code> - String, overrides the default OS line ending (i.e. <code>\n</code> on Unix and <code>\r\n</code> on Windows).</li>
 <li><code>flatten</code> - Boolean, flattens nested JSON using <a href="https://www.npmjs.com/package/flat">flat</a>. Defaults to <code>false</code>.</li>
+<li><code>unwindPath</code> - String, creates multiple rows from a single JSON document similar to MongoDB&apos;s $unwind</li>
 <li><code>excelStrings</code> - Boolean, converts string data into normalized Excel style data.</li>
 <li><code>includeEmptyRows</code> - Boolean, includes empty rows. Defaults to <code>false</code>.</li>
 </ul>
@@ -89,10 +90,12 @@ Must be the same length as <code>fields</code> array. (Optional. Maintained for 
     <span class="pl-c">// Supports label -&gt; derived value</span>
     {
       label: <span class="pl-s">&apos;some label&apos;</span>, <span class="pl-c">// Supports duplicate labels (required, else your column will be labeled [function])</span>
-      value: <span class="hljs-function"><span class="pl-k">function</span>(<span class="hljs-params">row</span>) </span>{
+      value: <span class="hljs-function"><span class="pl-k">function</span>(<span class="hljs-params">row, field, data</span>) </span>{
+        <span class="pl-c">// field = { label, default }</span>
+        <span class="pl-c">// data = full data object</span>
         <span class="pl-k">return</span> row.path1 + row.path2;
       },
-      <span class="pl-k">default</span>: <span class="pl-s">&apos;NULL&apos;</span> <span class="pl-c">// default if value fn returns falsy</span>
+      <span class="pl-k">default</span>: <span class="pl-s">&apos;NULL&apos;</span> <span class="pl-c">// default if value function returns null or undefined</span>
     },
 
     <span class="pl-c">// Support pathname -&gt; pathvalue</span>
@@ -228,6 +231,49 @@ fs.writeFile(<span class="pl-s">&apos;file.csv&apos;</span>, csv, <span class="h
 &quot;Audi&quot;, &quot;A3&quot;, 40000, &quot;blue&quot;
 &quot;BMW&quot;, &quot;F20&quot;, 35000, &quot;black&quot;
 &quot;Porsche&quot;, &quot;9PA AF1&quot;, 60000, &quot;green&quot;
+</code></pre>
+<h3 id="example-7">Example 7</h3>
+<p>You can unwind arrays similar to MongoDB&apos;s $unwind operation using the <code>unwindPath</code> option.</p>
+<pre><code class="lang-javascript"><span class="pl-k">var</span> json2csv = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>);
+<span class="pl-k">var</span> fs = <span class="pl-c1">require</span>(<span class="pl-s">&apos;fs&apos;</span>);
+<span class="pl-k">var</span> fields = [<span class="pl-s">&apos;carModel&apos;</span>, <span class="pl-s">&apos;price&apos;</span>, <span class="pl-s">&apos;colors&apos;</span>];
+<span class="pl-k">var</span> myCars = [
+  {
+    <span class="pl-s">&quot;carModel&quot;</span>: <span class="pl-s">&quot;Audi&quot;</span>,
+    <span class="pl-s">&quot;price&quot;</span>: <span class="hljs-number">0</span>,
+    <span class="pl-s">&quot;colors&quot;</span>: [<span class="pl-s">&quot;blue&quot;</span>,<span class="pl-s">&quot;green&quot;</span>,<span class="pl-s">&quot;yellow&quot;</span>]
+  }, {
+    <span class="pl-s">&quot;carModel&quot;</span>: <span class="pl-s">&quot;BMW&quot;</span>,
+    <span class="pl-s">&quot;price&quot;</span>: <span class="hljs-number">15000</span>,
+    <span class="pl-s">&quot;colors&quot;</span>: [<span class="pl-s">&quot;red&quot;</span>,<span class="pl-s">&quot;blue&quot;</span>]
+  }, {
+    <span class="pl-s">&quot;carModel&quot;</span>: <span class="pl-s">&quot;Mercedes&quot;</span>,
+    <span class="pl-s">&quot;price&quot;</span>: <span class="hljs-number">20000</span>,
+    <span class="pl-s">&quot;colors&quot;</span>: <span class="pl-s">&quot;yellow&quot;</span>
+  }, {
+    <span class="pl-s">&quot;carModel&quot;</span>: <span class="pl-s">&quot;Porsche&quot;</span>,
+    <span class="pl-s">&quot;price&quot;</span>: <span class="hljs-number">30000</span>,
+    <span class="pl-s">&quot;colors&quot;</span>: [<span class="pl-s">&quot;green&quot;</span>,<span class="pl-s">&quot;teal&quot;</span>,<span class="pl-s">&quot;aqua&quot;</span>]
+  }
+];
+<span class="pl-k">var</span> csv = json2csv({ data: myCars, fields: fields, unwindPath: <span class="pl-s">&apos;colors&apos;</span> });
+
+fs.writeFile(<span class="pl-s">&apos;file.csv&apos;</span>, csv, <span class="hljs-function"><span class="pl-k">function</span>(<span class="hljs-params">err</span>) </span>{
+  <span class="pl-k">if</span> (err) <span class="pl-k">throw</span> err;
+  <span class="pl-c1">console</span>.log(<span class="pl-s">&apos;file saved&apos;</span>);
+});
+</code></pre>
+<p>The content of the &quot;file.csv&quot; should be</p>
+<pre><code>&quot;carModel&quot;,&quot;price&quot;,&quot;colors&quot;
+&quot;Audi&quot;,0,&quot;blue&quot;
+&quot;Audi&quot;,0,&quot;green&quot;
+&quot;Audi&quot;,0,&quot;yellow&quot;
+&quot;BMW&quot;,15000,&quot;red&quot;
+&quot;BMW&quot;,15000,&quot;blue&quot;
+&quot;Mercedes&quot;,20000,&quot;yellow&quot;
+&quot;Porsche&quot;,30000,&quot;green&quot;
+&quot;Porsche&quot;,30000,&quot;teal&quot;
+&quot;Porsche&quot;,30000,&quot;aqua&quot;
 </code></pre>
 <h2 id="command-line-interface">Command Line Interface</h2>
 <p><code>json2csv</code> can also be called from the command line if installed with <code>-g</code>.</p>
@@ -367,6 +413,8 @@ stream containing <code>json</code> data into an outgoing <code>csv</code> strea
                 <li class="menu-item -level-2"><a href="#example-5" class="link title link-example-5">Example 5</a>
                 </li>
                 <li class="menu-item -level-2"><a href="#example-6" class="link title link-example-6">Example 6</a>
+                </li>
+                <li class="menu-item -level-2"><a href="#example-7" class="link title link-example-7">Example 7</a>
                 </li>
               </ul>
             </li>
