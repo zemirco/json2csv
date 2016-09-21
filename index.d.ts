@@ -17,6 +17,7 @@ declare namespace json2csv {
     eol?: string;
     newLine?: string;
     flatten?: boolean;
+    unwindPath?: string;
     excelStrings?: boolean;
     includeEmptyRows?: boolean;
   }
