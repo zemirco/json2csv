@@ -122,6 +122,7 @@
     "index.html": {
       "source": "README.md",
       "title": "json2csv",
+      "pageTitle": "json2csv",
       "slug": "index",
       "headings": [
         {

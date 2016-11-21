@@ -2,14 +2,68 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="assets/style.css?t=a44c9e9d">
-    <script src="assets/script.js?t=820b7ffa"></script>
+    <link rel="stylesheet" href="assets/style.css?t=615badd5">
+    <script src="assets/script.js?t=42463e55"></script>
     <title>json2csv</title>
     <meta name="viewport" content="width=device-width">
   </head>
   <body class="-menu-visible">
     <div class="doc-layout">
       <div class="toggle menu-toggle js-menu-toggle"></div>
+      <div class="menu toc-menu">
+        <li class="menu-item -level-0 -parent">
+          <ul class="submenu">
+            <li class="menu-item -level-1"><a class="link title -active link-index" href="index.html">json2csv</a>
+            </li>
+            <li class="menu-item -level-1"><a class="link title link-how-to-use" href="#how-to-use">How to use</a>
+            </li>
+            <li class="menu-item -level-1"><a class="link title link-features" href="#features">Features</a>
+            </li>
+            <li class="menu-item -level-1 -parent"><a class="link title link-use-as-a-module" href="#use-as-a-module">Use as a module</a>
+              <ul class="submenu">
+                <li class="menu-item -level-2"><a class="link title link-available-options" href="#available-options">Available Options</a>
+                </li>
+                <li class="menu-item -level-2"><a class="link title link-example-1" href="#example-1">Example 1</a>
+                </li>
+                <li class="menu-item -level-2"><a class="link title link-example-2" href="#example-2">Example 2</a>
+                </li>
+                <li class="menu-item -level-2"><a class="link title link-example-3" href="#example-3">Example 3</a>
+                </li>
+                <li class="menu-item -level-2"><a class="link title link-example-4" href="#example-4">Example 4</a>
+                </li>
+                <li class="menu-item -level-2"><a class="link title link-example-5" href="#example-5">Example 5</a>
+                </li>
+                <li class="menu-item -level-2"><a class="link title link-example-6" href="#example-6">Example 6</a>
+                </li>
+                <li class="menu-item -level-2"><a class="link title link-example-7" href="#example-7">Example 7</a>
+                </li>
+              </ul>
+            </li>
+            <li class="menu-item -level-1 -parent"><a class="link title link-command-line-interface" href="#command-line-interface">Command Line Interface</a>
+              <ul class="submenu">
+                <li class="menu-item -level-2"><a class="link title link-cli-examples" href="#cli-examples">CLI examples</a>
+                </li>
+              </ul>
+            </li>
+            <li class="menu-item -level-1 -parent"><a class="link title link-include-using-a-script-tag-(not-recommended)" href="#include-using-a-script-tag-(not-recommended)">Include using a script tag (not recommended)</a>
+              <ul class="submenu">
+                <li class="menu-item -level-2"><a class="link title link-building" href="#building">Building</a>
+                </li>
+              </ul>
+            </li>
+            <li class="menu-item -level-1"><a class="link title link-testing" href="#testing">Testing</a>
+            </li>
+            <li class="menu-item -level-1"><a class="link title link-contributors" href="#contributors">Contributors</a>
+            </li>
+            <li class="menu-item -level-1"><a class="link title link-but-i-want-streams!" href="#but-i-want-streams!">But I want streams!</a>
+            </li>
+            <li class="menu-item -level-1"><a class="link title link-similar-projects" href="#similar-projects">Similar Projects</a>
+            </li>
+            <li class="menu-item -level-1"><a class="link title link-license" href="#license">License</a>
+            </li>
+          </ul>
+        </li>
+      </div>
       <div class="body page-index">
         <div class="header-nav">
           <div class="right">
@@ -31,7 +85,7 @@
 <span class="pl-k">var</span> fields = [<span class="pl-s">&apos;field1&apos;</span>, <span class="pl-s">&apos;field2&apos;</span>, <span class="pl-s">&apos;field3&apos;</span>];
 
 <span class="pl-k">try</span> {
-  <span class="pl-k">var</span> result = json2csv({ data: myData, fields: fields });
+  <span class="pl-k">var</span> result = json2csv({ <span class="hljs-attr">data</span>: myData, <span class="hljs-attr">fields</span>: fields });
   <span class="pl-c1">console</span>.log(result);
 } <span class="pl-k">catch</span> (err) {
   <span class="pl-c">// Errors are thrown for bad options, or if the data is empty and no fields are provided.</span>
@@ -79,23 +133,23 @@ Must be the same length as <code>fields</code> array. (Optional. Maintained for 
 </ul>
 <h4 id="example-fields-option">Example <code>fields</code> option</h4>
 <pre><code class="lang-javascript">{
-  fields: [
+  <span class="hljs-attr">fields</span>: [
     <span class="pl-c">// Supports label -&gt; simple path</span>
     {
-      label: <span class="pl-s">&apos;some label&apos;</span>, <span class="pl-c">// (optional, column will be labeled &apos;path.to.something&apos; if not defined)</span>
+      <span class="hljs-attr">label</span>: <span class="pl-s">&apos;some label&apos;</span>, <span class="pl-c">// (optional, column will be labeled &apos;path.to.something&apos; if not defined)</span>
       value: <span class="pl-s">&apos;path.to.something&apos;</span>, <span class="pl-c">// data.path.to.something</span>
       <span class="pl-k">default</span>: <span class="pl-s">&apos;NULL&apos;</span> <span class="pl-c">// default if value is not found (optional, overrides `defaultValue` for column)</span>
     },
 
     <span class="pl-c">// Supports label -&gt; derived value</span>
     {
-      label: <span class="pl-s">&apos;some label&apos;</span>, <span class="pl-c">// Supports duplicate labels (required, else your column will be labeled [function])</span>
+      <span class="hljs-attr">label</span>: <span class="pl-s">&apos;some label&apos;</span>, <span class="pl-c">// Supports duplicate labels (required, else your column will be labeled [function])</span>
       value: <span class="hljs-function"><span class="pl-k">function</span>(<span class="hljs-params">row, field, data</span>) </span>{
         <span class="pl-c">// field = { label, default }</span>
         <span class="pl-c">// data = full data object</span>
         <span class="pl-k">return</span> row.path1 + row.path2;
       },
-      <span class="pl-k">default</span>: <span class="pl-s">&apos;NULL&apos;</span> <span class="pl-c">// default if value function returns null or undefined</span>
+      <span class="hljs-attr">default</span>: <span class="pl-s">&apos;NULL&apos;</span> <span class="pl-c">// default if value function returns null or undefined</span>
     },
 
     <span class="pl-c">// Support pathname -&gt; pathvalue</span>
@@ -123,7 +177,7 @@ Must be the same length as <code>fields</code> array. (Optional. Maintained for 
     <span class="pl-s">&quot;color&quot;</span>: <span class="pl-s">&quot;green&quot;</span>
   }
 ];
-<span class="pl-k">var</span> csv = json2csv({ data: myCars, fields: fields });
+<span class="pl-k">var</span> csv = json2csv({ <span class="hljs-attr">data</span>: myCars, <span class="hljs-attr">fields</span>: fields });
 
 fs.writeFile(<span class="pl-s">&apos;file.csv&apos;</span>, csv, <span class="hljs-function"><span class="pl-k">function</span>(<span class="hljs-params">err</span>) </span>{
   <span class="pl-k">if</span> (err) <span class="pl-k">throw</span> err;
@@ -142,7 +196,7 @@ Note: this example uses the optional callback format.</p>
 <pre><code class="lang-javascript"><span class="pl-k">var</span> json2csv = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>);
 <span class="pl-k">var</span> fields = [<span class="pl-s">&apos;car&apos;</span>, <span class="pl-s">&apos;color&apos;</span>];
 
-json2csv({ data: myCars, fields: fields }, <span class="hljs-function"><span class="pl-k">function</span>(<span class="hljs-params">err, csv</span>) </span>{
+json2csv({ <span class="hljs-attr">data</span>: myCars, <span class="hljs-attr">fields</span>: fields }, <span class="hljs-function"><span class="pl-k">function</span>(<span class="hljs-params">err, csv</span>) </span>{
   <span class="pl-k">if</span> (err) <span class="pl-c1">console</span>.log(err);
   <span class="pl-c1">console</span>.log(csv);
 });
@@ -157,7 +211,7 @@ json2csv({ data: myCars, fields: fields }, <span class="hljs-function"><span cla
 <p>Use a custom delimiter to create tsv files. Add it as the value of the del property on the parameters:</p>
 <pre><code class="lang-javascript"><span class="pl-k">var</span> json2csv = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>);
 <span class="pl-k">var</span> fields = [<span class="pl-s">&apos;car&apos;</span>, <span class="pl-s">&apos;price&apos;</span>, <span class="pl-s">&apos;color&apos;</span>];
-<span class="pl-k">var</span> tsv = json2csv({ data: myCars, fields: fields, del: <span class="pl-s">&apos;\t&apos;</span> });
+<span class="pl-k">var</span> tsv = json2csv({ <span class="hljs-attr">data</span>: myCars, <span class="hljs-attr">fields</span>: fields, <span class="hljs-attr">del</span>: <span class="pl-s">&apos;\t&apos;</span> });
 
 <span class="pl-c1">console</span>.log(tsv);
 </code></pre>
@@ -174,7 +228,7 @@ json2csv({ data: myCars, fields: fields }, <span class="hljs-function"><span cla
 <pre><code class="lang-javascript"><span class="pl-k">var</span> json2csv = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>);
 <span class="pl-k">var</span> fields = [<span class="pl-s">&apos;car&apos;</span>, <span class="pl-s">&apos;price&apos;</span>];
 <span class="pl-k">var</span> fieldNames = [<span class="pl-s">&apos;Car Name&apos;</span>, <span class="pl-s">&apos;Price USD&apos;</span>];
-<span class="pl-k">var</span> csv = json2csv({ data: myCars, fields: fields, fieldNames: fieldNames });
+<span class="pl-k">var</span> csv = json2csv({ <span class="hljs-attr">data</span>: myCars, <span class="hljs-attr">fields</span>: fields, <span class="hljs-attr">fieldNames</span>: fieldNames });
 
 <span class="pl-c1">console</span>.log(csv);
 </code></pre>
@@ -184,10 +238,10 @@ json2csv({ data: myCars, fields: fields }, <span class="hljs-function"><span cla
 <span class="pl-k">var</span> fields = [<span class="pl-s">&apos;car&apos;</span>, <span class="pl-s">&apos;price&apos;</span>];
 <span class="pl-k">var</span> fieldNames = [<span class="pl-s">&apos;Car Name&apos;</span>, <span class="pl-s">&apos;Price USD&apos;</span>];
 <span class="pl-k">var</span> opts = {
-  data: myCars,
-  fields: fields,
-  fieldNames: fieldNames,
-  quotes: <span class="pl-s">&apos;&apos;</span>
+  <span class="hljs-attr">data</span>: myCars,
+  <span class="hljs-attr">fields</span>: fields,
+  <span class="hljs-attr">fieldNames</span>: fieldNames,
+  <span class="hljs-attr">quotes</span>: <span class="pl-s">&apos;&apos;</span>
 };
 <span class="pl-k">var</span> csv = json2csv(opts);
 
@@ -219,7 +273,7 @@ Porsche, 30000
     <span class="pl-s">&quot;color&quot;</span>: <span class="pl-s">&quot;green&quot;</span>
   }
 ];
-<span class="pl-k">var</span> csv = json2csv({ data: myCars, fields: fields });
+<span class="pl-k">var</span> csv = json2csv({ <span class="hljs-attr">data</span>: myCars, <span class="hljs-attr">fields</span>: fields });
 
 fs.writeFile(<span class="pl-s">&apos;file.csv&apos;</span>, csv, <span class="hljs-function"><span class="pl-k">function</span>(<span class="hljs-params">err</span>) </span>{
   <span class="pl-k">if</span> (err) <span class="pl-k">throw</span> err;
@@ -256,7 +310,7 @@ fs.writeFile(<span class="pl-s">&apos;file.csv&apos;</span>, csv, <span class="h
     <span class="pl-s">&quot;colors&quot;</span>: [<span class="pl-s">&quot;green&quot;</span>,<span class="pl-s">&quot;teal&quot;</span>,<span class="pl-s">&quot;aqua&quot;</span>]
   }
 ];
-<span class="pl-k">var</span> csv = json2csv({ data: myCars, fields: fields, unwindPath: <span class="pl-s">&apos;colors&apos;</span> });
+<span class="pl-k">var</span> csv = json2csv({ <span class="hljs-attr">data</span>: myCars, <span class="hljs-attr">fields</span>: fields, <span class="hljs-attr">unwindPath</span>: <span class="pl-s">&apos;colors&apos;</span> });
 
 fs.writeFile(<span class="pl-s">&apos;file.csv&apos;</span>, csv, <span class="hljs-function"><span class="pl-k">function</span>(<span class="hljs-params">err</span>) </span>{
   <span class="pl-k">if</span> (err) <span class="pl-k">throw</span> err;
@@ -388,60 +442,6 @@ stream containing <code>json</code> data into an outgoing <code>csv</code> strea
 <p>See <a href="https://github.com/zemirco/json2csv/blob/master/LICENSE.md">LICENSE.md</a>.</p>
 
         </div>
-      </div>
-      <div class="menu toc-menu">
-        <li class="menu-item -level-0 -parent">
-          <ul class="submenu">
-            <li class="menu-item -level-1"><a href="index.html" class="link title -active link-index">json2csv</a>
-            </li>
-            <li class="menu-item -level-1"><a href="#how-to-use" class="link title link-how-to-use">How to use</a>
-            </li>
-            <li class="menu-item -level-1"><a href="#features" class="link title link-features">Features</a>
-            </li>
-            <li class="menu-item -level-1 -parent"><a href="#use-as-a-module" class="link title link-use-as-a-module">Use as a module</a>
-              <ul class="submenu">
-                <li class="menu-item -level-2"><a href="#available-options" class="link title link-available-options">Available Options</a>
-                </li>
-                <li class="menu-item -level-2"><a href="#example-1" class="link title link-example-1">Example 1</a>
-                </li>
-                <li class="menu-item -level-2"><a href="#example-2" class="link title link-example-2">Example 2</a>
-                </li>
-                <li class="menu-item -level-2"><a href="#example-3" class="link title link-example-3">Example 3</a>
-                </li>
-                <li class="menu-item -level-2"><a href="#example-4" class="link title link-example-4">Example 4</a>
-                </li>
-                <li class="menu-item -level-2"><a href="#example-5" class="link title link-example-5">Example 5</a>
-                </li>
-                <li class="menu-item -level-2"><a href="#example-6" class="link title link-example-6">Example 6</a>
-                </li>
-                <li class="menu-item -level-2"><a href="#example-7" class="link title link-example-7">Example 7</a>
-                </li>
-              </ul>
-            </li>
-            <li class="menu-item -level-1 -parent"><a href="#command-line-interface" class="link title link-command-line-interface">Command Line Interface</a>
-              <ul class="submenu">
-                <li class="menu-item -level-2"><a href="#cli-examples" class="link title link-cli-examples">CLI examples</a>
-                </li>
-              </ul>
-            </li>
-            <li class="menu-item -level-1 -parent"><a href="#include-using-a-script-tag-(not-recommended)" class="link title link-include-using-a-script-tag-(not-recommended)">Include using a script tag (not recommended)</a>
-              <ul class="submenu">
-                <li class="menu-item -level-2"><a href="#building" class="link title link-building">Building</a>
-                </li>
-              </ul>
-            </li>
-            <li class="menu-item -level-1"><a href="#testing" class="link title link-testing">Testing</a>
-            </li>
-            <li class="menu-item -level-1"><a href="#contributors" class="link title link-contributors">Contributors</a>
-            </li>
-            <li class="menu-item -level-1"><a href="#but-i-want-streams!" class="link title link-but-i-want-streams!">But I want streams!</a>
-            </li>
-            <li class="menu-item -level-1"><a href="#similar-projects" class="link title link-similar-projects">Similar Projects</a>
-            </li>
-            <li class="menu-item -level-1"><a href="#license" class="link title link-license">License</a>
-            </li>
-          </ul>
-        </li>
       </div>
     </div>
   </body>
