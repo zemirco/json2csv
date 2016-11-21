@@ -89,7 +89,7 @@ function logPretty(csv) {
   });
 
   for (var i = 1; i < lines.length; i++) {
-    table.push(lines[i].split('","'));
+    table.push(lines[i].split(','));
   }
   return table.toString();
 }
@@ -127,6 +127,7 @@ getFields(function (err, fields) {
     }
 
     var csv = json2csv(opts);
+
     if (program.output) {
       fs.writeFile(program.output, csv, function (writeError) {
         if (writeError) {
