@@ -1,3 +1,18 @@
+# Change Log
+
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+<a name="3.7.3"></a>
+## [3.7.3](https://github.com/zemirco/json2csv/compare/v3.7.1...v3.7.3) (2016-12-08)
+
+
+### Bug Fixes
+
+* **jsdoc:** JSDoc Editting ([#155](https://github.com/zemirco/json2csv/issues/155)) ([76075d6](https://github.com/zemirco/json2csv/commit/76075d6))
+* **ts:** Fix type definition ([#154](https://github.com/zemirco/json2csv/issues/154)) ([fae53a1](https://github.com/zemirco/json2csv/commit/fae53a1))
+
+
+
 ## 3.6.3 / 2016-08-17
 
   * Fix crashing on EPIPE error [#134](https://github.com/zemirco/json2csv/pull/134)
