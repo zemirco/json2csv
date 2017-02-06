@@ -44,6 +44,19 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
     releasedZalgo = false;
   });
 
+  test('should work asynchronously and remove last delimiter |@|', function (t) {
+    json2csv({
+      data: [
+        { firstname: 'foo', lastname: 'bar', email: 'foo.bar@json2csv.com' },
+        { firstname: 'bar', lastname: 'foo', email: 'bar.foo@json2csv.com' }
+      ],
+      del: '|@|'
+    }, function (err, csv) {
+      t.equal(csv, csvFixtures.delimiter);
+      t.end();
+    });
+  });
+
   test('should error synchronously if fieldNames don\'t line up to fields', function (t) {
     var csv;
     try {

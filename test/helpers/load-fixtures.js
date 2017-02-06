@@ -4,6 +4,7 @@ var fs = require('fs');
 var path = require('path');
 var fixtures = [
   'default',
+  'delimiter',
   'withoutTitle',
   'withoutQuotes',
   'withNotExistField',
