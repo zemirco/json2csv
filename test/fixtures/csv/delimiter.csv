@@ -1,0 +1,3 @@
+"firstname"|@|"lastname"|@|"email"
+"foo"|@|"bar"|@|"foo.bar@json2csv.com"
+"bar"|@|"foo"|@|"bar.foo@json2csv.com"
