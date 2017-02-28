@@ -59,7 +59,7 @@ try {
   - `del` - String, delimiter of columns. Defaults to `,` if not specified.
   - `defaultValue` - String, default value to use when missing data. Defaults to `<empty>` if not specified. (Overridden by `fields[].default`)
   - `quotes` - String, quotes around cell values and column names. Defaults to `"` if not specified.
-  - `doubleQuotes` - String, the value to replace double quotes in strings. Defaults to 3x`quotes` (for example `"""`) if not specified.
+  - `doubleQuotes` - String, the value to replace double quotes in strings. Defaults to 2x`quotes` (for example `""`) if not specified.
   - `hasCSVColumnTitle` - Boolean, determines whether or not CSV file will contain a title column. Defaults to `true` if not specified.
   - `eol` - String, it gets added to each row of data. Defaults to `` if not specified.
   - `newLine` - String, overrides the default OS line ending (i.e. `\n` on Unix and `\r\n` on Windows).
