@@ -2,3 +2,4 @@ test
 CHANGELOG.md
 .travis.yml
 coverage
+.github/
