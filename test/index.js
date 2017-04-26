@@ -618,7 +618,7 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
     })
   });
 
-  test('should not preserve new lines in cells by default', function(t) {
+  test('should not preserve new lines in values by default', function(t) {
     json2csv({
       data: jsonNewLine,
       fields: ['a string'],
@@ -634,12 +634,12 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
     });
   });
 
-  test('should preserve new lines in cells when options.preserveNewLinesInCell is true', function(t) {
+  test('should preserve new lines in values when options.preserveNewLinesInValues is true', function(t) {
     json2csv({
       data: jsonNewLine,
       fields: ['a string'],
       newLine: '\r\n',
-      preserveNewLinesInCells: true,
+      preserveNewLinesInValues: true,
     }, function(error, csv) {
       t.error(error);
       t.equal(csv, [
