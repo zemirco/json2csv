@@ -46,6 +46,7 @@ try {
 - Supports optional custom quotation marks
 - Not create CSV column title by passing hasCSVColumnTitle: false, into params.
 - If field is not exist in object then the field value in CSV will be empty.
+- Preserve new lines in values. Should be used with \r\n line endings for full compatibility with Excel.
 
 ## Use as a module
 
@@ -67,6 +68,7 @@ try {
   - `unwindPath` - String, creates multiple rows from a single JSON document similar to MongoDB's $unwind
   - `excelStrings` - Boolean, converts string data into normalized Excel style data.
   - `includeEmptyRows` - Boolean, includes empty rows. Defaults to `false`.
+  - `preserveNewLinesInValues` - Boolean, preserve \r and \n in values. Defaults to `false`.
 - `callback` - `function (error, csvString) {}`. If provided, will callback asynchronously. Only supported for compatibility reasons.
 
 #### Example `fields` option

@@ -14,6 +14,7 @@ var jsonTrailingBackslash = require('./fixtures/json/trailingBackslash');
 var jsonOverriddenDefaultValue = require('./fixtures/json/overridenDefaultValue');
 var jsonEmptyRow = require('./fixtures/json/emptyRow');
 var jsonUnwind = require('./fixtures/json/unwind');
+var jsonNewLine = require('./fixtures/json/newLine');
 var csvFixtures = {};
 
 async.parallel(loadFixtures(csvFixtures), function (err) {
@@ -615,5 +616,38 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
       t.equal(csv, csvFixtures.unwind);
       t.end()
     })
+  });
+
+  test('should not preserve new lines in values by default', function(t) {
+    json2csv({
+      data: jsonNewLine,
+      fields: ['a string'],
+      newLine: '\r\n',
+    }, function(error, csv) {
+      t.error(error);
+      t.equal(csv, [
+        '"a string"',
+        '"with a \u2028description\\n and\\na new line"',
+        '"with a \u2029\u2028description and\\r\\nanother new line"'
+      ].join('\r\n'));
+      t.end();
+    });
+  });
+
+  test('should preserve new lines in values when options.preserveNewLinesInValues is true', function(t) {
+    json2csv({
+      data: jsonNewLine,
+      fields: ['a string'],
+      newLine: '\r\n',
+      preserveNewLinesInValues: true,
+    }, function(error, csv) {
+      t.error(error);
+      t.equal(csv, [
+        '"a string"',
+        '"with a \ndescription\\n and\na new line"',
+        '"with a \r\ndescription and\r\nanother new line"'
+      ].join('\r\n'));
+      t.end();
+    });
   });
 });
