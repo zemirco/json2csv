@@ -3,6 +3,7 @@ node_js:
   - "0.12"
   - "4"
   - "6"
+  - "8"
 script:
   - "npm run test-coverage"
 after_script:
