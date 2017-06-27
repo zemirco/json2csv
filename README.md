@@ -94,7 +94,7 @@ try {
     },
 
     // Support pathname -> pathvalue
-    'simplepath' // equivalent to {value:'simplepath'}
+    'simplepath', // equivalent to {value:'simplepath'}
     'path.to.value' // also equivalent to {label:'path.to.value', value:'path.to.value'}
   ]
 }
