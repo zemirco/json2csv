@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="3.8.0"></a>
+# [3.8.0](https://github.com/zemirco/json2csv/compare/v3.7.3...v3.8.0) (2017-07-03)
+
+
+### Bug Fixes
+
+* **docs:** Add a coma in the ReadMe example ([#181](https://github.com/zemirco/json2csv/issues/181)) ([abeb820](https://github.com/zemirco/json2csv/commit/abeb820))
+
+
+### Features
+
+* Preserve new lines in cells with option preserveNewLinesInCells ([#91](https://github.com/zemirco/json2csv/issues/91)) ([#171](https://github.com/zemirco/json2csv/issues/171)) ([187b701](https://github.com/zemirco/json2csv/commit/187b701))
+
+
+
 <a name="3.7.3"></a>
 ## [3.7.3](https://github.com/zemirco/json2csv/compare/v3.7.1...v3.7.3) (2016-12-08)
 
