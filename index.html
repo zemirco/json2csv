@@ -106,6 +106,7 @@
 <li>Supports optional custom quotation marks</li>
 <li>Not create CSV column title by passing hasCSVColumnTitle: false, into params.</li>
 <li>If field is not exist in object then the field value in CSV will be empty.</li>
+<li>Preserve new lines in values. Should be used with \r\n line endings for full compatibility with Excel.</li>
 </ul>
 <h2 id="use-as-a-module">Use as a module</h2>
 <h3 id="available-options">Available Options</h3>
@@ -119,7 +120,7 @@ Must be the same length as <code>fields</code> array. (Optional. Maintained for 
 <li><code>del</code> - String, delimiter of columns. Defaults to <code>,</code> if not specified.</li>
 <li><code>defaultValue</code> - String, default value to use when missing data. Defaults to <code>&lt;empty&gt;</code> if not specified. (Overridden by <code>fields[].default</code>)</li>
 <li><code>quotes</code> - String, quotes around cell values and column names. Defaults to <code>&quot;</code> if not specified.</li>
-<li><code>doubleQuotes</code> - String, the value to replace double quotes in strings. Defaults to 3x<code>quotes</code> (for example <code>&quot;&quot;&quot;</code>) if not specified.</li>
+<li><code>doubleQuotes</code> - String, the value to replace double quotes in strings. Defaults to 2x<code>quotes</code> (for example <code>&quot;&quot;</code>) if not specified.</li>
 <li><code>hasCSVColumnTitle</code> - Boolean, determines whether or not CSV file will contain a title column. Defaults to <code>true</code> if not specified.</li>
 <li><code>eol</code> - String, it gets added to each row of data. Defaults to `` if not specified.</li>
 <li><code>newLine</code> - String, overrides the default OS line ending (i.e. <code>\n</code> on Unix and <code>\r\n</code> on Windows).</li>
@@ -127,6 +128,7 @@ Must be the same length as <code>fields</code> array. (Optional. Maintained for 
 <li><code>unwindPath</code> - String, creates multiple rows from a single JSON document similar to MongoDB&apos;s $unwind</li>
 <li><code>excelStrings</code> - Boolean, converts string data into normalized Excel style data.</li>
 <li><code>includeEmptyRows</code> - Boolean, includes empty rows. Defaults to <code>false</code>.</li>
+<li><code>preserveNewLinesInValues</code> - Boolean, preserve \r and \n in values. Defaults to <code>false</code>.</li>
 </ul>
 </li>
 <li><code>callback</code> - <code>function (error, csvString) {}</code>. If provided, will callback asynchronously. Only supported for compatibility reasons.</li>
@@ -153,7 +155,7 @@ Must be the same length as <code>fields</code> array. (Optional. Maintained for 
     },
 
     <span class="pl-c">// Support pathname -&gt; pathvalue</span>
-    <span class="pl-s">&apos;simplepath&apos;</span> <span class="pl-c">// equivalent to {value:&apos;simplepath&apos;}</span>
+    <span class="pl-s">&apos;simplepath&apos;</span>, <span class="pl-c">// equivalent to {value:&apos;simplepath&apos;}</span>
     <span class="pl-s">&apos;path.to.value&apos;</span> <span class="pl-c">// also equivalent to {label:&apos;path.to.value&apos;, value:&apos;path.to.value&apos;}</span>
   ]
 }
