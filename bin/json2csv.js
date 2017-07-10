@@ -24,6 +24,7 @@ program
   .option('-q, --quote [value]', 'Specify an alternate quote value.')
   .option('-n, --no-header', 'Disable the column name header')
   .option('-F, --flatten', 'Flatten nested objects')
+  .option('-u, --unwindPath <paths>', 'Creates multiple rows from a single JSON document similar to MongoDB unwind.')
   .option('-L, --ldjson', 'Treat the input as Line-Delimited JSON.')
   .option('-p, --pretty', 'Use only when printing to console. Logs output in pretty tables.')
   .option('-a, --include-empty-rows', 'Includes empty rows in the resulting CSV output.')
@@ -124,6 +125,10 @@ getFields(function (err, fields) {
 
     if (program.newLine) {
       opts.newLine = program.newLine;
+    }
+
+    if (program.unwindPath) {
+      opts.unwindPath = program.fields.split(',');
     }
 
     var csv = json2csv(opts);

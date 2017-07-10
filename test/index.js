@@ -14,6 +14,7 @@ var jsonTrailingBackslash = require('./fixtures/json/trailingBackslash');
 var jsonOverriddenDefaultValue = require('./fixtures/json/overridenDefaultValue');
 var jsonEmptyRow = require('./fixtures/json/emptyRow');
 var jsonUnwind = require('./fixtures/json/unwind');
+var jsonUnwind2 = require('./fixtures/json/unwind2');
 var jsonNewLine = require('./fixtures/json/newLine');
 var csvFixtures = {};
 
@@ -409,7 +410,8 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
 
   test('should escape " when preceeded by \\', function (t){
     json2csv({
-      data: [{field: '\\"'}]
+      data: [{field: '\\"'}],
+      newLine: '\n'
     }, function (error, csv){
       t.error(error);
       t.equal(csv, '"field"\n"\\""');
@@ -614,6 +616,19 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
     }, function(error, csv) {
       t.error(error);
       t.equal(csv, csvFixtures.unwind);
+      t.end()
+    })
+  });
+
+
+  test('should unwind twice an array into multiple rows', function(t) {
+    json2csv({
+      data: jsonUnwind2,
+      fields: ['carModel', 'price', 'items.name', 'items.color', 'items.items.position', 'items.items.color'],
+      unwindPath: ['items', 'items.items']
+    }, function(error, csv) {
+      t.error(error);
+      t.equal(csv, csvFixtures.unwind2);
       t.end()
     })
   });
