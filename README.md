@@ -327,46 +327,45 @@ var fs = require('fs');
 var fields = ['carModel', 'price', 'items.name', 'items.color', 'items.items.position', 'items.items.color'];
 var myCars = [
   {
-      "carModel": "BMW",
-      "price": 15000,
-      "items": [
-          {
-              "name": "airbag",
-              "color": "white"
-          }, {
-              "name": "dashboard",
-              "color": "black"
-          }
-      ]
+    "carModel": "BMW",
+    "price": 15000,
+    "items": [
+      {
+        "name": "airbag",
+        "color": "white"
+      }, {
+        "name": "dashboard",
+        "color": "black"
+      }
+    ]
   }, {
-      "carModel": "Porsche",
-      "price": 30000,
-      "items": [
+    "carModel": "Porsche",
+    "price": 30000,
+    "items": [
+      {
+        "name": "airbag",
+        "items": [
           {
-              "name": "airbag",
-              "items": [
-                  {
-                      "position": "left",
-                      "color": "white"
-                  }, {
-                      "position": "right",
-                      "color": "gray"
-                  }
-              ]
-          },
-          {
-              "name": "dashboard",
-              "items": [
-                  {
-                      "position": "left",
-                      "color": "gray"
-                  }, {
-                      "position": "right",
-                      "color": "black"
-                  }
-              ]
+            "position": "left",
+            "color": "white"
+          }, {
+            "position": "right",
+            "color": "gray"
           }
-      ]
+        ]
+      }, {
+        "name": "dashboard",
+        "items": [
+          {
+            "position": "left",
+            "color": "gray"
+          }, {
+            "position": "right",
+            "color": "black"
+          }
+        ]
+      }
+    ]
   }
 ];
 var csv = json2csv({ data: myCars, fields: fields, unwindPath: ['items', 'items.items'] });
