@@ -65,7 +65,7 @@ try {
   - `eol` - String, it gets added to each row of data. Defaults to `` if not specified.
   - `newLine` - String, overrides the default OS line ending (i.e. `\n` on Unix and `\r\n` on Windows).
   - `flatten` - Boolean, flattens nested JSON using [flat]. Defaults to `false`.
-  - `unwindPath` - String, creates multiple rows from a single JSON document similar to MongoDB's $unwind
+  - `unwindPath` - Array of Strings, creates multiple rows from a single JSON document similar to MongoDB's $unwind
   - `excelStrings` - Boolean, converts string data into normalized Excel style data.
   - `includeEmptyRows` - Boolean, includes empty rows. Defaults to `false`.
   - `preserveNewLinesInValues` - Boolean, preserve \r and \n in values. Defaults to `false`.
@@ -317,6 +317,77 @@ The content of the "file.csv" should be
 "Porsche",30000,"aqua"
 ```
 
+### Example 8
+
+You can also unwind arrays multiple times or with nested objects.
+
+```javascript
+var json2csv = require('json2csv');
+var fs = require('fs');
+var fields = ['carModel', 'price', 'items.name', 'items.color', 'items.items.position', 'items.items.color'];
+var myCars = [
+  {
+    "carModel": "BMW",
+    "price": 15000,
+    "items": [
+      {
+        "name": "airbag",
+        "color": "white"
+      }, {
+        "name": "dashboard",
+        "color": "black"
+      }
+    ]
+  }, {
+    "carModel": "Porsche",
+    "price": 30000,
+    "items": [
+      {
+        "name": "airbag",
+        "items": [
+          {
+            "position": "left",
+            "color": "white"
+          }, {
+            "position": "right",
+            "color": "gray"
+          }
+        ]
+      }, {
+        "name": "dashboard",
+        "items": [
+          {
+            "position": "left",
+            "color": "gray"
+          }, {
+            "position": "right",
+            "color": "black"
+          }
+        ]
+      }
+    ]
+  }
+];
+var csv = json2csv({ data: myCars, fields: fields, unwindPath: ['items', 'items.items'] });
+
+fs.writeFile('file.csv', csv, function(err) {
+  if (err) throw err;
+  console.log('file saved');
+});
+```
+
+The content of the "file.csv" should be
+
+```
+"carModel","price","items.name","items.color","items.items.position","items.items.color"
+"BMW",15000,"airbag","white",,
+"BMW",15000,"dashboard","black",,
+"Porsche",30000,"airbag",,"left","white"
+"Porsche",30000,"airbag",,"right","gray"
+"Porsche",30000,"dashboard",,"left","gray"
+"Porsche",30000,"dashboard",,"right","black"
+```
+
 ## Command Line Interface
 
 `json2csv` can also be called from the command line if installed with `-g`.
@@ -338,6 +409,7 @@ Usage: json2csv [options]
     -q, --quote [value]          Specify an alternate quote value.
     -n, --no-header              Disable the column name header
     -F, --flatten                Flatten nested objects
+    -u, --unwindPath <paths>     Creates multiple rows from a single JSON document similar to MongoDB unwind.
     -L, --ldjson                 Treat the input as Line-Delimited JSON.
     -p, --pretty                 Use only when printing to console. Logs output in pretty tables.
     -a, --include-empty-rows     Includes empty rows in the resulting CSV output.

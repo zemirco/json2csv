@@ -7,3 +7,4 @@ published
 *.log
 dist
 _docpress
+.vscode
