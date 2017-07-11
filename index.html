@@ -37,6 +37,8 @@
                 </li>
                 <li class="menu-item -level-2"><a class="link title link-example-7" href="#example-7">Example 7</a>
                 </li>
+                <li class="menu-item -level-2"><a class="link title link-example-8" href="#example-8">Example 8</a>
+                </li>
               </ul>
             </li>
             <li class="menu-item -level-1 -parent"><a class="link title link-command-line-interface" href="#command-line-interface">Command Line Interface</a>
@@ -125,7 +127,7 @@ Must be the same length as <code>fields</code> array. (Optional. Maintained for 
 <li><code>eol</code> - String, it gets added to each row of data. Defaults to `` if not specified.</li>
 <li><code>newLine</code> - String, overrides the default OS line ending (i.e. <code>\n</code> on Unix and <code>\r\n</code> on Windows).</li>
 <li><code>flatten</code> - Boolean, flattens nested JSON using <a href="https://www.npmjs.com/package/flat">flat</a>. Defaults to <code>false</code>.</li>
-<li><code>unwindPath</code> - String, creates multiple rows from a single JSON document similar to MongoDB&apos;s $unwind</li>
+<li><code>unwindPath</code> - Array of Strings, creates multiple rows from a single JSON document similar to MongoDB&apos;s $unwind</li>
 <li><code>excelStrings</code> - Boolean, converts string data into normalized Excel style data.</li>
 <li><code>includeEmptyRows</code> - Boolean, includes empty rows. Defaults to <code>false</code>.</li>
 <li><code>preserveNewLinesInValues</code> - Boolean, preserve \r and \n in values. Defaults to <code>false</code>.</li>
@@ -331,6 +333,70 @@ fs.writeFile(<span class="pl-s">&apos;file.csv&apos;</span>, csv, <span class="h
 &quot;Porsche&quot;,30000,&quot;teal&quot;
 &quot;Porsche&quot;,30000,&quot;aqua&quot;
 </code></pre>
+<h3 id="example-8">Example 8</h3>
+<p>You can also unwind arrays multiple times or with nested objects.</p>
+<pre><code class="lang-javascript"><span class="pl-k">var</span> json2csv = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>);
+<span class="pl-k">var</span> fs = <span class="pl-c1">require</span>(<span class="pl-s">&apos;fs&apos;</span>);
+<span class="pl-k">var</span> fields = [<span class="pl-s">&apos;carModel&apos;</span>, <span class="pl-s">&apos;price&apos;</span>, <span class="pl-s">&apos;items.name&apos;</span>, <span class="pl-s">&apos;items.color&apos;</span>, <span class="pl-s">&apos;items.items.position&apos;</span>, <span class="pl-s">&apos;items.items.color&apos;</span>];
+<span class="pl-k">var</span> myCars = [
+  {
+    <span class="pl-s">&quot;carModel&quot;</span>: <span class="pl-s">&quot;BMW&quot;</span>,
+    <span class="pl-s">&quot;price&quot;</span>: <span class="hljs-number">15000</span>,
+    <span class="pl-s">&quot;items&quot;</span>: [
+      {
+        <span class="pl-s">&quot;name&quot;</span>: <span class="pl-s">&quot;airbag&quot;</span>,
+        <span class="pl-s">&quot;color&quot;</span>: <span class="pl-s">&quot;white&quot;</span>
+      }, {
+        <span class="pl-s">&quot;name&quot;</span>: <span class="pl-s">&quot;dashboard&quot;</span>,
+        <span class="pl-s">&quot;color&quot;</span>: <span class="pl-s">&quot;black&quot;</span>
+      }
+    ]
+  }, {
+    <span class="pl-s">&quot;carModel&quot;</span>: <span class="pl-s">&quot;Porsche&quot;</span>,
+    <span class="pl-s">&quot;price&quot;</span>: <span class="hljs-number">30000</span>,
+    <span class="pl-s">&quot;items&quot;</span>: [
+      {
+        <span class="pl-s">&quot;name&quot;</span>: <span class="pl-s">&quot;airbag&quot;</span>,
+        <span class="pl-s">&quot;items&quot;</span>: [
+          {
+            <span class="pl-s">&quot;position&quot;</span>: <span class="pl-s">&quot;left&quot;</span>,
+            <span class="pl-s">&quot;color&quot;</span>: <span class="pl-s">&quot;white&quot;</span>
+          }, {
+            <span class="pl-s">&quot;position&quot;</span>: <span class="pl-s">&quot;right&quot;</span>,
+            <span class="pl-s">&quot;color&quot;</span>: <span class="pl-s">&quot;gray&quot;</span>
+          }
+        ]
+      }, {
+        <span class="pl-s">&quot;name&quot;</span>: <span class="pl-s">&quot;dashboard&quot;</span>,
+        <span class="pl-s">&quot;items&quot;</span>: [
+          {
+            <span class="pl-s">&quot;position&quot;</span>: <span class="pl-s">&quot;left&quot;</span>,
+            <span class="pl-s">&quot;color&quot;</span>: <span class="pl-s">&quot;gray&quot;</span>
+          }, {
+            <span class="pl-s">&quot;position&quot;</span>: <span class="pl-s">&quot;right&quot;</span>,
+            <span class="pl-s">&quot;color&quot;</span>: <span class="pl-s">&quot;black&quot;</span>
+          }
+        ]
+      }
+    ]
+  }
+];
+<span class="pl-k">var</span> csv = json2csv({ <span class="hljs-attr">data</span>: myCars, <span class="hljs-attr">fields</span>: fields, <span class="hljs-attr">unwindPath</span>: [<span class="pl-s">&apos;items&apos;</span>, <span class="pl-s">&apos;items.items&apos;</span>] });
+
+fs.writeFile(<span class="pl-s">&apos;file.csv&apos;</span>, csv, <span class="hljs-function"><span class="pl-k">function</span>(<span class="hljs-params">err</span>) </span>{
+  <span class="pl-k">if</span> (err) <span class="pl-k">throw</span> err;
+  <span class="pl-c1">console</span>.log(<span class="pl-s">&apos;file saved&apos;</span>);
+});
+</code></pre>
+<p>The content of the &quot;file.csv&quot; should be</p>
+<pre><code>&quot;carModel&quot;,&quot;price&quot;,&quot;items.name&quot;,&quot;items.color&quot;,&quot;items.items.position&quot;,&quot;items.items.color&quot;
+&quot;BMW&quot;,15000,&quot;airbag&quot;,&quot;white&quot;,,
+&quot;BMW&quot;,15000,&quot;dashboard&quot;,&quot;black&quot;,,
+&quot;Porsche&quot;,30000,&quot;airbag&quot;,,&quot;left&quot;,&quot;white&quot;
+&quot;Porsche&quot;,30000,&quot;airbag&quot;,,&quot;right&quot;,&quot;gray&quot;
+&quot;Porsche&quot;,30000,&quot;dashboard&quot;,,&quot;left&quot;,&quot;gray&quot;
+&quot;Porsche&quot;,30000,&quot;dashboard&quot;,,&quot;right&quot;,&quot;black&quot;
+</code></pre>
 <h2 id="command-line-interface">Command Line Interface</h2>
 <p><code>json2csv</code> can also be called from the command line if installed with <code>-g</code>.</p>
 <pre><code class="lang-bash">Usage: json2csv [options]
@@ -349,6 +415,7 @@ fs.writeFile(<span class="pl-s">&apos;file.csv&apos;</span>, csv, <span class="h
     -q, --quote [value]          Specify an alternate quote value.
     -n, --no-header              Disable the column name header
     -F, --flatten                Flatten nested objects
+    -u, --unwindPath &lt;paths&gt;     Creates multiple rows from a single JSON document similar to MongoDB unwind.
     -L, --ldjson                 Treat the input as Line-Delimited JSON.
     -p, --pretty                 Use only when printing to console. Logs output <span class="pl-k">in</span> pretty tables.
     <span class="hljs-_">-a</span>, --include-empty-rows     Includes empty rows <span class="pl-k">in</span> the resulting CSV output.
