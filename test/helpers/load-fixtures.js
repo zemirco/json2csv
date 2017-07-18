@@ -29,7 +29,8 @@ var fixtures = [
   'emptyRowNotIncluded',
   'emptyRowDefaultValues',
   'unwind',
-  'unwind2'
+  'unwind2',
+  'withBOM',
 ];
 
 /*eslint-disable no-console*/
