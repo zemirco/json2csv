@@ -16,6 +16,7 @@ var jsonEmptyRow = require('./fixtures/json/emptyRow');
 var jsonUnwind = require('./fixtures/json/unwind');
 var jsonUnwind2 = require('./fixtures/json/unwind2');
 var jsonNewLine = require('./fixtures/json/newLine');
+var jsonSpecialCharacters = require('./fixtures/json/specialCharacters');
 var csvFixtures = {};
 
 async.parallel(loadFixtures(csvFixtures), function (err) {
@@ -620,7 +621,6 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
     })
   });
 
-
   test('should unwind twice an array into multiple rows', function(t) {
     json2csv({
       data: jsonUnwind2,
@@ -664,5 +664,16 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
       ].join('\r\n'));
       t.end();
     });
+  });
+
+  test('should add BOM character', function (t) {
+    var csv = json2csv({
+      data: jsonSpecialCharacters,
+      withBOM: true
+    });
+    // Compare csv length to check if the BOM character and the space after are present
+    t.equal(csv.length, csvFixtures.default.length + 2);
+    t.equal(csv.length, csvFixtures.withBOM.length);
+    t.end();
   });
 });

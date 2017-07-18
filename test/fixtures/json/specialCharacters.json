@@ -1,0 +1,23 @@
+[
+  {
+    "carModel": "Audi",
+    "price": 0,
+    "color": "blue"
+  },
+  {
+    "carModel": "BMW",
+    "price": 15000,
+    "color": "red",
+    "transmission": "manual"
+  },
+  {
+    "carModel": "Mercedes",
+    "price": 20000,
+    "color": "yellow"
+  },
+  {
+    "carModel": "Citroën",
+    "price": 30000,
+    "color": "green"
+  }
+]

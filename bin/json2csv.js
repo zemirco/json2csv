@@ -28,6 +28,7 @@ program
   .option('-L, --ldjson', 'Treat the input as Line-Delimited JSON.')
   .option('-p, --pretty', 'Use only when printing to console. Logs output in pretty tables.')
   .option('-a, --include-empty-rows', 'Includes empty rows in the resulting CSV output.')
+  .option('-b, --with-bom', 'Includes BOM character at the beginning of the csv.')
   .parse(process.argv);
 
 function getFields(callback) {
@@ -112,7 +113,8 @@ getFields(function (err, fields) {
       quotes: program.quote,
       defaultValue: program.defaultValue,
       flatten: program.flatten,
-      includeEmptyRows: program.includeEmptyRows
+      includeEmptyRows: program.includeEmptyRows,
+      withBOM: program.withBOM
     };
 
     if (program.delimiter) {
