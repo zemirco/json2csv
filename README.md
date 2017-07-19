@@ -47,6 +47,7 @@ try {
 - Not create CSV column title by passing hasCSVColumnTitle: false, into params.
 - If field is not exist in object then the field value in CSV will be empty.
 - Preserve new lines in values. Should be used with \r\n line endings for full compatibility with Excel.
+- Add a BOM character at the beginning of the csv to make Excel displaying special characters correctly.
 
 ## Use as a module
 
@@ -69,6 +70,7 @@ try {
   - `excelStrings` - Boolean, converts string data into normalized Excel style data.
   - `includeEmptyRows` - Boolean, includes empty rows. Defaults to `false`.
   - `preserveNewLinesInValues` - Boolean, preserve \r and \n in values. Defaults to `false`.
+  - `withBOM` - Boolean, with BOM character. Defaults to `false`.
 - `callback` - `function (error, csvString) {}`. If provided, will callback asynchronously. Only supported for compatibility reasons.
 
 #### Example `fields` option
@@ -413,6 +415,7 @@ Usage: json2csv [options]
     -L, --ldjson                 Treat the input as Line-Delimited JSON.
     -p, --pretty                 Use only when printing to console. Logs output in pretty tables.
     -a, --include-empty-rows     Includes empty rows in the resulting CSV output.
+    -b, --with-bom               Includes BOM character at the beginning of the CSV.
 ```
 
 An input file `-i` and fields `-f` are required. If no output `-o` is specified the result is logged to the console.
