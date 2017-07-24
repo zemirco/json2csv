@@ -109,6 +109,7 @@
 <li>Not create CSV column title by passing hasCSVColumnTitle: false, into params.</li>
 <li>If field is not exist in object then the field value in CSV will be empty.</li>
 <li>Preserve new lines in values. Should be used with \r\n line endings for full compatibility with Excel.</li>
+<li>Add a BOM character at the beginning of the csv to make Excel displaying special characters correctly.</li>
 </ul>
 <h2 id="use-as-a-module">Use as a module</h2>
 <h3 id="available-options">Available Options</h3>
@@ -131,6 +132,7 @@ Must be the same length as <code>fields</code> array. (Optional. Maintained for 
 <li><code>excelStrings</code> - Boolean, converts string data into normalized Excel style data.</li>
 <li><code>includeEmptyRows</code> - Boolean, includes empty rows. Defaults to <code>false</code>.</li>
 <li><code>preserveNewLinesInValues</code> - Boolean, preserve \r and \n in values. Defaults to <code>false</code>.</li>
+<li><code>withBOM</code> - Boolean, with BOM character. Defaults to <code>false</code>.</li>
 </ul>
 </li>
 <li><code>callback</code> - <code>function (error, csvString) {}</code>. If provided, will callback asynchronously. Only supported for compatibility reasons.</li>
@@ -419,6 +421,7 @@ fs.writeFile(<span class="pl-s">&apos;file.csv&apos;</span>, csv, <span class="h
     -L, --ldjson                 Treat the input as Line-Delimited JSON.
     -p, --pretty                 Use only when printing to console. Logs output <span class="pl-k">in</span> pretty tables.
     <span class="hljs-_">-a</span>, --include-empty-rows     Includes empty rows <span class="pl-k">in</span> the resulting CSV output.
+    -b, --with-bom               Includes BOM character at the beginning of the CSV.
 </code></pre>
 <p>An input file <code>-i</code> and fields <code>-f</code> are required. If no output <code>-o</code> is specified the result is logged to the console.
 Use <code>-p</code> to show the result in a beautiful table inside the console.</p>
