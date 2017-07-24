@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="3.10.0"></a>
+# [3.10.0](https://github.com/zemirco/json2csv/compare/v3.9.1...v3.10.0) (2017-07-24)
+
+
+### Features
+
+* Add BOM character option ([#187](https://github.com/zemirco/json2csv/issues/187)) ([0c799ca](https://github.com/zemirco/json2csv/commit/0c799ca))
+
+
+
 <a name="3.9.1"></a>
 ## [3.9.1](https://github.com/zemirco/json2csv/compare/v3.9.0...v3.9.1) (2017-07-14)
 
