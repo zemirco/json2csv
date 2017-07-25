@@ -9,6 +9,7 @@ var fixtures = [
   'withoutQuotes',
   'withNotExistField',
   'quotes',
+  'date',
   'selected',
   'reversed',
   'tsv',
