@@ -340,6 +340,16 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
     });
   });
 
+  test('should handle date', function (t) {
+    json2csv({
+      data: {'date': new Date("2017-01-01T00:00:00.000Z")}
+    }, function (error, csv) {
+      t.error(error);
+      t.equal(csv, csvFixtures.date);
+      t.end();
+    });
+  });
+
   test('should flatten embedded JSON', function (t) {
     json2csv({
       data: {'field1': {embeddedField1: 'embeddedValue1', embeddedField2: 'embeddedValue2'}},
