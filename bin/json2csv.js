@@ -130,7 +130,7 @@ getFields(function (err, fields) {
     }
 
     if (program.unwindPath) {
-      opts.unwindPath = program.fields.split(',');
+      opts.unwindPath = program.unwindPath.split(',');
     }
 
     var csv = json2csv(opts);
