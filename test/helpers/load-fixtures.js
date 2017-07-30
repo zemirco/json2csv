@@ -23,6 +23,8 @@ var fixtures = [
   'embeddedjson',
   'flattenedEmbeddedJson',
   'fancyfields',
+  'functionStringifyByDefault',
+  'functionNoStringify',
   'trailingBackslash',
   'excelStrings',
   'overriddenDefaultValue',
