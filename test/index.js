@@ -408,6 +408,47 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
     });
   });
 
+  test('function value should stringify results by default', function (t) {
+    json2csv({
+      data: [{
+        value1: 'abc'
+      }, {
+        value1: '1234'
+      }],
+      fields: [{
+        label: 'Value1',
+        value: function (row) {
+          return row.value1.toLocaleString();
+        }
+      }]
+    }, function (error, csv) {
+      t.error(error);
+      t.equal(csv, csvFixtures.functionStringifyByDefault);
+      t.end();
+    });
+  });
+
+  test('function value do not stringify', function (t) {
+    json2csv({
+      data: [{
+        value1: '"abc"'
+      }, {
+        value1: '1234'
+      }],
+      fields: [{
+        label: 'Value1',
+        value: function (row) {
+          return row.value1.toLocaleString();
+        },
+        stringify: false
+      }]
+    }, function (error, csv) {
+      t.error(error);
+      t.equal(csv, csvFixtures.functionNoStringify);
+      t.end();
+    });
+  });
+
   test('should parse JSON values with trailing backslashes', function (t) {
     json2csv({
       data: jsonTrailingBackslash,
