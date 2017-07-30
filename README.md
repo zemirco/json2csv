@@ -92,7 +92,8 @@ try {
         // data = full data object
         return row.path1 + row.path2;
       },
-      default: 'NULL' // default if value function returns null or undefined
+      default: 'NULL', // default if value function returns null or undefined
+      stringify: true // If value is function use this flag to signal if resulting string will be quoted (stringified) or not (optional, default: true)
     },
 
     // Support pathname -> pathvalue
