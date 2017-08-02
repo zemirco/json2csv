@@ -155,7 +155,8 @@ Must be the same length as <code>fields</code> array. (Optional. Maintained for 
         <span class="pl-c">// data = full data object</span>
         <span class="pl-k">return</span> row.path1 + row.path2;
       },
-      <span class="hljs-attr">default</span>: <span class="pl-s">&apos;NULL&apos;</span> <span class="pl-c">// default if value function returns null or undefined</span>
+      <span class="hljs-attr">default</span>: <span class="pl-s">&apos;NULL&apos;</span>, <span class="pl-c">// default if value function returns null or undefined</span>
+      stringify: <span class="pl-c1">true</span> <span class="pl-c">// If value is function use this flag to signal if resulting string will be quoted (stringified) or not (optional, default: true)</span>
     },
 
     <span class="pl-c">// Support pathname -&gt; pathvalue</span>
