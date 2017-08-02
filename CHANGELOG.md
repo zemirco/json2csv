@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="3.11.0"></a>
+# [3.11.0](https://github.com/zemirco/json2csv/compare/v3.10.0...v3.11.0) (2017-08-02)
+
+
+### Bug Fixes
+
+* Handle dates without double-escaping ([#189](https://github.com/zemirco/json2csv/issues/189)) ([ff514ba](https://github.com/zemirco/json2csv/commit/ff514ba))
+* unwind parameter in command line mode ([#191](https://github.com/zemirco/json2csv/issues/191)) ([e706c25](https://github.com/zemirco/json2csv/commit/e706c25))
+
+
+### Features
+
+* Added flag to signal if resulting function value should be stringified or not ([#192](https://github.com/zemirco/json2csv/issues/192)) ([aaa6b05](https://github.com/zemirco/json2csv/commit/aaa6b05))
+
+
+
 <a name="3.10.0"></a>
 # [3.10.0](https://github.com/zemirco/json2csv/compare/v3.9.1...v3.10.0) (2017-07-24)
 
