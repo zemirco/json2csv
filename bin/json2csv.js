@@ -114,7 +114,7 @@ getFields(function (err, fields) {
       defaultValue: program.defaultValue,
       flatten: program.flatten,
       includeEmptyRows: program.includeEmptyRows,
-      withBOM: program.withBOM
+      withBOM: program.withBom
     };
 
     if (program.delimiter) {
