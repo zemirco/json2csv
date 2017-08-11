@@ -1,6 +1,7 @@
 # json2csv
 
-Converts json into csv with column titles and proper line endings. Can be used as a module and from the command line.
+Converts json into csv with column titles and proper line endings.  
+Can be used as a module and from the command line. Not for use in the browser.
 
 [![npm version][npm-badge]][npm-badge-url]
 [![Build Status][travis-badge]][travis-badge-url]
