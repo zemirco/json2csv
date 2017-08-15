@@ -722,8 +722,8 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
       data: jsonSpecialCharacters,
       withBOM: true
     });
-    // Compare csv length to check if the BOM character and the space after are present
-    t.equal(csv.length, csvFixtures.default.length + 2);
+    // Compare csv length to check if the BOM character is present
+    t.equal(csv.length, csvFixtures.default.length + 1);
     t.equal(csv.length, csvFixtures.withBOM.length);
     t.end();
   });
