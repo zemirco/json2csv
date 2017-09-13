@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="3.11.2"></a>
+## [3.11.2](https://github.com/zemirco/json2csv/compare/v3.11.1...v3.11.2) (2017-09-13)
+
+
+### Bug Fixes
+
+* Remove extra space character in mode withBOM: true [#190](https://github.com/zemirco/json2csv/issues/190) ([#194](https://github.com/zemirco/json2csv/issues/194)) ([e8b6f6b](https://github.com/zemirco/json2csv/commit/e8b6f6b))
+
+
+
 <a name="3.11.1"></a>
 ## [3.11.1](https://github.com/zemirco/json2csv/compare/v3.11.0...v3.11.1) (2017-08-11)
 
