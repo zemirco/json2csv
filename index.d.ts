@@ -28,9 +28,11 @@ declare namespace json2csv {
     eol?: string;
     newLine?: string;
     flatten?: boolean;
-    unwindPath?: string;
+    unwindPath?: string | string[];
     excelStrings?: boolean;
     includeEmptyRows?: boolean;
+    preserveNewLinesInValues?: boolean;
+    withBOM?: boolean;
   }
 
   interface Callback {
