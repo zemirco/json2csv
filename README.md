@@ -33,6 +33,7 @@ try {
   console.error(err);
 }
 ```
+[other examples](#example-1)
 
 ## Features
 
