@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="3.11.3"></a>
+## [3.11.3](https://github.com/zemirco/json2csv/compare/v3.11.2...v3.11.3) (2017-10-09)
+
+
+
 <a name="3.11.2"></a>
 ## [3.11.2](https://github.com/zemirco/json2csv/compare/v3.11.1...v3.11.2) (2017-09-13)
 
