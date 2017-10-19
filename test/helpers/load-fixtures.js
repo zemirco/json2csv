@@ -9,6 +9,8 @@ var fixtures = [
   'withoutQuotes',
   'withNotExistField',
   'quotes',
+  'backslashAtEnd',
+  'backslashAtEndInMiddleColumn',
   'date',
   'selected',
   'reversed',

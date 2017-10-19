@@ -7,6 +7,8 @@ var parseLdJson = require('../lib/parse-ldjson');
 var loadFixtures = require('./helpers/load-fixtures');
 var jsonDefault = require('./fixtures/json/default');
 var jsonQuotes = require('./fixtures/json/quotes');
+var backslashAtEnd = require('./fixtures/json/backslashAtEnd');
+var backslashAtEndInMiddleColumn = require('./fixtures/json/backslashAtEndInMiddleColumn');
 var jsonNested = require('./fixtures/json/nested');
 var jsonDefaultValue = require('./fixtures/json/defaultValue');
 var jsonDefaultValueEmpty = require('./fixtures/json/defaultValueEmpty');
@@ -194,6 +196,30 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
     }, function (error, csv) {
       t.error(error);
       t.equal(csv, csvFixtures.quotes);
+      t.end();
+    });
+  });
+
+
+  test('should not escape quotes with double quotes, when there is a backslah in the end', function (t) {
+    json2csv({
+      data: backslashAtEnd,
+      fields: ['a string']
+    }, function (error, csv) {
+      t.error(error);
+      t.equal(csv, csvFixtures.backslashAtEnd);
+      t.end();
+    });
+  });
+
+
+  test('should not escape quotes with double quotes, when there is a backslah in the end, and its not the last column', function (t) {
+    json2csv({
+      data: backslashAtEndInMiddleColumn,
+      fields: ['uuid','title','id']
+    }, function (error, csv) {
+      t.error(error);
+      t.equal(csv, csvFixtures.backslashAtEndInMiddleColumn);
       t.end();
     });
   });
@@ -466,7 +492,7 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
       newLine: '\n'
     }, function (error, csv){
       t.error(error);
-      t.equal(csv, '"field"\n"\\""');
+      t.equal(csv, '"field"\n"\\"""');
       t.end();
     });
   });

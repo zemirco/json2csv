@@ -1,0 +1,4 @@
+[
+  {"uuid": "xxxx-yyyy",  "title": "$25 something $50 \\", "id":"someId"},
+  {"uuid": "xxxx-yyyy",  "title": "$25 something $50 \\\\", "id":"someId"}
+]
