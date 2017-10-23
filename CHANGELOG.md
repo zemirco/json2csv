@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="3.11.5"></a>
+## [3.11.5](https://github.com/zemirco/json2csv/compare/v3.11.4...v3.11.5) (2017-10-23)
+
+
+### Bug Fixes
+
+* backslash value not escaped properly ([#202](https://github.com/zemirco/json2csv/issues/202)) ([#204](https://github.com/zemirco/json2csv/issues/204)) ([2cf50f1](https://github.com/zemirco/json2csv/commit/2cf50f1))
+
+
+
 <a name="3.11.4"></a>
 ## [3.11.4](https://github.com/zemirco/json2csv/compare/v3.11.3...v3.11.4) (2017-10-09)
 
