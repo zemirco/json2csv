@@ -46,7 +46,7 @@ try {
 - Supports optional custom delimiters
 - Supports optional custom eol value
 - Supports optional custom quotation marks
-- Not create CSV column title by passing hasCSVColumnTitle: false, into params.
+- Not create CSV column title by passing noHeader: false, into params.
 - If field is not exist in object then the field value in CSV will be empty.
 - Preserve new lines in values. Should be used with \r\n line endings for full compatibility with Excel.
 - Add a BOM character at the beginning of the csv to make Excel displaying special characters correctly.
@@ -64,7 +64,7 @@ try {
   - `defaultValue` - String, default value to use when missing data. Defaults to `<empty>` if not specified. (Overridden by `fields[].default`)
   - `quotes` - String, quotes around cell values and column names. Defaults to `"` if not specified.
   - `doubleQuotes` - String, the value to replace double quotes in strings. Defaults to 2x`quotes` (for example `""`) if not specified.
-  - `hasCSVColumnTitle` - Boolean, determines whether or not CSV file will contain a title column. Defaults to `true` if not specified.
+  - `noHeader` - Boolean, determines whether or not CSV file will contain a title column. Defaults to `true` if not specified.
   - `eol` - String, it gets added to each row of data. Defaults to `` if not specified.
   - `newLine` - String, overrides the default OS line ending (i.e. `\n` on Unix and `\r\n` on Windows).
   - `flatten` - Boolean, flattens nested JSON using [flat]. Defaults to `false`.
