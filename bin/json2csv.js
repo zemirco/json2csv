@@ -109,7 +109,7 @@ getFields(function (err, fields) {
     var opts = {
       data: input,
       fields: fields,
-      hasCSVColumnTitle: program.header,
+      noHeader: program.header,
       quotes: program.quote,
       defaultValue: program.defaultValue,
       flatten: program.flatten,
