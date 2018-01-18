@@ -23,7 +23,7 @@ declare namespace json2csv {
     delimiter?: string;
     defaultValue?: string;
     quote?: string;
-    doubleQuotes?: string;
+    doubleQuote?: string;
     noHeader?: boolean;
     eol?: string;
     newLine?: string;
