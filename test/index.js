@@ -55,7 +55,7 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
         { firstname: 'foo', lastname: 'bar', email: 'foo.bar@json2csv.com' },
         { firstname: 'bar', lastname: 'foo', email: 'bar.foo@json2csv.com' }
       ],
-      del: '|@|'
+      delimiter: '|@|'
     }, function (err, csv) {
       t.equal(csv, csvFixtures.delimiter);
       t.end();
@@ -248,11 +248,11 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
     });
   });
 
-  test('should use a custom delimiter when \'del\' property is present', function (t) {
+  test('should use a custom delimiter when \'delimiter\' property is present', function (t) {
     json2csv({
       data: jsonDefault,
       fields: ['carModel', 'price', 'color'],
-      del: '\t'
+      delimiter: '\t'
     }, function (error, csv) {
       t.error(error);
       t.equal(csv, csvFixtures.tsv);

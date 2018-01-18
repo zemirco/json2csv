@@ -118,7 +118,7 @@ getFields(function (err, fields) {
     };
 
     if (program.delimiter) {
-      opts.del = program.delimiter;
+      opts.delimiter = program.delimiter;
     }
 
     if (program.eol) {
