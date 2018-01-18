@@ -110,7 +110,7 @@ getFields(function (err, fields) {
       data: input,
       fields: fields,
       noHeader: program.header,
-      quotes: program.quote,
+      quote: program.quote,
       defaultValue: program.defaultValue,
       flatten: program.flatten,
       includeEmptyRows: program.includeEmptyRows,

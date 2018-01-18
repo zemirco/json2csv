@@ -224,11 +224,11 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
     });
   });
 
-  test('should use a custom delimiter when \'quotes\' property is present', function (t) {
+  test('should use a custom delimiter when \'quote\' property is present', function (t) {
     json2csv({
       data: jsonDefault,
       fields: ['carModel', 'price'],
-      quotes: '\''
+      quote: '\''
     }, function (error, csv) {
       t.error(error);
       t.equal(csv, csvFixtures.withSimpleQuotes);
@@ -236,11 +236,11 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
     });
   });
 
-  test('should be able to don\'t output quotes when using \'quotes\' property', function (t) {
+  test('should be able to don\'t output quotes when using \'quote\' property', function (t) {
     json2csv({
       data: jsonDefault,
       fields: ['carModel', 'price'],
-      quotes: ''
+      quote: ''
     }, function (error, csv) {
       t.error(error);
       t.equal(csv, csvFixtures.withoutQuotes);
