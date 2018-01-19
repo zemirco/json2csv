@@ -20,10 +20,10 @@ declare namespace json2csv {
     data: T[];
     fields?: (string | Field | CallbackField<T>)[];
     fieldNames?: string[];
-    del?: string;
+    delimiter?: string;
     defaultValue?: string;
-    quotes?: string;
-    doubleQuotes?: string;
+    quote?: string;
+    doubleQuote?: string;
     noHeader?: boolean;
     eol?: string;
     newLine?: string;

@@ -22,6 +22,7 @@ program
   .option('-e, --eol [value]', 'Specify an EOL value after each row.')
   .option('-z, --newLine [value]', 'Specify an new line value for separating rows.')
   .option('-q, --quote [value]', 'Specify an alternate quote value.')
+  .option('-dq, --doubleQuotes [value]', 'Specify a value to replace double quote in strings')
   .option('-n, --no-header', 'Disable the column name header')
   .option('-F, --flatten', 'Flatten nested objects')
   .option('-u, --unwindPath <paths>', 'Creates multiple rows from a single JSON document similar to MongoDB unwind.')
@@ -109,8 +110,9 @@ getFields(function (err, fields) {
     var opts = {
       data: input,
       fields: fields,
-      noHeader: program.header,
-      quotes: program.quote,
+      noHeader: program.noHeader,
+      quote: program.quote,
+      doubleQuotes: doubleQuotes,
       defaultValue: program.defaultValue,
       flatten: program.flatten,
       includeEmptyRows: program.includeEmptyRows,
@@ -118,7 +120,7 @@ getFields(function (err, fields) {
     };
 
     if (program.delimiter) {
-      opts.del = program.delimiter;
+      opts.delimiter = program.delimiter;
     }
 
     if (program.eol) {
