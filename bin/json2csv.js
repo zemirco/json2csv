@@ -52,16 +52,28 @@ function getFields(callback) {
 }
 
 function getInput(callback) {
-  var input, isAbsolute, rows;
+  var input = '';
 
   if (program.input) {
-    isAbsolute = isAbsolutePath(program.input);
-    input = require(isAbsolute ? program.input : path.join(process.cwd(), program.input));
+    var isAbsolute = isAbsolutePath(program.input);
+    var inputPath = isAbsolute ? program.input : path.join(process.cwd(), program.input);
 
+    if (program.ldjson) {
+      fs.readFile(inputPath, 'utf8', function (err, data) {
+        if (err) {
+          return callback(err);
+        }
+
+        input = parseLdJson(data);
+        callback(null, input);
+      });
+      return;
+    }
+
+    input = require(inputPath);
     return callback(null, input);
   }
 
-  input = '';
   process.stdin.resume();
   process.stdin.setEncoding('utf8');
 
@@ -72,11 +84,9 @@ function getInput(callback) {
     debug('Could not read from stdin', err);
   });
   process.stdin.on('end', function () {
-    if (program.ldjson) {
-      rows = parseLdJson(input);
-    } else {
-      rows = JSON.parse(input);
-    }
+    var rows = program.ldjson
+      ? parseLdJson(input)
+      : JSON.parse(input);
 
     callback(null, rows);
   });
