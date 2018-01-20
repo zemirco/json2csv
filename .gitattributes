@@ -1,2 +1,2 @@
 * text=auto
-test/fixtures/csv/newLine.csv text eol=crlf
+test/fixtures/csv/eol.csv text eol=crlf
