@@ -65,8 +65,7 @@ try {
   - `quote` - String, quote around cell values and column names. Defaults to `"` if not specified.
   - `doubleQuote` - String, the value to replace double quote in strings. Defaults to 2x`quotes` (for example `""`) if not specified.
   - `noHeader` - Boolean, determines whether or not CSV file will contain a title column. Defaults to `true` if not specified.
-  - `eol` - String, it gets added to each row of data. Defaults to `` if not specified.
-  - `newLine` - String, overrides the default OS line ending (i.e. `\n` on Unix and `\r\n` on Windows).
+  - `eol` - String, overrides the default OS line ending (i.e. `\n` on Unix and `\r\n` on Windows).
   - `flatten` - Boolean, flattens nested JSON using [flat]. Defaults to `false`.
   - `unwindPath` - Array of Strings, creates multiple rows from a single JSON document similar to MongoDB's $unwind
   - `excelStrings` - Boolean, converts string data into normalized Excel style data.
@@ -409,8 +408,7 @@ Usage: json2csv [options]
     -f, --fields <fields>        Specify the fields to convert.
     -l, --fieldList [list]       Specify a file with a list of fields to include. One field per line.
     -d, --delimiter [delimiter]  Specify a delimiter other than the default comma to use.
-    -e, --eol [value]            Specify an EOL value after each row.
-    -z, --newLine [value]        Specify an new line value for separating rows.
+    -e, --eol [value]            Specify an End-of-Line value for separating rows.
     -q, --quote [value]          Specify an alternate quote value.
     -n, --no-header              Disable the column name header
     -F, --flatten                Flatten nested objects

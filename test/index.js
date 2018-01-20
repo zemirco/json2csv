@@ -17,7 +17,7 @@ var jsonOverriddenDefaultValue = require('./fixtures/json/overridenDefaultValue'
 var jsonEmptyRow = require('./fixtures/json/emptyRow');
 var jsonUnwind = require('./fixtures/json/unwind');
 var jsonUnwind2 = require('./fixtures/json/unwind2');
-var jsonNewLine = require('./fixtures/json/newLine');
+var jsonEOL = require('./fixtures/json/eol');
 var jsonSpecialCharacters = require('./fixtures/json/specialCharacters');
 var csvFixtures = {};
 
@@ -264,22 +264,10 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
     json2csv({
       data: jsonDefault,
       fields: ['carModel', 'price', 'color'],
-      eol: ';'
+      eol: '\r\n'
     }, function (error, csv) {
       t.error(error);
       t.equal(csv, csvFixtures.eol);
-      t.end();
-    });
-  });
-
-  test('should use a custom eol character when \'newLine\' property is present', function (t) {
-    json2csv({
-      data: jsonDefault,
-      fields: ['carModel', 'price', 'color'],
-      newLine: '\r\n'
-    }, function (error, csv) {
-      t.error(error);
-      t.equal(csv, csvFixtures.newLine);
       t.end();
     });
   });
@@ -489,7 +477,7 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
   test('should escape " when preceeded by \\', function (t){
     json2csv({
       data: [{field: '\\"'}],
-      newLine: '\n'
+      eol: '\n'
     }, function (error, csv){
       t.error(error);
       t.equal(csv, '"field"\n"\\"""');
@@ -712,9 +700,9 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
 
   test('should not preserve new lines in values by default', function(t) {
     json2csv({
-      data: jsonNewLine,
+      data: jsonEOL,
       fields: ['a string'],
-      newLine: '\r\n',
+      eol: '\r\n',
     }, function(error, csv) {
       t.error(error);
       t.equal(csv, [
@@ -728,9 +716,9 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
 
   test('should preserve new lines in values when options.preserveNewLinesInValues is true', function(t) {
     json2csv({
-      data: jsonNewLine,
+      data: jsonEOL,
       fields: ['a string'],
-      newLine: '\r\n',
+      eol: '\r\n',
       preserveNewLinesInValues: true,
     }, function(error, csv) {
       t.error(error);

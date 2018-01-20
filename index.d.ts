@@ -26,7 +26,6 @@ declare namespace json2csv {
     doubleQuote?: string;
     noHeader?: boolean;
     eol?: string;
-    newLine?: string;
     flatten?: boolean;
     unwindPath?: string | string[];
     excelStrings?: boolean;

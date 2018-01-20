@@ -19,8 +19,7 @@ program
   .option('-l, --fieldList [list]', 'Specify a file with a list of fields to include. One field per line.')
   .option('-d, --delimiter [delimiter]', 'Specify a delimiter other than the default comma to use.')
   .option('-v, --defaultValue [defaultValue]', 'Specify a default value other than empty string.')
-  .option('-e, --eol [value]', 'Specify an EOL value after each row.')
-  .option('-z, --newLine [value]', 'Specify an new line value for separating rows.')
+  .option('-e, --eol [value]', 'Specify an End-of-Line value for separating rows.')
   .option('-q, --quote [value]', 'Specify an alternate quote value.')
   .option('-dq, --doubleQuotes [value]', 'Specify a value to replace double quote in strings')
   .option('-n, --no-header', 'Disable the column name header')
@@ -125,10 +124,6 @@ getFields(function (err, fields) {
 
     if (program.eol) {
       opts.eol = program.eol;
-    }
-
-    if (program.newLine) {
-      opts.newLine = program.newLine;
     }
 
     if (program.unwindPath) {
