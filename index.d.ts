@@ -24,7 +24,7 @@ declare namespace json2csv {
     defaultValue?: string;
     quote?: string;
     doubleQuote?: string;
-    noHeader?: boolean;
+    header?: boolean;
     eol?: string;
     flatten?: boolean;
     unwindPath?: string | string[];
