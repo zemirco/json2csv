@@ -3,7 +3,6 @@
 var fs = require('fs');
 var os = require('os');
 var path = require('path');
-var isAbsolutePath = require('path-is-absolute');
 var Table = require('cli-table');
 var program = require('commander');
 var debug = require('debug')('json2csv:cli');
@@ -54,8 +53,9 @@ function getInput(callback) {
   var input = '';
 
   if (program.input) {
-    var isAbsolute = isAbsolutePath(program.input);
-    var inputPath = isAbsolute ? program.input : path.join(process.cwd(), program.input);
+    var inputPath = path.isAbsolute(program.input)
+      ? program.input
+      : path.join(process.cwd(), program.input);
 
     if (program.ldjson) {
       fs.readFile(inputPath, 'utf8', function (err, data) {
