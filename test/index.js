@@ -1,7 +1,6 @@
 'use strict';
 
 var test = require('tape');
-var async = require('async');
 var json2csv = require('../lib/json2csv');
 var parseLdJson = require('../lib/parse-ldjson');
 var loadFixtures = require('./helpers/load-fixtures');
@@ -21,13 +20,7 @@ var jsonEOL = require('./fixtures/json/eol');
 var jsonSpecialCharacters = require('./fixtures/json/specialCharacters');
 var csvFixtures = {};
 
-async.parallel(loadFixtures(csvFixtures), function (err) {
-  if (err) {
-    /*eslint-disable no-console*/
-    console.log(err);
-    /*eslint-enable no-console*/
-  }
-
+loadFixtures().then(function (csvFixtures) {
   test('should work synchronously', function (t) {
     var csv = json2csv({
       data: jsonDefault
@@ -741,4 +734,5 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
     t.equal(csv.length, csvFixtures.withBOM.length);
     t.end();
   });
-});
+})
+.catch(console.log);

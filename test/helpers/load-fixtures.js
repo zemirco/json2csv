@@ -38,18 +38,20 @@ var fixtures = [
 ];
 
 /*eslint-disable no-console*/
-module.exports = function (result) {
-  return fixtures.map(function (key) {
-    return function (callback) {
-      fs.readFile(path.join(__dirname, '../fixtures/csv', key + '.csv'), function (err, data) {
-        if (err) {
-          callback(err);
-        }
+module.exports = function () {
+  return Promise.all(fixtures.map(key => new Promise(function (resolve, reject) {
+    fs.readFile(path.join(__dirname, '../fixtures/csv', key + '.csv'), function (err, data) {
+      if (err) {
+        reject(err);
+        return;
+      }
 
-        result[key] = data.toString();
-        callback(null);
-      });
-    };
-  });
+      resolve(data.toString());
+    });
+  })))
+  .then(data => data.reduce(function (results, fixture, i) {
+    results[fixtures[i]] = fixture;
+    return results;
+  } ,{}));
 };
 /*eslint-enable no-console*/
