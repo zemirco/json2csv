@@ -51,9 +51,11 @@ module.exports = function () {
       });
     })
   }))
-  .then(data => data.reduce(function (results, fixture, i) {
-    results[fixtures[i]] = fixture;
-    return results;
-  } ,{}));
+  .then(function (data) {
+    return data.reduce(function (results, fixture, i) {
+      results[fixtures[i]] = fixture;
+      return results;
+    } ,{})
+  });
 };
 /*eslint-enable no-console*/
