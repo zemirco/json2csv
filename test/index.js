@@ -123,6 +123,19 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
     });
   });
 
+  test('should parse json to csv even if json include functions', function (t) {
+    json2csv({
+      data: {
+        a: 1,
+        funct: function (a) { return a + 1; },
+      }
+    }, function (error, csv) {
+      t.error(error);
+      t.equal(csv, '"a","funct"\n1,');
+      t.end();
+    });
+  });
+
   test('should parse data:{} to csv with only column title', function (t) {
     json2csv({
       data: {},
