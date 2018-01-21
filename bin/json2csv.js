@@ -119,7 +119,7 @@ getFields(function (err, fields) {
     var opts = {
       data: input,
       fields: fields,
-      noHeader: program.noHeader,
+      header: program.header,
       quote: program.quote,
       doubleQuotes: doubleQuotes,
       defaultValue: program.defaultValue,

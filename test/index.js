@@ -115,7 +115,7 @@ async.parallel(loadFixtures(csvFixtures), function (err) {
     json2csv({
       data: jsonDefault,
       fields: ['carModel', 'price', 'color'],
-      noHeader: false
+      header: false
     }, function (error, csv) {
       t.error(error);
       t.equal(csv, csvFixtures.withoutTitle);
