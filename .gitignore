@@ -1,10 +1,12 @@
 node_modules
+.nyc_output
+dist
+
 coverage
 .DS_Store
 .tm_properties
 server.*
 published
 *.log
-dist
 _docpress
 .vscode
