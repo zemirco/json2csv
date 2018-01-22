@@ -60,7 +60,7 @@ try {
   - `fields` - Array of Objects/Strings. Defaults to toplevel JSON attributes. See example below.
   - `fieldNames` Array of Strings, names for the fields at the same indexes.
     Must be the same length as `fields` array. (Optional. Maintained for backwards compatibility. Use `fields` config object for more features)
-  - `delimiter` - String, delimiter of columns. Defaults to `,` if not specified.
+  - `del` - String, delimiter of columns. Defaults to `,` if not specified.
   - `defaultValue` - String, default value to use when missing data. Defaults to `<empty>` if not specified. (Overridden by `fields[].default`)
   - `quote` - String, quote around cell values and column names. Defaults to `"` if not specified.
   - `doubleQuote` - String, the value to replace double quote in strings. Defaults to 2x`quotes` (for example `""`) if not specified.
@@ -168,12 +168,12 @@ car, color
 
 ### Example 3
 
-Use a custom delimiter to create tsv files. Add it as the value of the delimiter property on the parameters:
+Use a custom delimiter to create tsv files. Add it as the value of the `del` property on the parameters:
 
 ```javascript
 var json2csv = require('json2csv');
 var fields = ['car', 'price', 'color'];
-var tsv = json2csv({ data: myCars, fields: fields, delimiter: '\t' });
+var tsv = json2csv({ data: myCars, fields: fields, del: '\t' });
 
 console.log(tsv);
 ```
