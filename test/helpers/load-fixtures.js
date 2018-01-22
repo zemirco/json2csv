@@ -50,10 +50,10 @@ module.exports = function () {
       });
     })
   }))
-  .then(function (data) {
-    return data.reduce(function (results, fixture, i) {
-      results[fixtures[i]] = fixture;
-      return results;
-    } ,{})
-  });
+    .then(function (data) {
+      return data.reduce(function (results, fixture, i) {
+        results[fixtures[i]] = fixture;
+        return results;
+      } ,{})
+    });
 };

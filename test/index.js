@@ -415,7 +415,7 @@ loadFixtures().then(function (csvFixtures) {
         label: 'NEST1',
         value: 'bird.nest1'
       },
-        'bird.nest2',
+      'bird.nest2',
       {
         label: 'nonexistent',
         value: 'fake.path',
@@ -749,4 +749,4 @@ loadFixtures().then(function (csvFixtures) {
     t.end();
   });
 })
-.catch(console.log); // eslint-disable-line no-console
+  .catch(console.log); // eslint-disable-line no-console

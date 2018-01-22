@@ -2,9 +2,6 @@
   "env": {
     "node": true
   },
-  "ecmaFeatures": {
-    "modules": true
-  },
   "rules": {
    "indent": [2, 2],
    "brace-style": [2, "1tbs"],
