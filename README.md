@@ -72,7 +72,6 @@ try {
   - `includeEmptyRows` - Boolean, includes empty rows. Defaults to `false`.
   - `preserveNewLinesInValues` - Boolean, preserve \r and \n in values. Defaults to `false`.
   - `withBOM` - Boolean, with BOM character. Defaults to `false`.
-- `callback` - `function (error, csvString) {}`. If provided, will callback asynchronously. Only supported for compatibility reasons.
 
 #### Example `fields` option
 ``` javascript
@@ -145,16 +144,14 @@ car, price, color
 ### Example 2
 
 Similarly to [mongoexport](http://www.mongodb.org/display/DOCS/mongoexport) you can choose which fields to export.
-Note: this example uses the optional callback format.
 
 ```javascript
 var json2csv = require('json2csv');
 var fields = ['car', 'color'];
 
-json2csv({ data: myCars, fields: fields }, function(err, csv) {
-  if (err) console.log(err);
-  console.log(csv);
-});
+var csv = json2csv({ data: myCars, fields: fields });
+
+console.log(csv);
 ```
 
 Results in
