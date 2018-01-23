@@ -19,7 +19,6 @@ declare namespace json2csv {
   interface Options<T> {
     data: T[];
     fields?: (string | Field | CallbackField<T>)[];
-    fieldNames?: string[];
     delimiter?: string;
     defaultValue?: string;
     quote?: string;

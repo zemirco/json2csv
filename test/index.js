@@ -54,34 +54,6 @@ loadFixtures().then(function (csvFixtures) {
     });
   });
 
-  test('should error synchronously if fieldNames don\'t line up to fields', function (t) {
-    var csv;
-    try {
-      csv = json2csv({
-        data: jsonDefault,
-        field: ['carModel'],
-        fieldNames: ['test', 'blah']
-      });
-      t.notOk(true);
-    } catch (error) {
-      t.equal(error.message, 'fieldNames and fields should be of the same length, if fieldNames is provided.');
-      t.notOk(csv);
-      t.end();
-    }
-  });
-
-  test('should error asynchronously if fieldNames don\'t line up to fields', function (t) {
-    json2csv({
-      data: jsonDefault,
-      field: ['carModel'],
-      fieldNames: ['test', 'blah']
-    }, function (error, csv) {
-      t.equal(error.message, 'fieldNames and fields should be of the same length, if fieldNames is provided.');
-      t.notOk(csv);
-      t.end();
-    });
-  });
-
   test('should parse json to csv', function (t) {
     json2csv({
       data: jsonDefault,
@@ -279,11 +251,16 @@ loadFixtures().then(function (csvFixtures) {
     });
   });
 
-  test('should name columns as specified in \'fieldNames\' property', function (t) {
+  test('should name columns as specified in \'fields\' property', function (t) {
     json2csv({
       data: jsonDefault,
-      fields: ['carModel', 'price'],
-      fieldNames: ['Car Model', 'Price USD']
+      fields: [{
+        label: 'Car Model',
+        value: 'carModel'
+      },{
+        label: 'Price USD',
+        value: 'price'
+      }]
     }, function (error, csv) {
       t.error(error);
       t.equal(csv, csvFixtures.fieldNames);
@@ -294,8 +271,22 @@ loadFixtures().then(function (csvFixtures) {
   test('should output nested properties', function (t) {
     json2csv({
       data: jsonNested,
-      fields: ['car.make', 'car.model', 'price', 'color', 'car.ye.ar'],
-      fieldNames: ['Make', 'Model', 'Price', 'Color', 'Year']
+      fields: [{
+        label: 'Make',
+        value: 'car.make'
+      },{
+        label: 'Model',
+        value: 'car.model'
+      },{
+        label: 'Price',
+        value: 'price'
+      },{
+        label: 'Color',
+        value: 'color'
+      },{
+        label: 'Year',
+        value: 'car.ye.ar'
+      }]
     }, function (error, csv) {
       t.error(error);
       t.equal(csv, csvFixtures.nested);
@@ -331,7 +322,6 @@ loadFixtures().then(function (csvFixtures) {
     json2csv({
       data: 'not an object',
       field: ['carModel'],
-      fieldNames: ['test', 'blah']
     }, function (error, csv) {
       t.equal(error.message, 'params should include "fields" and/or non-empty "data" array of objects');
       t.notOk(csv);
