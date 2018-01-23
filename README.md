@@ -67,7 +67,7 @@ try {
   - `header` - Boolean, determines whether or not CSV file will contain a title column. Defaults to `true` if not specified.
   - `eol` - String, overrides the default OS line ending (i.e. `\n` on Unix and `\r\n` on Windows).
   - `flatten` - Boolean, flattens nested JSON using [flat]. Defaults to `false`.
-  - `unwindPath` - Array of Strings, creates multiple rows from a single JSON document similar to MongoDB's $unwind
+  - `unwind` - Array of Strings, creates multiple rows from a single JSON document similar to MongoDB's $unwind
   - `excelStrings` - Boolean, converts string data into normalized Excel style data.
   - `includeEmptyRows` - Boolean, includes empty rows. Defaults to `false`.
   - `preserveNewLinesInValues` - Boolean, preserve \r and \n in values. Defaults to `false`.
@@ -273,7 +273,7 @@ car.make, car.model, price, color
 
 ### Example 7
 
-You can unwind arrays similar to MongoDB's $unwind operation using the `unwindPath` option.
+You can unwind arrays similar to MongoDB's $unwind operation using the `unwind` option.
 
 ```javascript
 var json2csv = require('json2csv');
@@ -298,7 +298,7 @@ var myCars = [
     "colors": ["green","teal","aqua"]
   }
 ];
-var csv = json2csv({ data: myCars, fields: fields, unwindPath: 'colors' });
+var csv = json2csv({ data: myCars, fields: fields, unwind: 'colors' });
 
 fs.writeFile('file.csv', csv, function(err) {
   if (err) throw err;
@@ -372,7 +372,7 @@ var myCars = [
     ]
   }
 ];
-var csv = json2csv({ data: myCars, fields: fields, unwindPath: ['items', 'items.items'] });
+var csv = json2csv({ data: myCars, fields: fields, unwind: ['items', 'items.items'] });
 
 fs.writeFile('file.csv', csv, function(err) {
   if (err) throw err;
@@ -415,7 +415,7 @@ Usage: json2csv [options]
     -ex, --excel-strings                Converts string data into normalized Excel style data
     -n, --no-header                     Disable the column name header
     -F, --flatten                       Flatten nested objects
-    -u, --unwindPath <paths>            Creates multiple rows from a single JSON document similar to MongoDB unwind.
+    -u, --unwind <paths>                Creates multiple rows from a single JSON document similar to MongoDB unwind.
     -L, --ldjson                        Treat the input as Line-Delimited JSON.
     -p, --pretty                        Use only when printing to console. Logs output in pretty tables.
     -a, --include-empty-rows            Includes empty rows in the resulting CSV output.
