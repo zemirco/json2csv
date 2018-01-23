@@ -406,7 +406,7 @@ Usage: json2csv [options]
     -i, --input <input>          Path and name of the incoming json file.
     -o, --output [output]        Path and name of the resulting csv file. Defaults to console.
     -f, --fields <fields>        Specify the fields to convert.
-    -l, --fieldList [list]       Specify a file with a list of fields to include. One field per line.
+    -l, --field-list [list]       Specify a file with a list of fields to include. One field per line.
     -d, --delimiter [delimiter]  Specify a delimiter other than the default comma to use.
     -e, --eol [value]            Specify an End-of-Line value for separating rows.
     -q, --quote [value]          Specify an alternate quote value.

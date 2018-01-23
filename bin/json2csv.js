@@ -15,7 +15,7 @@ program
   .option('-i, --input <input>', 'Path and name of the incoming json file. If not provided, will read from stdin.')
   .option('-o, --output [output]', 'Path and name of the resulting csv file. Defaults to stdout.')
   .option('-f, --fields <fields>', 'Specify the fields to convert.')
-  .option('-l, --fieldList [list]', 'Specify a file with a list of fields to include. One field per line.')
+  .option('-l, --field-list [list]', 'Specify a file with a list of fields to include. One field per line.')
   .option('-d, --delimiter [delimiter]', 'Specify a delimiter other than the default comma to use.')
   .option('-v, --defaultValue [defaultValue]', 'Specify a default value other than empty string.')
   .option('-e, --eol [value]', 'Specify an End-of-Line value for separating rows.')
