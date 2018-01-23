@@ -401,22 +401,26 @@ Usage: json2csv [options]
 
   Options:
 
-    -h, --help                   output usage information
-    -V, --version                output the version number
-    -i, --input <input>          Path and name of the incoming json file.
-    -o, --output [output]        Path and name of the resulting csv file. Defaults to console.
-    -f, --fields <fields>        Specify the fields to convert.
-    -l, --fieldList [list]       Specify a file with a list of fields to include. One field per line.
-    -d, --delimiter [delimiter]  Specify a delimiter other than the default comma to use.
-    -e, --eol [value]            Specify an End-of-Line value for separating rows.
-    -q, --quote [value]          Specify an alternate quote value.
-    -n, --no-header              Disable the column name header
-    -F, --flatten                Flatten nested objects
-    -u, --unwindPath <paths>     Creates multiple rows from a single JSON document similar to MongoDB unwind.
-    -L, --ldjson                 Treat the input as Line-Delimited JSON.
-    -p, --pretty                 Use only when printing to console. Logs output in pretty tables.
-    -a, --include-empty-rows     Includes empty rows in the resulting CSV output.
-    -b, --with-bom               Includes BOM character at the beginning of the CSV.
+    -h, --help                          output usage information
+    -V, --version                       output the version number
+    -i, --input <input>                 Path and name of the incoming json file. If not provided, will read from stdin.
+    -o, --output [output]               Path and name of the resulting csv file. Defaults to stdout.
+    -f, --fields <fields>               Specify the fields to convert.
+    -l, --fieldList [list]              Specify a file with a list of fields to include. One field per line.
+    -d, --delimiter [delimiter]         Specify a delimiter other than the default comma to use.
+    -v, --default-value [defaultValue]  Specify a default value other than empty string.
+    -e, --eol [value]                   Specify an End-of-Line value for separating rows.
+    -q, --quote [value]                 Specify an alternate quote value.
+    -dq, --double-quotes [value]        Specify a value to replace double quote in strings
+    -ex, --excel-strings                Converts string data into normalized Excel style data
+    -n, --no-header                     Disable the column name header
+    -F, --flatten                       Flatten nested objects
+    -u, --unwindPath <paths>            Creates multiple rows from a single JSON document similar to MongoDB unwind.
+    -L, --ldjson                        Treat the input as Line-Delimited JSON.
+    -p, --pretty                        Use only when printing to console. Logs output in pretty tables.
+    -a, --include-empty-rows            Includes empty rows in the resulting CSV output.
+    -b, --with-bom                      Includes BOM character at the beginning of the csv.
+    -h, --help                          output usage information
 ```
 
 An input file `-i` and fields `-f` are required. If no output `-o` is specified the result is logged to the console.

@@ -17,10 +17,11 @@ program
   .option('-f, --fields <fields>', 'Specify the fields to convert.')
   .option('-l, --fieldList [list]', 'Specify a file with a list of fields to include. One field per line.')
   .option('-d, --delimiter [delimiter]', 'Specify a delimiter other than the default comma to use.')
-  .option('-v, --defaultValue [defaultValue]', 'Specify a default value other than empty string.')
+  .option('-v, --default-value [defaultValue]', 'Specify a default value other than empty string.')
   .option('-e, --eol [value]', 'Specify an End-of-Line value for separating rows.')
   .option('-q, --quote [value]', 'Specify an alternate quote value.')
-  .option('-dq, --doubleQuotes [value]', 'Specify a value to replace double quote in strings')
+  .option('-dq, --double-quotes [value]', 'Specify a value to replace double quote in strings')
+  .option('-ex, --excel-strings','Converts string data into normalized Excel style data')
   .option('-n, --no-header', 'Disable the column name header')
   .option('-F, --flatten', 'Flatten nested objects')
   .option('-u, --unwindPath <paths>', 'Creates multiple rows from a single JSON document similar to MongoDB unwind.')
@@ -123,6 +124,7 @@ getFields(function (err, fields) {
       quote: program.quote,
       doubleQuotes: program.doubleQuotes,
       defaultValue: program.defaultValue,
+      excelStrings: program.excelStrings,
       flatten: program.flatten,
       includeEmptyRows: program.includeEmptyRows,
       withBOM: program.withBom
