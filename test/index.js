@@ -318,7 +318,22 @@ loadFixtures().then(function (csvFixtures) {
     });
   });
 
-  test('should error if params is not an object', function (t) {
+  test('should error synchronously if fieldNames don\'t line up to fields', function (t) {
+    var csv;
+    try {
+      csv = json2csv({
+        data: 'not an object',
+        field: ['carModel'],
+      });
+      t.notOk(true);
+    } catch (error) {
+      t.equal(error.message, 'params should include "fields" and/or non-empty "data" array of objects');
+      t.notOk(csv);
+      t.end();
+    }
+  });
+
+  test('should error asynchronously if params is not an object', function (t) {
     json2csv({
       data: 'not an object',
       field: ['carModel'],
