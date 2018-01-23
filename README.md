@@ -65,12 +65,11 @@ try {
   - `header` - Boolean, determines whether or not CSV file will contain a title column. Defaults to `true` if not specified.
   - `eol` - String, overrides the default OS line ending (i.e. `\n` on Unix and `\r\n` on Windows).
   - `flatten` - Boolean, flattens nested JSON using [flat]. Defaults to `false`.
-  - `unwindPath` - Array of Strings, creates multiple rows from a single JSON document similar to MongoDB's $unwind
+  - `unwind` - Array of Strings, creates multiple rows from a single JSON document similar to MongoDB's $unwind
   - `excelStrings` - Boolean, converts string data into normalized Excel style data.
   - `includeEmptyRows` - Boolean, includes empty rows. Defaults to `false`.
   - `preserveNewLinesInValues` - Boolean, preserve \r and \n in values. Defaults to `false`.
   - `withBOM` - Boolean, with BOM character. Defaults to `false`.
-- `callback` - `function (error, csvString) {}`. If provided, will callback asynchronously. Only supported for compatibility reasons.
 
 #### Example `fields` option
 ``` javascript
@@ -143,16 +142,14 @@ car, price, color
 ### Example 2
 
 Similarly to [mongoexport](http://www.mongodb.org/display/DOCS/mongoexport) you can choose which fields to export.
-Note: this example uses the optional callback format.
 
 ```javascript
 var json2csv = require('json2csv');
 var fields = ['car', 'color'];
 
-json2csv({ data: myCars, fields: fields }, function(err, csv) {
-  if (err) console.log(err);
-  console.log(csv);
-});
+var csv = json2csv({ data: myCars, fields: fields });
+
+console.log(csv);
 ```
 
 Results in
@@ -274,7 +271,7 @@ car.make, car.model, price, color
 
 ### Example 7
 
-You can unwind arrays similar to MongoDB's $unwind operation using the `unwindPath` option.
+You can unwind arrays similar to MongoDB's $unwind operation using the `unwind` option.
 
 ```javascript
 var json2csv = require('json2csv');
@@ -299,7 +296,7 @@ var myCars = [
     "colors": ["green","teal","aqua"]
   }
 ];
-var csv = json2csv({ data: myCars, fields: fields, unwindPath: 'colors' });
+var csv = json2csv({ data: myCars, fields: fields, unwind: 'colors' });
 
 fs.writeFile('file.csv', csv, function(err) {
   if (err) throw err;
@@ -373,7 +370,7 @@ var myCars = [
     ]
   }
 ];
-var csv = json2csv({ data: myCars, fields: fields, unwindPath: ['items', 'items.items'] });
+var csv = json2csv({ data: myCars, fields: fields, unwind: ['items', 'items.items'] });
 
 fs.writeFile('file.csv', csv, function(err) {
   if (err) throw err;
@@ -402,22 +399,26 @@ Usage: json2csv [options]
 
   Options:
 
-    -h, --help                   output usage information
-    -V, --version                output the version number
-    -i, --input <input>          Path and name of the incoming json file.
-    -o, --output [output]        Path and name of the resulting csv file. Defaults to console.
-    -f, --fields <fields>        Specify the fields to convert.
-    -l, --fieldList [list]       Specify a file with a list of fields to include. One field per line.
-    -d, --delimiter [delimiter]  Specify a delimiter other than the default comma to use.
-    -e, --eol [value]            Specify an End-of-Line value for separating rows.
-    -q, --quote [value]          Specify an alternate quote value.
-    -n, --no-header              Disable the column name header
-    -F, --flatten                Flatten nested objects
-    -u, --unwindPath <paths>     Creates multiple rows from a single JSON document similar to MongoDB unwind.
-    -L, --ldjson                 Treat the input as Line-Delimited JSON.
-    -p, --pretty                 Use only when printing to console. Logs output in pretty tables.
-    -a, --include-empty-rows     Includes empty rows in the resulting CSV output.
-    -b, --with-bom               Includes BOM character at the beginning of the CSV.
+    -h, --help                          output usage information
+    -V, --version                       output the version number
+    -i, --input <input>                 Path and name of the incoming json file. If not provided, will read from stdin.
+    -o, --output [output]               Path and name of the resulting csv file. Defaults to stdout.
+    -f, --fields <fields>               Specify the fields to convert.
+    -l, --fieldList [list]              Specify a file with a list of fields to include. One field per line.
+    -d, --delimiter [delimiter]         Specify a delimiter other than the default comma to use.
+    -v, --default-value [defaultValue]  Specify a default value other than empty string.
+    -e, --eol [value]                   Specify an End-of-Line value for separating rows.
+    -q, --quote [value]                 Specify an alternate quote value.
+    -dq, --double-quotes [value]        Specify a value to replace double quote in strings
+    -ex, --excel-strings                Converts string data into normalized Excel style data
+    -n, --no-header                     Disable the column name header
+    -F, --flatten                       Flatten nested objects
+    -u, --unwind <paths>                Creates multiple rows from a single JSON document similar to MongoDB unwind.
+    -L, --ldjson                        Treat the input as Line-Delimited JSON.
+    -p, --pretty                        Use only when printing to console. Logs output in pretty tables.
+    -a, --include-empty-rows            Includes empty rows in the resulting CSV output.
+    -b, --with-bom                      Includes BOM character at the beginning of the csv.
+    -h, --help                          output usage information
 ```
 
 An input file `-i` and fields `-f` are required. If no output `-o` is specified the result is logged to the console.

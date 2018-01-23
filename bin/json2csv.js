@@ -15,15 +15,16 @@ program
   .option('-i, --input <input>', 'Path and name of the incoming json file. If not provided, will read from stdin.')
   .option('-o, --output [output]', 'Path and name of the resulting csv file. Defaults to stdout.')
   .option('-f, --fields <fields>', 'Specify the fields to convert.')
-  .option('-l, --fieldList [list]', 'Specify a file with a list of fields to include. One field per line.')
+  .option('-l, --field-list [list]', 'Specify a file with a list of fields to include. One field per line.')
   .option('-d, --delimiter [delimiter]', 'Specify a delimiter other than the default comma to use.')
-  .option('-v, --defaultValue [defaultValue]', 'Specify a default value other than empty string.')
+  .option('-v, --default-value [defaultValue]', 'Specify a default value other than empty string.')
   .option('-e, --eol [value]', 'Specify an End-of-Line value for separating rows.')
   .option('-q, --quote [value]', 'Specify an alternate quote value.')
-  .option('-dq, --doubleQuotes [value]', 'Specify a value to replace double quote in strings')
+  .option('-dq, --double-quotes [value]', 'Specify a value to replace double quote in strings')
+  .option('-ex, --excel-strings','Converts string data into normalized Excel style data')
   .option('-n, --no-header', 'Disable the column name header')
   .option('-F, --flatten', 'Flatten nested objects')
-  .option('-u, --unwindPath <paths>', 'Creates multiple rows from a single JSON document similar to MongoDB unwind.')
+  .option('-u, --unwind <paths>', 'Creates multiple rows from a single JSON document similar to MongoDB unwind.')
   .option('-L, --ldjson', 'Treat the input as Line-Delimited JSON.')
   .option('-p, --pretty', 'Use only when printing to console. Logs output in pretty tables.')
   .option('-a, --include-empty-rows', 'Includes empty rows in the resulting CSV output.')
@@ -123,6 +124,7 @@ getFields(function (err, fields) {
       quote: program.quote,
       doubleQuotes: program.doubleQuotes,
       defaultValue: program.defaultValue,
+      excelStrings: program.excelStrings,
       flatten: program.flatten,
       includeEmptyRows: program.includeEmptyRows,
       withBOM: program.withBom
@@ -136,8 +138,8 @@ getFields(function (err, fields) {
       opts.eol = program.eol;
     }
 
-    if (program.unwindPath) {
-      opts.unwindPath = program.unwindPath.split(',');
+    if (program.unwind) {
+      opts.unwind = program.unwind.split(',');
     }
 
     var csv = json2csv(opts);
