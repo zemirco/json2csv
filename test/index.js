@@ -684,7 +684,7 @@ loadFixtures().then(function (csvFixtures) {
     json2csv({
       data: jsonUnwind,
       fields: ['carModel', 'price', 'colors'],
-      unwindPath: 'colors'
+      unwind: 'colors'
     }, function (error, csv) {
       t.error(error);
       t.equal(csv, csvFixtures.unwind);
@@ -696,7 +696,7 @@ loadFixtures().then(function (csvFixtures) {
     json2csv({
       data: jsonUnwind2,
       fields: ['carModel', 'price', 'items.name', 'items.color', 'items.items.position', 'items.items.color'],
-      unwindPath: ['items', 'items.items']
+      unwind: ['items', 'items.items']
     }, function (error, csv) {
       t.error(error);
       t.equal(csv, csvFixtures.unwind2);

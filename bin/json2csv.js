@@ -23,7 +23,7 @@ program
   .option('-dq, --doubleQuotes [value]', 'Specify a value to replace double quote in strings')
   .option('-n, --no-header', 'Disable the column name header')
   .option('-F, --flatten', 'Flatten nested objects')
-  .option('-u, --unwindPath <paths>', 'Creates multiple rows from a single JSON document similar to MongoDB unwind.')
+  .option('-u, --unwind <paths>', 'Creates multiple rows from a single JSON document similar to MongoDB unwind.')
   .option('-L, --ldjson', 'Treat the input as Line-Delimited JSON.')
   .option('-p, --pretty', 'Use only when printing to console. Logs output in pretty tables.')
   .option('-a, --include-empty-rows', 'Includes empty rows in the resulting CSV output.')
@@ -136,8 +136,8 @@ getFields(function (err, fields) {
       opts.eol = program.eol;
     }
 
-    if (program.unwindPath) {
-      opts.unwindPath = program.unwindPath.split(',');
+    if (program.unwind) {
+      opts.unwind = program.unwind.split(',');
     }
 
     var csv = json2csv(opts);
