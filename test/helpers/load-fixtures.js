@@ -37,7 +37,6 @@ var fixtures = [
   'withBOM',
 ];
 
-/*eslint-disable no-console*/
 module.exports = function () {
   return Promise.all(fixtures.map(function (key) {
     return new Promise(function (resolve, reject) {
@@ -51,11 +50,10 @@ module.exports = function () {
       });
     })
   }))
-  .then(function (data) {
-    return data.reduce(function (results, fixture, i) {
-      results[fixtures[i]] = fixture;
-      return results;
-    } ,{})
-  });
+    .then(function (data) {
+      return data.reduce(function (results, fixture, i) {
+        results[fixtures[i]] = fixture;
+        return results;
+      } ,{})
+    });
 };
-/*eslint-enable no-console*/

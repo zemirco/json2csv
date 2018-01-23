@@ -18,7 +18,6 @@ var jsonUnwind = require('./fixtures/json/unwind');
 var jsonUnwind2 = require('./fixtures/json/unwind2');
 var jsonEOL = require('./fixtures/json/eol');
 var jsonSpecialCharacters = require('./fixtures/json/specialCharacters');
-var csvFixtures = {};
 
 loadFixtures().then(function (csvFixtures) {
   test('should work synchronously', function (t) {
@@ -120,7 +119,9 @@ loadFixtures().then(function (csvFixtures) {
     json2csv({
       data: {
         a: 1,
-        funct: function (a) { return a + 1; },
+        funct: function (a) {
+          return a + 1;
+        },
       }
     }, function (error, csv) {
       t.error(error);
@@ -362,7 +363,7 @@ loadFixtures().then(function (csvFixtures) {
 
   test('should handle date', function (t) {
     json2csv({
-      data: {'date': new Date("2017-01-01T00:00:00.000Z")}
+      data: {'date': new Date('2017-01-01T00:00:00.000Z')}
     }, function (error, csv) {
       t.error(error);
       t.equal(csv, csvFixtures.date);
@@ -413,13 +414,12 @@ loadFixtures().then(function (csvFixtures) {
         label: 'NEST1',
         value: 'bird.nest1'
       },
-        'bird.nest2',
-        {
-          label: 'nonexistent',
-          value: 'fake.path',
-          default: 'col specific default value'
-        }
-      ],
+      'bird.nest2',
+      {
+        label: 'nonexistent',
+        value: 'fake.path',
+        default: 'col specific default value'
+      }],
       defaultValue: 'NULL'
     }, function (error, csv) {
       t.error(error);
@@ -680,36 +680,36 @@ loadFixtures().then(function (csvFixtures) {
     });
   });
 
-  test('should unwind an array into multiple rows', function(t) {
+  test('should unwind an array into multiple rows', function (t) {
     json2csv({
       data: jsonUnwind,
       fields: ['carModel', 'price', 'colors'],
       unwindPath: 'colors'
-    }, function(error, csv) {
+    }, function (error, csv) {
       t.error(error);
       t.equal(csv, csvFixtures.unwind);
       t.end()
     })
   });
 
-  test('should unwind twice an array into multiple rows', function(t) {
+  test('should unwind twice an array into multiple rows', function (t) {
     json2csv({
       data: jsonUnwind2,
       fields: ['carModel', 'price', 'items.name', 'items.color', 'items.items.position', 'items.items.color'],
       unwindPath: ['items', 'items.items']
-    }, function(error, csv) {
+    }, function (error, csv) {
       t.error(error);
       t.equal(csv, csvFixtures.unwind2);
       t.end()
     })
   });
 
-  test('should not preserve new lines in values by default', function(t) {
+  test('should not preserve new lines in values by default', function (t) {
     json2csv({
       data: jsonEOL,
       fields: ['a string'],
       eol: '\r\n',
-    }, function(error, csv) {
+    }, function (error, csv) {
       t.error(error);
       t.equal(csv, [
         '"a string"',
@@ -720,13 +720,13 @@ loadFixtures().then(function (csvFixtures) {
     });
   });
 
-  test('should preserve new lines in values when options.preserveNewLinesInValues is true', function(t) {
+  test('should preserve new lines in values when options.preserveNewLinesInValues is true', function (t) {
     json2csv({
       data: jsonEOL,
       fields: ['a string'],
       eol: '\r\n',
       preserveNewLinesInValues: true,
-    }, function(error, csv) {
+    }, function (error, csv) {
       t.error(error);
       t.equal(csv, [
         '"a string"',
@@ -748,4 +748,4 @@ loadFixtures().then(function (csvFixtures) {
     t.end();
   });
 })
-.catch(console.log);
+  .catch(console.log); // eslint-disable-line no-console

@@ -28,7 +28,9 @@
   "scripts": {
     "build": "webpack",
     "test": "node test | tap-spec",
-    "test-coverage": "istanbul cover test/index.js --report lcovonly | tap-spec",
+    "lint": "eslint bin lib test",
+    "test-with-coverage": "nyc --reporter=text node test | tap-spec",
+    "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "deploy:docs": "docpress b && git-update-ghpages zemirco/json2csv _docpress",
     "prepublish": "in-publish && npm run before:publish || not-in-publish",
     "before:publish": "npm test && npm run build && npm run deploy:docs",
@@ -46,11 +48,12 @@
     "lodash.clonedeep": "^4.5.0"
   },
   "devDependencies": {
+    "coveralls": "^3.0.0",
     "docpress": "^0.7.0",
-    "eslint": "^3.3.1",
+    "eslint": "^4.16.0",
     "git-update-ghpages": "^1.3.0",
     "in-publish": "^2.0.0",
-    "istanbul": "^0.4.3",
+    "nyc": "^11.4.1",
     "standard-version": "^4.0.0",
     "tap-spec": "^4.1.0",
     "tape": "^4.0.0",
