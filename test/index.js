@@ -18,7 +18,6 @@ var jsonUnwind = require('./fixtures/json/unwind');
 var jsonUnwind2 = require('./fixtures/json/unwind2');
 var jsonEOL = require('./fixtures/json/eol');
 var jsonSpecialCharacters = require('./fixtures/json/specialCharacters');
-var csvFixtures = {};
 
 loadFixtures().then(function (csvFixtures) {
   test('should work synchronously', function (t) {

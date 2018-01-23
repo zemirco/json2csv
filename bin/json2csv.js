@@ -121,7 +121,7 @@ getFields(function (err, fields) {
       fields: fields,
       header: program.header,
       quote: program.quote,
-      doubleQuotes: doubleQuotes,
+      doubleQuotes: program.doubleQuotes,
       defaultValue: program.defaultValue,
       flatten: program.flatten,
       includeEmptyRows: program.includeEmptyRows,
