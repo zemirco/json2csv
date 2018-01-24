@@ -52,22 +52,6 @@ loadFixtures().then(function (csvFixtures) {
     t.end();
   });
 
-  test('should error if fieldNames don\'t line up to fields', function (t) {
-    var csv;
-    try {
-      csv = json2csv({
-        data: jsonDefault,
-        field: ['carModel'],
-        fieldNames: ['test', 'blah']
-      });
-      t.notOk(true);
-    } catch (error) {
-      t.equal(error.message, 'fieldNames and fields should be of the same length, if fieldNames is provided.');
-      t.notOk(csv);
-      t.end();
-    }
-  });
-
   test('should parse json to csv', function (t) {
     var csv = json2csv({
       data: jsonDefault,
@@ -238,13 +222,18 @@ loadFixtures().then(function (csvFixtures) {
     t.end();
   });
 
-  test('should name columns as specified in \'fieldNames\' property', function (t) {
+  test('should name columns as specified in \'fields\' property', function (t) {
     var csv = json2csv({
       data: jsonDefault,
-      fields: ['carModel', 'price'],
-      fieldNames: ['Car Model', 'Price USD']
+      fields: [{
+        label: 'Car Model',
+        value: 'carModel'
+      },{
+        label: 'Price USD',
+        value: 'price'
+      }]
     });
-
+    
     t.equal(csv, csvFixtures.fieldNames);
     t.end();
   });
@@ -252,8 +241,22 @@ loadFixtures().then(function (csvFixtures) {
   test('should output nested properties', function (t) {
     var csv = json2csv({
       data: jsonNested,
-      fields: ['car.make', 'car.model', 'price', 'color', 'car.ye.ar'],
-      fieldNames: ['Make', 'Model', 'Price', 'Color', 'Year']
+      fields: [{
+        label: 'Make',
+        value: 'car.make'
+      },{
+        label: 'Model',
+        value: 'car.model'
+      },{
+        label: 'Price',
+        value: 'price'
+      },{
+        label: 'Color',
+        value: 'color'
+      },{
+        label: 'Year',
+        value: 'car.ye.ar'
+      }]
     });
 
     t.equal(csv, csvFixtures.nested);
@@ -282,13 +285,28 @@ loadFixtures().then(function (csvFixtures) {
     t.end();
   });
 
-  test('should error if params is not an object', function (t) {
+  test('should error synchronously if fieldNames don\'t line up to fields', function (t) {
     var csv;
-
+    
     try {
       csv = json2csv({
         data: 'not an object',
-        field: ['carModel'],
+        field: ['carModel']
+      });
+      t.notOk(true);
+    } catch (error) {
+      t.equal(error.message, 'params should include "fields" and/or non-empty "data" array of objects');
+      t.notOk(csv);
+      t.end();
+    }
+  });
+
+  test('should error asynchronously if params is not an object', function (t) {
+    var csv;
+    
+    try {
+      csv = json2csv({
+        data: 'not an object',
         fieldNames: ['test', 'blah']
       });
     } catch(error) {

@@ -58,8 +58,6 @@ try {
 - `options` - **Required**; Options hash.
   - `data` - **Required**; Array of JSON objects.
   - `fields` - Array of Objects/Strings. Defaults to toplevel JSON attributes. See example below.
-  - `fieldNames` Array of Strings, names for the fields at the same indexes.
-    Must be the same length as `fields` array. (Optional. Maintained for backwards compatibility. Use `fields` config object for more features)
   - `delimiter` - String, delimiter of columns. Defaults to `,` if not specified.
   - `defaultValue` - String, default value to use when missing data. Defaults to `<empty>` if not specified. (Overridden by `fields[].default`)
   - `quote` - String, quote around cell values and column names. Defaults to `"` if not specified.
@@ -193,9 +191,14 @@ You can choose custom column names for the exported file.
 
 ```javascript
 var json2csv = require('json2csv');
-var fields = ['car', 'price'];
-var fieldNames = ['Car Name', 'Price USD'];
-var csv = json2csv({ data: myCars, fields: fields, fieldNames: fieldNames });
+var fields = [{
+  label: 'Car Name',
+  value: 'car'
+},{
+  label: 'Price USD',
+  value: 'price'
+}];
+var csv = json2csv({ data: myCars, fields: fields });
 
 console.log(csv);
 ```
@@ -207,11 +210,9 @@ You can choose custom quotation marks.
 ```javascript
 var json2csv = require('json2csv');
 var fields = ['car', 'price'];
-var fieldNames = ['Car Name', 'Price USD'];
 var opts = {
   data: myCars,
   fields: fields,
-  fieldNames: fieldNames,
   quote: ''
 };
 var csv = json2csv(opts);
