@@ -17,19 +17,17 @@ declare namespace json2csv {
   }
 
   interface Options<T> {
-    data: T[];
     fields?: (string | Field | CallbackField<T>)[];
-    delimiter?: string;
+    unwind?: string | string[];
+    flatten?: boolean;
     defaultValue?: string;
     quote?: string;
     doubleQuote?: string;
-    header?: boolean;
+    delimiter?: string;
     eol?: string;
-    flatten?: boolean;
-    unwind?: string | string[];
     excelStrings?: boolean;
+    header?: boolean;
     includeEmptyRows?: boolean;
-    preserveNewLinesInValues?: boolean;
     withBOM?: boolean;
   }
 
@@ -38,9 +36,9 @@ declare namespace json2csv {
   }
 }
 
-declare function json2csv<T>(options: json2csv.Options<T>, callback: json2csv.Callback): void;
-declare function json2csv<T>(options: json2csv.Options<T>): string;
-declare function json2csv(options: json2csv.Options<{ [key: string]: string; }>, callback: json2csv.Callback): void;
-declare function json2csv(options: json2csv.Options<{ [key: string]: string; }>): string;
+declare function json2csv<T>(data: Any, options: json2csv.Options<T>, callback: json2csv.Callback): void;
+declare function json2csv<T>(data: Any, options: json2csv.Options<T>): string;
+declare function json2csv(data: Any, options: json2csv.Options<{ [key: string]: string; }>, callback: json2csv.Callback): void;
+declare function json2csv(data: Any, options: json2csv.Options<{ [key: string]: string; }>): string;
 
 export = json2csv;
