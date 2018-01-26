@@ -151,4 +151,5 @@ Promise.all([
     // eslint-disable-next-line no-console
     console.log(program.pretty ? logPretty(csv) : csv);
   })
+  // eslint-disable-next-line no-console
   .catch(console.log);

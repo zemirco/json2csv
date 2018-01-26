@@ -141,7 +141,7 @@ Similarly to [mongoexport](http://www.mongodb.org/display/DOCS/mongoexport) you 
 const json2csv = require('json2csv');
 const fields = ['car', 'color'];
 
-const csv = json2csv({ data: myCars, fields: fields });
+const csv = json2csv(myCars, { fields });
 
 console.log(csv);
 ```
