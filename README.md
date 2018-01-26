@@ -21,11 +21,11 @@ $ npm install json2csv --save
 Include the module and run or [use it from the Command Line](https://github.com/zemirco/json2csv#command-line-interface). It's also possible to include `json2csv` as a global using an HTML script tag, though it's normally recommended that modules are used.
 
 ```javascript
-var json2csv = require('json2csv');
-var fields = ['field1', 'field2', 'field3'];
+const json2csv = require('json2csv');
+const fields = ['field1', 'field2', 'field3'];
 
 try {
-  var result = json2csv({ data: myData, fields: fields });
+  const result = json2csv(myData, { fields });
   console.log(result);
 } catch (err) {
   // Errors are thrown for bad options, or if the data is empty and no fields are provided.
@@ -56,19 +56,17 @@ try {
 ### Available Options
 
 - `options` - **Required**; Options hash.
-  - `data` - **Required**; Array of JSON objects.
   - `fields` - Array of Objects/Strings. Defaults to toplevel JSON attributes. See example below.
-  - `delimiter` - String, delimiter of columns. Defaults to `,` if not specified.
+  - `unwind` - Array of Strings, creates multiple rows from a single JSON document similar to MongoDB's $unwind
+  - `flatten` - Boolean, flattens nested JSON using [flat]. Defaults to `false`.
   - `defaultValue` - String, default value to use when missing data. Defaults to `<empty>` if not specified. (Overridden by `fields[].default`)
   - `quote` - String, quote around cell values and column names. Defaults to `"` if not specified.
   - `doubleQuote` - String, the value to replace double quote in strings. Defaults to 2x`quotes` (for example `""`) if not specified.
-  - `header` - Boolean, determines whether or not CSV file will contain a title column. Defaults to `true` if not specified.
+  - `delimiter` - String, delimiter of columns. Defaults to `,` if not specified.
   - `eol` - String, overrides the default OS line ending (i.e. `\n` on Unix and `\r\n` on Windows).
-  - `flatten` - Boolean, flattens nested JSON using [flat]. Defaults to `false`.
-  - `unwind` - Array of Strings, creates multiple rows from a single JSON document similar to MongoDB's $unwind
   - `excelStrings` - Boolean, converts string data into normalized Excel style data.
+  - `header` - Boolean, determines whether or not CSV file will contain a title column. Defaults to `true` if not specified.
   - `includeEmptyRows` - Boolean, includes empty rows. Defaults to `false`.
-  - `preserveNewLinesInValues` - Boolean, preserve \r and \n in values. Defaults to `false`.
   - `withBOM` - Boolean, with BOM character. Defaults to `false`.
 
 #### Example `fields` option
@@ -85,11 +83,7 @@ try {
     // Supports label -> derived value
     {
       label: 'some label', // Supports duplicate labels (required, else your column will be labeled [function])
-      value: function(row, field, data) {
-        // field = { label, default }
-        // data = full data object
-        return row.path1 + row.path2;
-      },
+      value: (row, field) => row.path1 + row.path2, // field = { label, default }
       default: 'NULL', // default if value function returns null or undefined
       stringify: true // If value is function use this flag to signal if resulting string will be quoted (stringified) or not (optional, default: true)
     },
@@ -104,10 +98,10 @@ try {
 ### Example 1
 
 ```javascript
-var json2csv = require('json2csv');
-var fs = require('fs');
-var fields = ['car', 'price', 'color'];
-var myCars = [
+const json2csv = require('json2csv');
+const fs = require('fs');
+const fields = ['car', 'price', 'color'];
+const myCars = [
   {
     "car": "Audi",
     "price": 40000,
@@ -122,9 +116,9 @@ var myCars = [
     "color": "green"
   }
 ];
-var csv = json2csv({ data: myCars, fields: fields });
+const csv = json2csv(myCars, { fields });
 
-fs.writeFile('file.csv', csv, function(err) {
+fs.writeFile('file.csv', csv, (err) => {
   if (err) throw err;
   console.log('file saved');
 });
@@ -144,10 +138,10 @@ car, price, color
 Similarly to [mongoexport](http://www.mongodb.org/display/DOCS/mongoexport) you can choose which fields to export.
 
 ```javascript
-var json2csv = require('json2csv');
-var fields = ['car', 'color'];
+const json2csv = require('json2csv');
+const fields = ['car', 'color'];
 
-var csv = json2csv({ data: myCars, fields: fields });
+const csv = json2csv(myCars, { fields });
 
 console.log(csv);
 ```
@@ -166,9 +160,9 @@ car, color
 Use a custom delimiter to create tsv files. Add it as the value of the delimiter property on the parameters:
 
 ```javascript
-var json2csv = require('json2csv');
-var fields = ['car', 'price', 'color'];
-var tsv = json2csv({ data: myCars, fields: fields, delimiter: '\t' });
+const json2csv = require('json2csv');
+const fields = ['car', 'price', 'color'];
+const tsv = json2csv(myCars, { fields, delimiter: '\t' });
 
 console.log(tsv);
 ```
@@ -190,15 +184,15 @@ If no delimiter is specified, the default `,` is used
 You can choose custom column names for the exported file.
 
 ```javascript
-var json2csv = require('json2csv');
-var fields = [{
+const json2csv = require('json2csv');
+const fields = [{
   label: 'Car Name',
   value: 'car'
 },{
   label: 'Price USD',
   value: 'price'
 }];
-var csv = json2csv({ data: myCars, fields: fields });
+const csv = json2csv(myCars, { fields });
 
 console.log(csv);
 ```
@@ -208,14 +202,15 @@ console.log(csv);
 You can choose custom quotation marks.
 
 ```javascript
-var json2csv = require('json2csv');
-var fields = ['car', 'price'];
-var opts = {
-  data: myCars,
-  fields: fields,
-  quote: ''
-};
-var csv = json2csv(opts);
+const json2csv = require('json2csv');
+const fields = [{
+  label: 'Car Name',
+  value: 'car'
+},{
+  label: 'Price USD',
+  value: 'price'
+}];
+const csv = json2csv(myCars, { fields, quote: '' });
 
 console.log(csv);
 ```
@@ -234,10 +229,10 @@ Porsche, 30000
 You can also specify nested properties using dot notation.
 
 ```javascript
-var json2csv = require('json2csv');
-var fs = require('fs');
-var fields = ['car.make', 'car.model', 'price', 'color'];
-var myCars = [
+const json2csv = require('json2csv');
+const fs = require('fs');
+const fields = ['car.make', 'car.model', 'price', 'color'];
+const myCars = [
   {
     "car": {"make": "Audi", "model": "A3"},
     "price": 40000,
@@ -252,9 +247,9 @@ var myCars = [
     "color": "green"
   }
 ];
-var csv = json2csv({ data: myCars, fields: fields });
+const csv = json2csv(myCars, { fields });
 
-fs.writeFile('file.csv', csv, function(err) {
+fs.writeFile('file.csv', csv, (err) => {
   if (err) throw err;
   console.log('file saved');
 });
@@ -274,10 +269,10 @@ car.make, car.model, price, color
 You can unwind arrays similar to MongoDB's $unwind operation using the `unwind` option.
 
 ```javascript
-var json2csv = require('json2csv');
-var fs = require('fs');
-var fields = ['carModel', 'price', 'colors'];
-var myCars = [
+const json2csv = require('json2csv');
+const fs = require('fs');
+const fields = ['carModel', 'price', 'colors'];
+const myCars = [
   {
     "carModel": "Audi",
     "price": 0,
@@ -296,9 +291,9 @@ var myCars = [
     "colors": ["green","teal","aqua"]
   }
 ];
-var csv = json2csv({ data: myCars, fields: fields, unwind: 'colors' });
+const csv = json2csv(myCars, { fields, unwind: 'colors' });
 
-fs.writeFile('file.csv', csv, function(err) {
+fs.writeFile('file.csv', csv, (err) => {
   if (err) throw err;
   console.log('file saved');
 });
@@ -324,10 +319,10 @@ The content of the "file.csv" should be
 You can also unwind arrays multiple times or with nested objects.
 
 ```javascript
-var json2csv = require('json2csv');
-var fs = require('fs');
-var fields = ['carModel', 'price', 'items.name', 'items.color', 'items.items.position', 'items.items.color'];
-var myCars = [
+const json2csv = require('json2csv');
+const fs = require('fs');
+const fields = ['carModel', 'price', 'items.name', 'items.color', 'items.items.position', 'items.items.color'];
+const myCars = [
   {
     "carModel": "BMW",
     "price": 15000,
@@ -370,9 +365,9 @@ var myCars = [
     ]
   }
 ];
-var csv = json2csv({ data: myCars, fields: fields, unwind: ['items', 'items.items'] });
+const csv = json2csv(myCars, { fields, unwind: ['items', 'items.items'] });
 
-fs.writeFile('file.csv', csv, function(err) {
+fs.writeFile('file.csv', csv, (err) => {
   if (err) throw err;
   console.log('file saved');
 });
@@ -395,29 +390,29 @@ The content of the "file.csv" should be
 `json2csv` can also be called from the command line if installed with `-g`.
 
 ```bash
-Usage: json2csv [options]
+  Usage: json2csv [options]
+
 
   Options:
 
-    -h, --help                          output usage information
     -V, --version                       output the version number
     -i, --input <input>                 Path and name of the incoming json file. If not provided, will read from stdin.
     -o, --output [output]               Path and name of the resulting csv file. Defaults to stdout.
+    -L, --ldjson                        Treat the input as Line-Delimited JSON.
     -f, --fields <fields>               Specify the fields to convert.
-    -l, --fieldList [list]              Specify a file with a list of fields to include. One field per line.
-    -d, --delimiter [delimiter]         Specify a delimiter other than the default comma to use.
+    -l, --field-list [list]             Specify a file with a list of fields to include. One field per line.
+    -u, --unwind <paths>                Creates multiple rows from a single JSON document similar to MongoDB unwind.
+    -F, --flatten                       Flatten nested objects
     -v, --default-value [defaultValue]  Specify a default value other than empty string.
-    -e, --eol [value]                   Specify an End-of-Line value for separating rows.
     -q, --quote [value]                 Specify an alternate quote value.
     -dq, --double-quotes [value]        Specify a value to replace double quote in strings
+    -d, --delimiter [delimiter]         Specify a delimiter other than the default comma to use.
+    -e, --eol [value]                   Specify an End-of-Line value for separating rows.
     -ex, --excel-strings                Converts string data into normalized Excel style data
     -n, --no-header                     Disable the column name header
-    -F, --flatten                       Flatten nested objects
-    -u, --unwind <paths>                Creates multiple rows from a single JSON document similar to MongoDB unwind.
-    -L, --ldjson                        Treat the input as Line-Delimited JSON.
-    -p, --pretty                        Use only when printing to console. Logs output in pretty tables.
     -a, --include-empty-rows            Includes empty rows in the resulting CSV output.
     -b, --with-bom                      Includes BOM character at the beginning of the csv.
+    -p, --pretty                        Use only when printing to console. Logs output in pretty tables.
     -h, --help                          output usage information
 ```
 

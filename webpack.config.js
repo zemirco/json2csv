@@ -1,6 +1,6 @@
-var webpack = require('webpack');
+const webpack = require('webpack');
 
-var webpackConfig = {
+const webpackConfig = {
   entry: './lib/json2csv.js',
   resolve: {
     extensions: ['', '.js']

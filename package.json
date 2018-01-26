@@ -41,11 +41,10 @@
     "commander": "^2.8.1",
     "debug": "^3.1.0",
     "flat": "^4.0.0",
+    "lodash.clonedeep": "^4.5.0",
     "lodash.flatten": "^4.4.0",
     "lodash.get": "^4.4.0",
-    "lodash.set": "^4.3.0",
-    "lodash.uniq": "^4.5.0",
-    "lodash.clonedeep": "^4.5.0"
+    "lodash.set": "^4.3.0"
   },
   "devDependencies": {
     "coveralls": "^3.0.0",
