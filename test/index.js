@@ -625,7 +625,8 @@ Promise.all([
 
   test('should handle ld-json', (t) => {
     const opts = {
-      fields: ['carModel', 'price', 'color', 'transmission']
+      fields: ['carModel', 'price', 'color', 'transmission'],
+      ldjson: true
     };
 
     const transform = new Json2csvTransform(opts);
