@@ -20,7 +20,7 @@ Promise.all([
     const input = 'not an object';
     try {
       const parser = new Json2csvParser();
-      const csv = parser.parse(input);
+      parser.parse(input);
 
       t.notOk(true);
     } catch(error) {
