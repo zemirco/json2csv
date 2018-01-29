@@ -10,31 +10,6 @@ Can be used as a module and from the command line.
 
 See the [CHANGELOG] for details about the latest release.
 
-## How to use
-
-Install
-
-```bash
-$ npm install json2csv --save
-```
-
-Include the module and run or [use it from the Command Line](https://github.com/zemirco/json2csv#command-line-interface). It's also possible to include `json2csv` as a global using an HTML script tag, though it's normally recommended that modules are used.
-
-```javascript
-const json2csv = require('json2csv');
-const fields = ['field1', 'field2', 'field3'];
-
-try {
-  const result = json2csv(myData, { fields });
-  console.log(result);
-} catch (err) {
-  // Errors are thrown for bad options, or if the data is empty and no fields are provided.
-  // Be sure to provide fields if it is possible that your data array will be empty.
-  console.error(err);
-}
-```
-[other examples](#example-1)
-
 ## Features
 
 - Uses proper line endings on various operating systems
@@ -46,28 +21,212 @@ try {
 - Supports optional custom delimiters
 - Supports optional custom eol value
 - Supports optional custom quotation marks
-- Not create CSV column title by passing header: false, into params.
-- If field is not exist in object then the field value in CSV will be empty.
+- Optional header.
+- If field doesn't exist in object the field value in CSV will be empty.
 - Preserve new lines in values. Should be used with \r\n line endings for full compatibility with Excel.
 - Add a BOM character at the beginning of the csv to make Excel displaying special characters correctly.
 
-## Use as a module
+## How to install
+
+```bash
+# Global so it can be call from anywhere
+$ npm install -g json2csv
+# or as a dependency of a project
+$ npm install json2csv --save
+```
+
+## Command Line Interface
+
+`json2csv` can be called from the command line if installed globally (using the `-g` flag).
+
+```bash
+  Usage: json2csv [options]
+
+
+  Options:
+
+    -V, --version                       output the version number
+    -i, --input <input>                 Path and name of the incoming json file. If not provided, will read from stdin.
+    -o, --output [output]               Path and name of the resulting csv file. Defaults to stdout.
+    -L, --ldjson                        Treat the input as Line-Delimited JSON.
+    -s, --no-streamming                 Process the whole JSON array in memory instead of doing it line by line.
+    -f, --fields <fields>               Specify the fields to convert.
+    -l, --field-list [list]             Specify a file with a list of fields to include. One field per line.
+    -u, --unwind <paths>                Creates multiple rows from a single JSON document similar to MongoDB unwind.
+    -F, --flatten                       Flatten nested objects
+    -v, --default-value [defaultValue]  Specify a default value other than empty string.
+    -q, --quote [value]                 Specify an alternate quote value.
+    -Q, --double-quotes [value]         Specify a value to replace double quote in strings
+    -d, --delimiter [delimiter]         Specify a delimiter other than the default comma to use.
+    -e, --eol [value]                   Specify an End-of-Line value for separating rows.
+    -E, --excel-strings                 Converts string data into normalized Excel style data
+    -H, --no-header                     Disable the column name header
+    -a, --include-empty-rows            Includes empty rows in the resulting CSV output.
+    -b, --with-bom                      Includes BOM character at the beginning of the csv.
+    -p, --pretty                        Use only when printing to console. Logs output in pretty tables.
+    -h, --help                          output usage information
+```
+
+An input file `-i` and fields `-f` are required. If no output `-o` is specified the result is logged to the console.
+Use `-p` to show the result in a beautiful table inside the console.
+
+### CLI examples
+
+#### Input file and specify fields
+
+```bash
+$ json2csv -i input.json -f carModel,price,color
+carModel,price,color
+"Audi",10000,"blue"
+"BMW",15000,"red"
+"Mercedes",20000,"yellow"
+"Porsche",30000,"green"
+```
+
+#### Input file, specify fields and use pretty logging
+
+```bash
+$ json2csv -i input.json -f carModel,price,color -p
+```
+
+![Screenshot](https://s3.amazonaws.com/zeMirco/github/json2csv/json2csv-pretty.png)
+
+#### Generating CSV containing only specific fields
+
+```bash
+$ json2csv -i input.json -f carModel,price,color -o out.csv
+$ cat out.csv
+carModel,price,color
+"Audi",10000,"blue"
+"BMW",15000,"red"
+"Mercedes",20000,"yellow"
+"Porsche",30000,"green"
+```
+
+Same result will be obtained using passing the fields as a file.
+
+```bash
+$ json2csv -i input.json -l fieldList.txt -o out.csv
+```
+
+where the file `fieldList.txt` contains
+
+```
+carModel
+price
+color
+```
+
+#### Read input from stdin
+
+```bash
+$ json2csv -f price
+[{"price":1000},{"price":2000}]
+```
+
+Hit <kbd>Enter</kbd> and afterwards <kbd>CTRL</kbd> + <kbd>D</kbd> to end reading from stdin. The terminal should show
+
+```
+price
+1000
+2000
+```
+
+#### Appending to existing CSV
+
+Sometimes you want to add some additional rows with the same columns.
+This is how you can do that.
+
+```bash
+# Initial creation of csv with headings
+$ json2csv -i test.json -f name,version > test.csv
+# Append additional rows
+$ json2csv -i test.json -f name,version --no-header >> test.csv
+```
+
+## Javascript module
+
+`json2csv` can also be use programatically from you javascript codebase.
 
 ### Available Options
 
-- `options` - **Required**; Options hash.
-  - `fields` - Array of Objects/Strings. Defaults to toplevel JSON attributes. See example below.
-  - `unwind` - Array of Strings, creates multiple rows from a single JSON document similar to MongoDB's $unwind
-  - `flatten` - Boolean, flattens nested JSON using [flat]. Defaults to `false`.
-  - `defaultValue` - String, default value to use when missing data. Defaults to `<empty>` if not specified. (Overridden by `fields[].default`)
-  - `quote` - String, quote around cell values and column names. Defaults to `"` if not specified.
-  - `doubleQuote` - String, the value to replace double quote in strings. Defaults to 2x`quotes` (for example `""`) if not specified.
-  - `delimiter` - String, delimiter of columns. Defaults to `,` if not specified.
-  - `eol` - String, overrides the default OS line ending (i.e. `\n` on Unix and `\r\n` on Windows).
-  - `excelStrings` - Boolean, converts string data into normalized Excel style data.
-  - `header` - Boolean, determines whether or not CSV file will contain a title column. Defaults to `true` if not specified.
-  - `includeEmptyRows` - Boolean, includes empty rows. Defaults to `false`.
-  - `withBOM` - Boolean, with BOM character. Defaults to `false`.
+The programatic APIs take a configuration object very equivalent to the CLI options. 
+
+- `fields` - Array of Objects/Strings. Defaults to toplevel JSON attributes. See example below.
+- `ldjson` - Only effective on the streaming API. Indicates that data coming through the stream is ld-json.
+- `unwind` - Array of Strings, creates multiple rows from a single JSON document similar to MongoDB's $unwind
+- `flatten` - Boolean, flattens nested JSON using [flat]. Defaults to `false`.
+- `defaultValue` - String, default value to use when missing data. Defaults to `<empty>` if not specified. (Overridden by `fields[].default`)
+- `quote` - String, quote around cell values and column names. Defaults to `"` if not specified.
+- `doubleQuote` - String, the value to replace double quote in strings. Defaults to 2x`quotes` (for example `""`) if not specified.
+- `delimiter` - String, delimiter of columns. Defaults to `,` if not specified.
+- `eol` - String, overrides the default OS line ending (i.e. `\n` on Unix and `\r\n` on Windows).
+- `excelStrings` - Boolean, converts string data into normalized Excel style data.
+- `header` - Boolean, determines whether or not CSV file will contain a title column. Defaults to `true` if not specified.
+- `includeEmptyRows` - Boolean, includes empty rows. Defaults to `false`.
+- `withBOM` - Boolean, with BOM character. Defaults to `false`.
+
+### json2csv parser (Synchronous API)
+
+`json2csv` can also be use programatically as a synchronous converter using its `parse` method. 
+```javascript
+const Json2csvParser = require('json2csv').Parser;
+const fields = ['field1', 'field2', 'field3'];
+const opts = { fields };
+
+try {
+  const parser = new Json2csvParser(opts);
+  const csv = parser.parse(myData);
+  console.log(csv);
+} catch (err) {
+  console.error(err);
+}
+```
+
+you can also use the convenience method `parse`
+
+```javascript
+const json2csv = require('json2csv').parse;
+const fields = ['field1', 'field2', 'field3'];
+const opts = { fields };
+
+try {
+  const csv = json2csv(myData, opts);
+  console.log(csv);
+} catch (err) {
+  console.error(err);
+}
+```
+
+### json2csv transform (Streaming API)
+
+The parse method is really good but has the downside of loading the entire JSON array in memory. This might not be optimal or even possible for large JSON files.
+
+For such cases json2csv offers a stream transform so pipe your json content into it and it will output it.
+
+One very important difference between the transform and the parser is that the json objects are processed one by one. In practice, this means that only the fields in the first object of the array are considered and fields in other other objects that were not present in the first one are just ignored. To avoid this. It's advisable to ensure that all the objects contain exactly the same fields or provide the list of fields using the `fields` option.
+
+```javascript
+const fs = require('fs');
+const Json2csvTransform = require('json2csv').Transform;
+
+const fields = ['field1', 'field2', 'field3'];
+const opts = { fields };
+
+const input = fs.createReadStream(inputPath, { encoding: 'utf8' });
+const output = fs.createWriteStream(outputPath, { encoding: 'utf8' });
+const json2csv = new Json2csvTransform(opts);
+
+const processor = input.pipe(json2csv).pipe(output);
+
+// You can also listen for events on the conversion and see how the header or the lines are coming out.
+json2csv
+  .on('header', header => console.log(header))
+  .on('line', line => console.log(line))
+  .on('error', err => console.log(err));
+```
+
+### Javascript module examples
 
 #### Example `fields` option
 ``` javascript
@@ -90,12 +249,12 @@ try {
 
     // Support pathname -> pathvalue
     'simplepath', // equivalent to {value:'simplepath'}
-    'path.to.value' // also equivalent to {label:'path.to.value', value:'path.to.value'}
+    'path.to.value' // also equivalent to {value:'path.to.value'}
   ]
 }
 ```
 
-### Example 1
+#### Example 1
 
 ```javascript
 const json2csv = require('json2csv');
@@ -118,13 +277,10 @@ const myCars = [
 ];
 const csv = json2csv(myCars, { fields });
 
-fs.writeFile('file.csv', csv, (err) => {
-  if (err) throw err;
-  console.log('file saved');
-});
+console.log(csv);
 ```
 
-The content of the "file.csv" should be
+will output to console
 
 ```
 car, price, color
@@ -133,7 +289,7 @@ car, price, color
 "Porsche", 60000, "green"
 ```
 
-### Example 2
+#### Example 2
 
 Similarly to [mongoexport](http://www.mongodb.org/display/DOCS/mongoexport) you can choose which fields to export.
 
@@ -155,7 +311,62 @@ car, color
 "Porsche", "green"
 ```
 
-### Example 3
+#### Example 3
+
+You can choose custom column names for the exported file.
+
+```javascript
+const json2csv = require('json2csv');
+const fields = [{
+  label: 'Car Name',
+  value: 'car'
+},{
+  label: 'Price USD',
+  value: 'price'
+}];
+const csv = json2csv(myCars, { fields });
+
+console.log(csv);
+```
+
+#### Example 4
+
+You can also specify nested properties using dot notation.
+
+```javascript
+const json2csv = require('json2csv');
+const fs = require('fs');
+const fields = ['car.make', 'car.model', 'price', 'color'];
+const myCars = [
+  {
+    "car": {"make": "Audi", "model": "A3"},
+    "price": 40000,
+    "color": "blue"
+  }, {
+    "car": {"make": "BMW", "model": "F20"},
+    "price": 35000,
+    "color": "black"
+  }, {
+    "car": {"make": "Porsche", "model": "9PA AF1"},
+    "price": 60000,
+    "color": "green"
+  }
+];
+const csv = json2csv(myCars, { fields });
+
+console.log(csv);
+```
+
+will output to console
+
+```
+car.make, car.model, price, color
+"Audi", "A3", 40000, "blue"
+"BMW", "F20", 35000, "black"
+"Porsche", "9PA AF1", 60000, "green"
+```
+
+#### Example 5
 
 Use a custom delimiter to create tsv files. Add it as the value of the delimiter property on the parameters:
 
@@ -179,25 +390,7 @@ car price color
 
 If no delimiter is specified, the default `,` is used
 
-### Example 4
-
-You can choose custom column names for the exported file.
-
-```javascript
-const json2csv = require('json2csv');
-const fields = [{
-  label: 'Car Name',
-  value: 'car'
-},{
-  label: 'Price USD',
-  value: 'price'
-}];
-const csv = json2csv(myCars, { fields });
-
-console.log(csv);
-```
-
-### Example 5
+#### Example 6
 
 You can choose custom quotation marks.
 
@@ -224,47 +417,7 @@ BMW, 15000
 Porsche, 30000
 ```
 
-### Example 6
-
-You can also specify nested properties using dot notation.
-
-```javascript
-const json2csv = require('json2csv');
-const fs = require('fs');
-const fields = ['car.make', 'car.model', 'price', 'color'];
-const myCars = [
-  {
-    "car": {"make": "Audi", "model": "A3"},
-    "price": 40000,
-    "color": "blue"
-  }, {
-    "car": {"make": "BMW", "model": "F20"},
-    "price": 35000,
-    "color": "black"
-  }, {
-    "car": {"make": "Porsche", "model": "9PA AF1"},
-    "price": 60000,
-    "color": "green"
-  }
-];
-const csv = json2csv(myCars, { fields });
-
-fs.writeFile('file.csv', csv, (err) => {
-  if (err) throw err;
-  console.log('file saved');
-});
-```
-
-The content of the "file.csv" should be
-
-```
-car.make, car.model, price, color
-"Audi", "A3", 40000, "blue"
-"BMW", "F20", 35000, "black"
-"Porsche", "9PA AF1", 60000, "green"
-```
-
-### Example 7
+#### Example 7
 
 You can unwind arrays similar to MongoDB's $unwind operation using the `unwind` option.
 
@@ -293,13 +446,10 @@ const myCars = [
 ];
 const csv = json2csv(myCars, { fields, unwind: 'colors' });
 
-fs.writeFile('file.csv', csv, (err) => {
-  if (err) throw err;
-  console.log('file saved');
-});
+console.log(csv);
 ```
 
-The content of the "file.csv" should be
+will output to console
 
 ```
 "carModel","price","colors"
@@ -314,7 +464,7 @@ The content of the "file.csv" should be
 "Porsche",30000,"aqua"
 ```
 
-### Example 8
+#### Example 8
 
 You can also unwind arrays multiple times or with nested objects.
 
@@ -367,13 +517,10 @@ const myCars = [
 ];
 const csv = json2csv(myCars, { fields, unwind: ['items', 'items.items'] });
 
-fs.writeFile('file.csv', csv, (err) => {
-  if (err) throw err;
-  console.log('file saved');
-});
+console.log(csv);
 ```
 
-The content of the "file.csv" should be
+will output to console
 
 ```
 "carModel","price","items.name","items.color","items.items.position","items.items.color"
@@ -385,145 +532,7 @@ The content of the "file.csv" should be
 "Porsche",30000,"dashboard",,"right","black"
 ```
 
-## Command Line Interface
-
-`json2csv` can also be called from the command line if installed with `-g`.
-
-```bash
-  Usage: json2csv [options]
-
-
-  Options:
-
-    -V, --version                       output the version number
-    -i, --input <input>                 Path and name of the incoming json file. If not provided, will read from stdin.
-    -o, --output [output]               Path and name of the resulting csv file. Defaults to stdout.
-    -L, --ldjson                        Treat the input as Line-Delimited JSON.
-    -f, --fields <fields>               Specify the fields to convert.
-    -l, --field-list [list]             Specify a file with a list of fields to include. One field per line.
-    -u, --unwind <paths>                Creates multiple rows from a single JSON document similar to MongoDB unwind.
-    -F, --flatten                       Flatten nested objects
-    -v, --default-value [defaultValue]  Specify a default value other than empty string.
-    -q, --quote [value]                 Specify an alternate quote value.
-    -dq, --double-quotes [value]        Specify a value to replace double quote in strings
-    -d, --delimiter [delimiter]         Specify a delimiter other than the default comma to use.
-    -e, --eol [value]                   Specify an End-of-Line value for separating rows.
-    -ex, --excel-strings                Converts string data into normalized Excel style data
-    -n, --no-header                     Disable the column name header
-    -a, --include-empty-rows            Includes empty rows in the resulting CSV output.
-    -b, --with-bom                      Includes BOM character at the beginning of the csv.
-    -p, --pretty                        Use only when printing to console. Logs output in pretty tables.
-    -h, --help                          output usage information
-```
-
-An input file `-i` and fields `-f` are required. If no output `-o` is specified the result is logged to the console.
-Use `-p` to show the result in a beautiful table inside the console.
-
-### CLI examples
-
-#### Input file and specify fields
-
-```bash
-$ json2csv -i input.json -f carModel,price,color
-```
-
-```
-carModel,price,color
-"Audi",10000,"blue"
-"BMW",15000,"red"
-"Mercedes",20000,"yellow"
-"Porsche",30000,"green"
-```
-
-#### Input file, specify fields and use pretty logging
-
-```bash
-$ json2csv -i input.json -f carModel,price,color -p
-```
-
-![Screenshot](https://s3.amazonaws.com/zeMirco/github/json2csv/json2csv-pretty.png)
-
-#### Input file, specify fields and write to file
-
-```bash
-$ json2csv -i input.json -f carModel,price,color -o out.csv
-```
-
-Content of `out.csv` is
-
-```
-carModel,price,color
-"Audi",10000,"blue"
-"BMW",15000,"red"
-"Mercedes",20000,"yellow"
-"Porsche",30000,"green"
-```
-
-#### Input file, use field list and write to file
-
-The file `fieldList` contains
-
-```
-carModel
-price
-color
-```
-
-Use the following command with the `-l` flag
-
-```bash
-$ json2csv -i input.json -l fieldList -o out.csv
-```
-
-Content of `out.csv` is
-
-```
-carModel,price,color
-"Audi",10000,"blue"
-"BMW",15000,"red"
-"Mercedes",20000,"yellow"
-"Porsche",30000,"green"
-```
-
-#### Read from stdin
-
-```bash
-$ json2csv -f price
-[{"price":1000},{"price":2000}]
-```
-
-Hit <kbd>Enter</kbd> and afterwards <kbd>CTRL</kbd> + <kbd>D</kbd> to end reading from stdin. The terminal should show
-
-```
-price
-1000
-2000
-```
-
-#### Appending to existing CSV
-
-Sometimes you want to add some additional rows with the same columns.
-This is how you can do that.
-
-```bash
-# Initial creation of csv with headings
-$ json2csv -i test.json -f name,version > test.csv
-# Append additional rows
-$ json2csv -i test.json -f name,version --no-header >> test.csv
-```
-
-## Include using a script tag (not recommended)
-
-If it's not possible to work with node modules, `json2csv` can be declared as a global by requesting `dist/json2csv.js` via an HTML script tag:
-
-```
-<script src="node_modules/json2csv/dist/json2csv.js"></script>
-<script>
-  console.log(typeof json2csv === 'function'); // true
-</script>
-```
-
-### Building
+## Building
 
 When developing, it's necessary to run `webpack` to prepare the built script. This can be done easily with `npm run build`.
 
@@ -531,30 +540,27 @@ If `webpack` is not already available from the command line, use `npm install -g
 
 ## Testing
 
-Run the following command to test and return coverage
+Run the folowing command to check the code style.
 
 ```bash
-$ npm test
+$ npm run lint
+```
+
+Run the following command to run the tests and return coverage
+
+```bash
+$ npm run test-with-coverage
 ```
 
 ## Contributors
 
-Install require packages for development run following command under json2csv dir.
-
-Run
+After you clone the repository you just need to install the required packages for development by runnning following command under json2csv dir.
 
 ```bash
 $ npm install
 ```
 
-Could you please make sure code is formatted and test passed before submit Pull Requests?
-
-See Testing section above.
-
-## But I want streams!
-
-Check out my other module [json2csv-stream](https://github.com/zemirco/json2csv-stream). It transforms an incoming
-stream containing `json` data into an outgoing `csv` stream.
+Before making any pull request please ensure sure that your code is formatted, test are passing and test coverage haven't decreased. (See [Testing](#testing))
 
 ## Similar Projects
 

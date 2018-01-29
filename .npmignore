@@ -1,5 +1,7 @@
-test
-CHANGELOG.md
 .travis.yml
-coverage
 .github/
+devtools
+CHANGELOG.md
+test
+coverage
+.nyc_output

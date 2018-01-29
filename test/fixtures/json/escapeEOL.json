@@ -1,0 +1,4 @@
+[
+  {"a string": "with a \u2028description\\n and\na new line"},
+  {"a string": "with a \u2029\u2028description and\r\nanother new line"}
+]

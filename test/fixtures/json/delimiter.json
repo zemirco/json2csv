@@ -1,0 +1,4 @@
+[
+  { "firstname": "foo", "lastname": "bar", "email": "foo.bar@json2csv.com" },
+  { "firstname": "bar", "lastname": "foo", "email": "bar.foo@json2csv.com" }
+]
