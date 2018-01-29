@@ -2,8 +2,9 @@
 
 const Readable = require('stream').Readable
 const test = require('tape');
-const Json2csvParser = require('../lib/json2csv').Parser;
-const Json2csvTransform = require('../lib/json2csv').Transform;
+const json2csv = require('../lib/json2csv');
+const Json2csvParser = json2csv.Parser;
+const Json2csvTransform = json2csv.Transform;
 const parseLdJson = require('../lib/parse-ldjson');
 const loadFixtures = require('./helpers/load-fixtures');
 
@@ -15,6 +16,14 @@ Promise.all([
   const jsonFixtures = fixtures[0];
   const jsonFixturesStreams = fixtures[1];
   const csvFixtures = fixtures[2];
+
+  test('should parse json to csv and infer the fields automatically using parse method', (t) => {
+    const csv = json2csv.parse(jsonFixtures.default);
+
+    t.ok(typeof csv === 'string');
+    t.equal(csv, csvFixtures.default);
+    t.end();
+  });
 
   test('should error if input data is not an object', (t) => {
     const input = 'not an object';
@@ -642,14 +651,51 @@ Promise.all([
       .on('error', err => t.notOk(err));
   });
 
+  test('should error on invalid ld-json input data', (t) => {
+    const opts = {
+      fields: ['carModel', 'price', 'color', 'transmission'],
+      ldjson: true
+    };
+
+    const transform = new Json2csvTransform(opts);
+    const processor = jsonFixturesStreams.ldjsonInvalid().pipe(transform);
+    
+    processor.on('finish', () => {
+      t.notOk(true);
+      t.end();
+    });
+    processor.on('error', (error) => {
+      t.ok(error.message.indexOf('Invalid JSON') !== -1);
+      t.end();
+    });
+  });
+
   test('should error if input data is not an object', (t) => {
     const input = new Readable();
     input._read = () => {};
-    input.push('not an object');
+    input.push('"not an object"');
     input.push(null);
 
     const transform = new Json2csvTransform();
     const processor = input.pipe(transform);
+    
+    processor.on('finish', () => {
+      t.notOk(true);
+      t.end();
+    });
+    processor.on('error', (error) => {
+      t.equal(error.message, 'params should include "fields" and/or non-empty "data" array of objects');
+      t.end();
+    });
+  });
+
+  test('should error on invalid json input data', (t) => {
+    const opts = {
+      fields: ['carModel', 'price', 'color', 'transmission']
+    };
+
+    const transform = new Json2csvTransform(opts);
+    const processor = jsonFixturesStreams.defaultInvalid().pipe(transform);
     
     processor.on('finish', () => {
       t.notOk(true);
