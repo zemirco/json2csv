@@ -12,26 +12,45 @@ const json2csv = require('../lib/json2csv');
 const parseLdJson = require('../lib/parse-ldjson');
 const pkg = require('../package');
 
+const JSON2CSVParser = json2csv.Parser;
+const Json2csvTransform = json2csv.Transform;
+
 program
   .version(pkg.version)
   .option('-i, --input <input>', 'Path and name of the incoming json file. If not provided, will read from stdin.')
   .option('-o, --output [output]', 'Path and name of the resulting csv file. Defaults to stdout.')
   .option('-L, --ldjson', 'Treat the input as Line-Delimited JSON.')
+  .option('-s, --no-streamming', 'Process the whole JSON array in memory instead of doing it line by line.')
   .option('-f, --fields <fields>', 'Specify the fields to convert.')
   .option('-l, --field-list [list]', 'Specify a file with a list of fields to include. One field per line.')
   .option('-u, --unwind <paths>', 'Creates multiple rows from a single JSON document similar to MongoDB unwind.')
   .option('-F, --flatten', 'Flatten nested objects')
   .option('-v, --default-value [defaultValue]', 'Specify a default value other than empty string.')
   .option('-q, --quote [value]', 'Specify an alternate quote value.')
-  .option('-dq, --double-quotes [value]', 'Specify a value to replace double quote in strings')
+  .option('-Q, --double-quotes [value]', 'Specify a value to replace double quote in strings')
   .option('-d, --delimiter [delimiter]', 'Specify a delimiter other than the default comma to use.')
   .option('-e, --eol [value]', 'Specify an End-of-Line value for separating rows.')
-  .option('-ex, --excel-strings','Converts string data into normalized Excel style data')
-  .option('-n, --no-header', 'Disable the column name header')
+  .option('-E, --excel-strings','Converts string data into normalized Excel style data')
+  .option('-H, --no-header', 'Disable the column name header')
   .option('-a, --include-empty-rows', 'Includes empty rows in the resulting CSV output.')
   .option('-b, --with-bom', 'Includes BOM character at the beginning of the csv.')
   .option('-p, --pretty', 'Use only when printing to console. Logs output in pretty tables.')
   .parse(process.argv);
+
+const inputPath = (program.input && !path.isAbsolute(program.input))
+  ? path.join(process.cwd(), program.input)
+  : program.input;
+
+const outputPath = (program.output && !path.isAbsolute(program.output))
+  ? path.join(process.cwd(), program.output)
+  : program.output;
+
+// don't fail if piped to e.g. head
+process.stdout.on('error', (error) => {
+  if (error.code === 'EPIPE') {
+    process.exit();
+  }
+});
 
 function getFields(fieldList, fields) {
   if (fieldList) {
@@ -54,11 +73,7 @@ function getFields(fieldList, fields) {
 }
 
 function getInput(input, ldjson) {
-  if (input) {
-    const inputPath = path.isAbsolute(input)
-      ? input
-      : path.join(process.cwd(), input);
-
+  if (inputPath) {
     if (ldjson) {
       return new Promise((resolve, reject) => {
         fs.readFile(inputPath, 'utf8', (err, data) => {
@@ -103,14 +118,27 @@ function logPretty(csv) {
   return table.toString();
 }
 
-Promise.all([
-  getInput(program.input, program.ldjson),
-  getFields(program.fieldList, program.fields)
-])
-  .then((results) => {
-    const input = results[0];
-    const fields = results[1];
+function processOutput(csv) {
+  if (outputPath) {
+    return new Promise((resolve, reject) => {
+      fs.writeFile(outputPath, csv, (err) => {
+        if (err) {
+          reject(new Error('Cannot save to ' + program.output + ': ' + err));
+          return;
+        }
 
+        debug(program.input + ' successfully converted to ' + program.output);
+        resolve();
+      });
+    });
+  }
+
+  // eslint-disable-next-line no-console
+  console.log(program.pretty ? logPretty(csv) : csv);
+}
+
+getFields(program.fieldList, program.fields)
+  .then((fields) => {
     const opts = {
       fields: fields,
       unwind: program.unwind ? program.unwind.split(',') : [],
@@ -126,32 +154,42 @@ Promise.all([
       withBOM: program.withBom
     };
 
-    return json2csv(input, opts);
-  })
-  .then((csv) => {
-    if (program.output) {
-      return new Promise((resolve, reject) => {
-        fs.writeFile(program.output, csv, (err) => {
-          if (err) {
-            reject(Error('Cannot save to ' + program.output + ': ' + err));
-            return;
-          }
+    if (program.streamming === false) {
+      return getInput(program.input, program.ldjson)
+        .then(input => new JSON2CSVParser(opts).parse(input))
+        .then(processOutput);
+    }
 
-          debug(program.input + ' successfully converted to ' + program.output);
-          resolve();
-        });
+    const transform = new Json2csvTransform(opts);
+    const input = fs.createReadStream(inputPath, { encoding: 'utf8' });
+    const stream = input.pipe(transform);
+    
+    if (program.output) {
+      const output = fs.createWriteStream(outputPath, { encoding: 'utf8' });
+      const outputStream = stream.pipe(output);
+      return new Promise((resolve, reject) => {
+        outputStream.on('finish', () => resolve()); // not sure why you want to pass a boolean
+        outputStream.on('error', reject); // don't forget this!
       });
     }
 
-    // don't fail if piped to e.g. head
-    process.stdout.on('error', (error) => {
-      if (error.code === 'EPIPE') {
-        process.exit();
-      }
-    });
+    if (!program.pretty) {
+      const output = stream.pipe(process.stdout);
+      return new Promise((resolve, reject) => {
+        output.on('finish', () => resolve()); // not sure why you want to pass a boolean
+        output.on('error', reject); // don't forget this!
+      });
+    }
 
-    // eslint-disable-next-line no-console
-    console.log(program.pretty ? logPretty(csv) : csv);
+    let csv = '';
+    return new Promise((resolve, reject) => {
+      stream
+        .on('data', chunk => (csv += chunk.toString()))
+        .on('end', () => resolve(csv))
+        .on('error', reject);
+    })
+      // eslint-disable-next-line no-console
+      .then(() => console.log(logPretty(csv)));
   })
   // eslint-disable-next-line no-console
   .catch(console.log);

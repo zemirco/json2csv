@@ -20,18 +20,52 @@ function getFilesInDirectory(dir) {
 
 function parseToJson(fixtures) {
   return fixtures.reduce((data, fixture) => {
-    data[fixture.name] = fixture.csv;
+    if (!fixture) return data;
+    data[fixture.name] = fixture.content;
     return data;
   } ,{})
 }
 
 module.exports.loadJSON = function () {
   return getFilesInDirectory(jsonDirectory)
+    .then(filenames => Promise.all(filenames.map((filename) => {
+      if (filename.startsWith('.')) return;
+      const filePath = path.join(jsonDirectory, filename);
+      try {
+        return Promise.resolve({
+          name: path.parse(filename).name,
+          content: require(filePath)
+        });
+      } catch (e) {
+        // Do nothing.
+      }
+
+      return new Promise((resolve, reject) => {
+        const filePath = path.join(jsonDirectory, filename);
+        fs.readFile(filePath, 'utf-8', (err, data) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+
+          resolve({
+            name: path.parse(filename).name,
+            content: data.toString()
+          });
+        });
+      });
+    })))
+    .then(parseToJson);
+};
+
+module.exports.loadJSONStreams = function () {
+  return getFilesInDirectory(jsonDirectory)
     .then(filenames => filenames.map((filename) => {
+      if (filename.startsWith('.')) return;
       const filePath = path.join(jsonDirectory, filename);
       return {
         name: path.parse(filename).name,
-        csv: require(filePath)
+        content: () => fs.createReadStream(filePath, { highWaterMark: 175 })
       };
     }))
     .then(parseToJson);
@@ -40,6 +74,7 @@ module.exports.loadJSON = function () {
 module.exports.loadCSV = function () {
   return getFilesInDirectory(csvDirectory)
     .then(filenames => Promise.all(filenames.map((filename) => {
+      if (filename.startsWith('.')) return;
       return new Promise((resolve, reject) => {
         const filePath = path.join(csvDirectory, filename);
         fs.readFile(filePath, 'utf-8', (err, data) => {
@@ -50,7 +85,7 @@ module.exports.loadCSV = function () {
 
           resolve({
             name: path.parse(filename).name,
-            csv: data.toString()
+            content: data.toString()
           });
         });
       });

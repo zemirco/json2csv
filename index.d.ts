@@ -1,6 +1,6 @@
 declare namespace json2csv {
   interface FieldValueCallback<T> {
-    (row: T, field: string, data: string): string;
+    (row: T, field: string): string;
   }
 
   interface FieldBase {
@@ -17,6 +17,7 @@ declare namespace json2csv {
   }
 
   interface Options<T> {
+    ldjson?: boolean;
     fields?: (string | Field | CallbackField<T>)[];
     unwind?: string | string[];
     flatten?: boolean;
@@ -30,15 +31,9 @@ declare namespace json2csv {
     includeEmptyRows?: boolean;
     withBOM?: boolean;
   }
-
-  interface Callback {
-    (error: Error, csv: string): void;
-  }
 }
 
-declare function json2csv<T>(data: Any, options: json2csv.Options<T>, callback: json2csv.Callback): void;
-declare function json2csv<T>(data: Any, options: json2csv.Options<T>): string;
-declare function json2csv(data: Any, options: json2csv.Options<{ [key: string]: string; }>, callback: json2csv.Callback): void;
-declare function json2csv(data: Any, options: json2csv.Options<{ [key: string]: string; }>): string;
+declare function parse<T>(data: Any, options: json2csv.Options<T>): string;
+declare function parse(data: Any, options: json2csv.Options<{ [key: string]: string; }>): string;
 
-export = json2csv;
+export = parse;

@@ -1,0 +1,18 @@
+[{
+  "path1": "hello ",
+  "path2": "world!",
+  "bird": {
+    "nest1": "chirp",
+    "nest2": "cheep"
+  },
+  "fake": {
+    "path": "overrides default"
+  }
+}, {
+  "path1": "good ",
+  "path2": "bye!",
+  "bird": {
+    "nest1": "meep",
+    "nest2": "meep"
+  }
+}]
