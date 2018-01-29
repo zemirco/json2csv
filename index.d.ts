@@ -17,7 +17,7 @@ declare namespace json2csv {
   }
 
   interface Options<T> {
-    ldjson?: boolean;
+    ndjson?: boolean;
     fields?: (string | Field | CallbackField<T>)[];
     unwind?: string | string[];
     flatten?: boolean;

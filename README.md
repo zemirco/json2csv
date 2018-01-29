@@ -48,7 +48,7 @@ $ npm install json2csv --save
     -V, --version                       output the version number
     -i, --input <input>                 Path and name of the incoming json file. If not provided, will read from stdin.
     -o, --output [output]               Path and name of the resulting csv file. Defaults to stdout.
-    -L, --ldjson                        Treat the input as Line-Delimited JSON.
+    -n, --ndjson                        Treat the input as NewLine-Delimited JSON.
     -s, --no-streamming                 Process the whole JSON array in memory instead of doing it line by line.
     -f, --fields <fields>               Specify the fields to convert.
     -l, --field-list [list]             Specify a file with a list of fields to include. One field per line.
@@ -153,7 +153,7 @@ $ json2csv -i test.json -f name,version --no-header >> test.csv
 The programatic APIs take a configuration object very equivalent to the CLI options. 
 
 - `fields` - Array of Objects/Strings. Defaults to toplevel JSON attributes. See example below.
-- `ldjson` - Only effective on the streaming API. Indicates that data coming through the stream is ld-json.
+- `ndjson` - Only effective on the streaming API. Indicates that data coming through the stream is NDJSON.
 - `unwind` - Array of Strings, creates multiple rows from a single JSON document similar to MongoDB's $unwind
 - `flatten` - Boolean, flattens nested JSON using [flat]. Defaults to `false`.
 - `defaultValue` - String, default value to use when missing data. Defaults to `<empty>` if not specified. (Overridden by `fields[].default`)

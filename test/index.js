@@ -5,7 +5,7 @@ const test = require('tape');
 const json2csv = require('../lib/json2csv');
 const Json2csvParser = json2csv.Parser;
 const Json2csvTransform = json2csv.Transform;
-const parseLdJson = require('../lib/parse-ldjson');
+const parsendjson = require('../lib/parse-ndjson');
 const loadFixtures = require('./helpers/load-fixtures');
 
 Promise.all([
@@ -632,33 +632,33 @@ Promise.all([
   // Tests for Streaming API
   // =======================================================
 
-  test('should handle ld-json', (t) => {
+  test('should handle ndjson', (t) => {
     const opts = {
       fields: ['carModel', 'price', 'color', 'transmission'],
-      ldjson: true
+      ndjson: true
     };
 
     const transform = new Json2csvTransform(opts);
-    const processor = jsonFixturesStreams.ldjson().pipe(transform);
+    const processor = jsonFixturesStreams.ndjson().pipe(transform);
 
     let csv = '';
     processor
       .on('data', chunk => (csv += chunk.toString()))
       .on('end', () => {
-        t.equal(csv, csvFixtures.ldjson);
+        t.equal(csv, csvFixtures.ndjson);
         t.end();
       })
       .on('error', err => t.notOk(err));
   });
 
-  test('should error on invalid ld-json input data', (t) => {
+  test('should error on invalid ndjson input data', (t) => {
     const opts = {
       fields: ['carModel', 'price', 'color', 'transmission'],
-      ldjson: true
+      ndjson: true
     };
 
     const transform = new Json2csvTransform(opts);
-    const processor = jsonFixturesStreams.ldjsonInvalid().pipe(transform);
+    const processor = jsonFixturesStreams.ndjsonInvalid().pipe(transform);
     
     processor.on('finish', () => {
       t.notOk(true);
@@ -1538,7 +1538,7 @@ Promise.all([
   });
 
   // =======================================================
-  // Test for parseLdJson
+  // Test for parsendjson
   // =======================================================
 
   test('should output a string', (t) => {
@@ -1560,7 +1560,7 @@ Promise.all([
   test('should parse line-delimited JSON', (t) => {
     const input = '{"foo":"bar"}\n{"foo":"qux"}';
 
-    const parsed = parseLdJson(input);
+    const parsed = parsendjson(input);
 
     t.equal(parsed.length, 2, 'parsed input has correct length');
     t.end();
