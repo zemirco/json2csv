@@ -9,7 +9,7 @@ const Table = require('cli-table');
 const program = require('commander');
 const debug = require('debug')('json2csv:cli');
 const json2csv = require('../lib/json2csv');
-const parseLdJson = require('../lib/parse-ldjson');
+const parseNdJson = require('../lib/parse-ndjson');
 const pkg = require('../package');
 
 const JSON2CSVParser = json2csv.Parser;
@@ -19,7 +19,7 @@ program
   .version(pkg.version)
   .option('-i, --input <input>', 'Path and name of the incoming json file. If not provided, will read from stdin.')
   .option('-o, --output [output]', 'Path and name of the resulting csv file. Defaults to stdout.')
-  .option('-L, --ldjson', 'Treat the input as Line-Delimited JSON.')
+  .option('-n, --ndjson', 'Treat the input as NewLine-Delimited JSON.')
   .option('-s, --no-streamming', 'Process the whole JSON array in memory instead of doing it line by line.')
   .option('-f, --fields <fields>', 'Specify the fields to convert.')
   .option('-l, --field-list [list]', 'Specify a file with a list of fields to include. One field per line.')
@@ -72,9 +72,9 @@ function getFields(fieldList, fields) {
       : undefined);
 }
 
-function getInput(input, ldjson) {
+function getInput(input, ndjson) {
   if (inputPath) {
-    if (ldjson) {
+    if (ndjson) {
       return new Promise((resolve, reject) => {
         fs.readFile(inputPath, 'utf8', (err, data) => {
           if (err) {
@@ -82,7 +82,7 @@ function getInput(input, ldjson) {
             return;
           }
 
-          resolve(parseLdJson(data));
+          resolve(parseNdJson(data));
         });
       });
     }
@@ -97,8 +97,8 @@ function getInput(input, ldjson) {
   process.stdin.on('data', chunk => (inputData += chunk));
   process.stdin.on('error', err => debug('Could not read from stdin', err));
   process.stdin.on('end', () => {
-    const rows = ldjson
-      ? parseLdJson(inputData)
+    const rows = ndjson
+      ? parseNdJson(inputData)
       : JSON.parse(inputData);
 
     return Promise.resolve(rows);
@@ -155,7 +155,7 @@ getFields(program.fieldList, program.fields)
     };
 
     if (program.streamming === false) {
-      return getInput(program.input, program.ldjson)
+      return getInput(program.input, program.ndjson)
         .then(input => new JSON2CSVParser(opts).parse(input))
         .then(processOutput);
     }
