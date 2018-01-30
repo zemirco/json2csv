@@ -115,22 +115,25 @@ function getInputFromStdin() {
 }
 
 function logPretty(csv) {
-  const lines = csv.split(os.EOL);
-  const table = new Table({
-    head: lines[0].split(','),
-    colWidths: lines[0].split('","').map(elem => elem.length * 2)
-  });
+  let lines = csv.split(os.EOL);
+  const header = program.header ? lines.shift().split(',') : undefined;
+  
+  const table = new Table(header ? {
+      head: header,
+      colWidths: header.map(elem => elem.length * 2)
+    } : undefined);
 
-  for (let i = 1; i < lines.length; i++) {
-    table.push(lines[i].split(','));
-  }
-  return table.toString();
+  lines.forEach(line => table.push(line.split(',')));
+
+  // eslint-disable-next-line no-console
+  console.log(table.toString());
 }
 
 function processOutput(csv) {
   if (!outputPath) {
     // eslint-disable-next-line no-console
-    console.log(program.pretty ? logPretty(csv) : csv);
+    program.pretty ? logPretty(csv) : console.log(csv);
+    return;
   }
 
   return new Promise((resolve, reject) => {
@@ -189,15 +192,13 @@ getFields(program.fieldList, program.fields)
       });
     }
 
-    let csv = '';
     return new Promise((resolve, reject) => {
+      let csv = '';
       stream
         .on('data', chunk => (csv += chunk.toString()))
         .on('end', () => resolve(csv))
         .on('error', reject);
-    })
-      // eslint-disable-next-line no-console
-      .then(() => console.log(logPretty(csv)));
+    }).then(logPretty);
   })
   // eslint-disable-next-line no-console
   .catch(console.log);
