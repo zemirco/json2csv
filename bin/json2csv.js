@@ -7,7 +7,6 @@ const os = require('os');
 const path = require('path');
 const Table = require('cli-table');
 const program = require('commander');
-const debug = require('debug')('json2csv:cli');
 const json2csv = require('../lib/json2csv');
 const parseNdJson = require('../lib/parse-ndjson');
 const pkg = require('../package');
@@ -72,36 +71,46 @@ function getFields(fieldList, fields) {
       : undefined);
 }
 
-function getInput(input, ndjson) {
-  if (inputPath) {
-    if (ndjson) {
-      return new Promise((resolve, reject) => {
-        fs.readFile(inputPath, 'utf8', (err, data) => {
-          if (err) {
-            reject(err);
-            return;
-          }
-
-          resolve(parseNdJson(data));
-        });
-      });
-    }
-
-    return Promise.resolve(require(inputPath));
+function getInput() {
+  if (!inputPath) {
+    return getInputFromStdin();
   }
 
-  process.stdin.resume();
-  process.stdin.setEncoding('utf8');
+  if (program.ndjson) {
+    return getInputFromNDJSON();
+  }
 
-  let inputData = '';
-  process.stdin.on('data', chunk => (inputData += chunk));
-  process.stdin.on('error', err => debug('Could not read from stdin', err));
-  process.stdin.on('end', () => {
-    const rows = ndjson
-      ? parseNdJson(inputData)
-      : JSON.parse(inputData);
+  return Promise.resolve(require(inputPath));
+}
 
-    return Promise.resolve(rows);
+function getInputFromNDJSON() {
+  return new Promise((resolve, reject) => {
+    fs.readFile(inputPath, 'utf8', (err, data) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+
+      resolve(parseNdJson(data));
+    });
+  });
+}
+
+function getInputFromStdin() {
+  return new Promise((resolve, reject) => {
+    process.stdin.resume();
+    process.stdin.setEncoding('utf8');
+
+    let inputData = '';
+    process.stdin.on('data', chunk => (inputData += chunk));
+    process.stdin.on('error', err => reject(new Error('Could not read from stdin', err)));
+    process.stdin.on('end', () => {
+      const rows = program.ndjson
+        ? parseNdJson(inputData)
+        : JSON.parse(inputData);
+
+      resolve(rows);
+    });
   });
 }
 
@@ -119,22 +128,21 @@ function logPretty(csv) {
 }
 
 function processOutput(csv) {
-  if (outputPath) {
-    return new Promise((resolve, reject) => {
-      fs.writeFile(outputPath, csv, (err) => {
-        if (err) {
-          reject(new Error('Cannot save to ' + program.output + ': ' + err));
-          return;
-        }
-
-        debug(program.input + ' successfully converted to ' + program.output);
-        resolve();
-      });
-    });
+  if (!outputPath) {
+    // eslint-disable-next-line no-console
+    console.log(program.pretty ? logPretty(csv) : csv);
   }
 
-  // eslint-disable-next-line no-console
-  console.log(program.pretty ? logPretty(csv) : csv);
+  return new Promise((resolve, reject) => {
+    fs.writeFile(outputPath, csv, (err) => {
+      if (err) {
+        reject(new Error('Cannot save to ' + program.output + ': ' + err));
+        return;
+      }
+
+      resolve();
+    });
+  });
 }
 
 getFields(program.fieldList, program.fields)
@@ -154,8 +162,8 @@ getFields(program.fieldList, program.fields)
       withBOM: program.withBom
     };
 
-    if (program.streamming === false) {
-      return getInput(program.input, program.ndjson)
+    if (!inputPath || program.streamming === false) {
+      return getInput()
         .then(input => new JSON2CSVParser(opts).parse(input))
         .then(processOutput);
     }
