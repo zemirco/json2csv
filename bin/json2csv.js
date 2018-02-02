@@ -21,7 +21,7 @@ program
   .option('-n, --ndjson', 'Treat the input as NewLine-Delimited JSON.')
   .option('-s, --no-streamming', 'Process the whole JSON array in memory instead of doing it line by line.')
   .option('-f, --fields <fields>', 'Specify the fields to convert.')
-  .option('-l, --field-list [list]', 'Specify a file with a list of fields to include. One field per line.')
+  .option('-c, --fields-config <path>', 'Specify a file with a fields configuration as a JSON array.')
   .option('-u, --unwind <paths>', 'Creates multiple rows from a single JSON document similar to MongoDB unwind.')
   .option('-F, --flatten', 'Flatten nested objects')
   .option('-v, --default-value [defaultValue]', 'Specify a default value other than empty string.')
@@ -36,13 +36,15 @@ program
   .option('-p, --pretty', 'Use only when printing to console. Logs output in pretty tables.')
   .parse(process.argv);
 
-const inputPath = (program.input && !path.isAbsolute(program.input))
-  ? path.join(process.cwd(), program.input)
-  : program.input;
+function makePathAbsolute(filePath) {
+  return (filePath && !path.isAbsolute(filePath))
+    ? path.join(process.cwd(), filePath)
+    : filePath;
+}
 
-const outputPath = (program.output && !path.isAbsolute(program.output))
-  ? path.join(process.cwd(), program.output)
-  : program.output;
+const inputPath = makePathAbsolute(program.input);
+const outputPath = makePathAbsolute(program.output);
+const fieldsConfigPath = makePathAbsolute(program.fieldsConfig);
 
 // don't fail if piped to e.g. head
 process.stdout.on('error', (error) => {
@@ -51,24 +53,18 @@ process.stdout.on('error', (error) => {
   }
 });
 
-function getFields(fieldList, fields) {
-  if (fieldList) {
-    return new Promise((resolve, reject) => {
-      fs.readFile(fieldList, 'utf8', (err, data) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-
-        data.replace(/\r\n|\n\r|\r|\n/g, os.EOL);
-        resolve(data.split(os.EOL));
-      });
-    });
+function getFields() {
+  if (fieldsConfigPath) {
+    try {
+      return require(fieldsConfigPath);
+    } catch (e) {
+      throw new Error('Invalid fields config file. (' + e.message + ')');
+    }
   }
 
-  return Promise.resolve(fields
-      ? fields.split(',')
-      : undefined);
+  return program.fields
+      ? program.fields.split(',')
+      : undefined;
 }
 
 function getInput() {
@@ -148,10 +144,10 @@ function processOutput(csv) {
   });
 }
 
-getFields(program.fieldList, program.fields)
-  .then((fields) => {
+Promise.resolve()
+  .then(() => {
     const opts = {
-      fields: fields,
+      fields: getFields(),
       unwind: program.unwind ? program.unwind.split(',') : [],
       flatten: program.flatten,
       defaultValue: program.defaultValue,
