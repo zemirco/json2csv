@@ -26,15 +26,14 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   });
 
   testRunner.add('should handle empty object', (t) => {
-    const input = {};
     const opts = {
       fields: ['carModel', 'price', 'color']
     };
 
     const parser = new Json2csvParser(opts);
-    const csv = parser.parse(input);
+    const csv = parser.parse(jsonFixtures.emptyObject);
 
-    t.equal(csv, '"carModel","price","color"');
+    t.equal(csv, csvFixtures.emptyObject);
     t.end();
   });
 
@@ -47,7 +46,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     const parser = new Json2csvParser(opts);
     const csv = parser.parse(input);
 
-    t.equal(csv, '"carModel","price","color"');
+    t.equal(csv, csvFixtures.emptyObject);
     t.end();
   });
 
@@ -484,12 +483,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   });
 
   testRunner.add('should escape " when preceeded by \\', (t) => {
-    const input = [{field: '\\"'}];
-    // TODO
     const parser = new Json2csvParser();
-    const csv = parser.parse(input);
+    const csv = parser.parse(jsonFixtures.escapeDoubleBackslashedDoubleQuote);
 
-    t.equal(csv, '"field"\n"\\"""');
+    t.equal(csv, csvFixtures.escapeDoubleBackslashedDoubleQuote);
     t.end();
   });
 
@@ -593,7 +590,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     const parser = new Json2csvParser(opts);
     const csv = parser.parse(input);
 
-    t.equal(csv, '"carModel","price","color"');
+    t.equal(csv, csvFixtures.emptyObject);
     t.end();
   });
 
