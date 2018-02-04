@@ -5,10 +5,10 @@
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const Table = require('cli-table');
 const program = require('commander');
 const json2csv = require('../lib/json2csv');
-const parseNdJson = require('../lib/parse-ndjson');
+const parseNdJson = require('./utils/parseNdjson');
+const TablePrinter = require('./utils/TablePrinter');
 const pkg = require('../package');
 
 const JSON2CSVParser = json2csv.Parser;
@@ -45,6 +45,9 @@ function makePathAbsolute(filePath) {
 const inputPath = makePathAbsolute(program.input);
 const outputPath = makePathAbsolute(program.output);
 const fieldsConfigPath = makePathAbsolute(program.fieldsConfig);
+
+program.delimiter = program.delimiter || ',';
+program.eol = program.eol || os.EOL;
 
 // don't fail if piped to e.g. head
 /* istanbul ignore next */
@@ -116,25 +119,10 @@ function getInputFromStdin() {
   });
 }
 
-function logPretty(csv) {
-  let lines = csv.split(os.EOL);
-  const header = program.header ? lines.shift().split(',') : undefined;
-  
-  const table = new Table(header ? {
-      head: header,
-      colWidths: header.map(elem => elem.length * 2)
-    } : undefined);
-
-  lines.forEach(line => table.push(line.split(',')));
-
-  // eslint-disable-next-line no-console
-  console.log(table.toString());
-}
-
 function processOutput(csv) {
   if (!outputPath) {
     // eslint-disable-next-line no-console
-    program.pretty ? logPretty(csv) : console.log(csv);
+    program.pretty ? (new TablePrinter(program)).printCSV(csv) : console.log(csv);
     return;
   }
 
@@ -203,18 +191,32 @@ Promise.resolve()
       input.on('error', reject);
       stream.on('error', reject);
       let csv = '';
+      const table = new TablePrinter(program);
       stream
-        .on('data', chunk => (csv += chunk.toString()))
-        .on('end', () => resolve(csv))
+        .on('data', chunk => {
+          csv += chunk.toString();
+          const index = csv.lastIndexOf(program.eol);
+          let lines = csv.substring(0, index);
+          csv = csv.substring(index + 1);
+
+          if (lines) {
+            table.push(lines);
+          }
+
+        })
+        .on('end', () => {
+          table.end(csv);
+          resolve();
+        })
         .on('error', reject);
-    }).then(logPretty);
+    });
   })
   .catch((err) => {
-    if (err.message.indexOf(inputPath)  !== -1) {
+    if (inputPath && err.message.indexOf(inputPath)  !== -1) {
       err = new Error('Invalid input file. (' + err.message + ')');
-    } else if (err.message.indexOf(outputPath) !== -1) {
+    } else if (outputPath && err.message.indexOf(outputPath) !== -1) {
       err = new Error('Invalid output file. (' + err.message + ')');
-    } else if (err.message.indexOf(fieldsConfigPath) !== -1) {
+    } else if (fieldsConfigPath && err.message.indexOf(fieldsConfigPath) !== -1) {
       err = new Error('Invalid fields config file. (' + err.message + ')');
     }
     // eslint-disable-next-line no-console
