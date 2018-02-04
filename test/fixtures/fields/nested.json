@@ -1,0 +1,16 @@
+[{
+  "label": "Make",
+  "value": "car.make"
+},{
+  "label": "Model",
+  "value": "car.model"
+},{
+  "label": "Price",
+  "value": "price"
+},{
+  "label": "Color",
+  "value": "color"
+},{
+  "label": "Year",
+  "value": "car.ye.ar"
+}]

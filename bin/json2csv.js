@@ -19,14 +19,14 @@ program
   .option('-i, --input <input>', 'Path and name of the incoming json file. If not provided, will read from stdin.')
   .option('-o, --output [output]', 'Path and name of the resulting csv file. Defaults to stdout.')
   .option('-n, --ndjson', 'Treat the input as NewLine-Delimited JSON.')
-  .option('-s, --no-streamming', 'Process the whole JSON array in memory instead of doing it line by line.')
+  .option('-s, --no-streaming', 'Process the whole JSON array in memory instead of doing it line by line.')
   .option('-f, --fields <fields>', 'Specify the fields to convert.')
   .option('-c, --fields-config <path>', 'Specify a file with a fields configuration as a JSON array.')
   .option('-u, --unwind <paths>', 'Creates multiple rows from a single JSON document similar to MongoDB unwind.')
   .option('-F, --flatten', 'Flatten nested objects')
   .option('-v, --default-value [defaultValue]', 'Specify a default value other than empty string.')
   .option('-q, --quote [value]', 'Specify an alternate quote value.')
-  .option('-Q, --double-quotes [value]', 'Specify a value to replace double quote in strings')
+  .option('-Q, --double-quote [value]', 'Specify a value to replace double quote in strings')
   .option('-d, --delimiter [delimiter]', 'Specify a delimiter other than the default comma to use.')
   .option('-e, --eol [value]', 'Specify an End-of-Line value for separating rows.')
   .option('-E, --excel-strings','Converts string data into normalized Excel style data')
@@ -47,6 +47,7 @@ const outputPath = makePathAbsolute(program.output);
 const fieldsConfigPath = makePathAbsolute(program.fieldsConfig);
 
 // don't fail if piped to e.g. head
+/* istanbul ignore next */
 process.stdout.on('error', (error) => {
   if (error.code === 'EPIPE') {
     process.exit();
@@ -55,11 +56,7 @@ process.stdout.on('error', (error) => {
 
 function getFields() {
   if (fieldsConfigPath) {
-    try {
-      return require(fieldsConfigPath);
-    } catch (e) {
-      throw new Error('Invalid fields config file. (' + e.message + ')');
-    }
+    return require(fieldsConfigPath);
   }
 
   return program.fields
@@ -76,7 +73,11 @@ function getInput() {
     return getInputFromNDJSON();
   }
 
-  return Promise.resolve(require(inputPath));
+  try {
+    return Promise.resolve(require(inputPath));
+  } catch (err) {
+    return Promise.reject(err);
+  }
 }
 
 function getInputFromNDJSON() {
@@ -99,13 +100,18 @@ function getInputFromStdin() {
 
     let inputData = '';
     process.stdin.on('data', chunk => (inputData += chunk));
+    /* istanbul ignore next */
     process.stdin.on('error', err => reject(new Error('Could not read from stdin', err)));
     process.stdin.on('end', () => {
-      const rows = program.ndjson
-        ? parseNdJson(inputData)
-        : JSON.parse(inputData);
+      try {
+        const rows = program.ndjson
+          ? parseNdJson(inputData)
+          : JSON.parse(inputData);
 
-      resolve(rows);
+        resolve(rows);
+      } catch (err) {
+        reject(new Error('Invalid data received from stdin', err));
+      }
     });
   });
 }
@@ -135,7 +141,7 @@ function processOutput(csv) {
   return new Promise((resolve, reject) => {
     fs.writeFile(outputPath, csv, (err) => {
       if (err) {
-        reject(new Error('Cannot save to ' + program.output + ': ' + err));
+        reject(err);
         return;
       }
 
@@ -152,7 +158,7 @@ Promise.resolve()
       flatten: program.flatten,
       defaultValue: program.defaultValue,
       quote: program.quote,
-      doubleQuotes: program.doubleQuotes,
+      doubleQuote: program.doubleQuote,
       delimiter: program.delimiter,
       eol: program.eol,
       excelStrings: program.excelStrings,
@@ -161,7 +167,7 @@ Promise.resolve()
       withBOM: program.withBom
     };
 
-    if (!inputPath || program.streamming === false) {
+    if (!inputPath || program.streaming === false) {
       return getInput()
         .then(input => new JSON2CSVParser(opts).parse(input))
         .then(processOutput);
@@ -172,23 +178,30 @@ Promise.resolve()
     const stream = input.pipe(transform);
     
     if (program.output) {
-      const output = fs.createWriteStream(outputPath, { encoding: 'utf8' });
-      const outputStream = stream.pipe(output);
+      const outputStream = fs.createWriteStream(outputPath, { encoding: 'utf8' });
+      const output = stream.pipe(outputStream);
       return new Promise((resolve, reject) => {
-        outputStream.on('finish', () => resolve()); // not sure why you want to pass a boolean
-        outputStream.on('error', reject); // don't forget this!
+        input.on('error', reject);
+        outputStream.on('error', reject);
+        output.on('error', reject);
+        output.on('finish', () => resolve());
       });
     }
 
     if (!program.pretty) {
       const output = stream.pipe(process.stdout);
       return new Promise((resolve, reject) => {
-        output.on('finish', () => resolve()); // not sure why you want to pass a boolean
-        output.on('error', reject); // don't forget this!
+        input.on('error', reject);
+        stream
+          .on('finish', () => resolve())
+          .on('error', reject);
+        output.on('error', reject);
       });
     }
 
     return new Promise((resolve, reject) => {
+      input.on('error', reject);
+      stream.on('error', reject);
       let csv = '';
       stream
         .on('data', chunk => (csv += chunk.toString()))
@@ -196,5 +209,14 @@ Promise.resolve()
         .on('error', reject);
     }).then(logPretty);
   })
-  // eslint-disable-next-line no-console
-  .catch(console.log);
+  .catch((err) => {
+    if (err.message.indexOf(inputPath)  !== -1) {
+      err = new Error('Invalid input file. (' + err.message + ')');
+    } else if (err.message.indexOf(outputPath) !== -1) {
+      err = new Error('Invalid output file. (' + err.message + ')');
+    } else if (err.message.indexOf(fieldsConfigPath) !== -1) {
+      err = new Error('Invalid fields config file. (' + err.message + ')');
+    }
+    // eslint-disable-next-line no-console
+    console.error(err);
+  });

@@ -80,23 +80,18 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   });
 
   testRunner.add('should handle empty object', (t) => {
-    const input = new Readable();
-    input._read = () => {};
-    input.push('{}');
-    input.push(null);
-
     const opts = {
       fields: ['carModel', 'price', 'color']
     };
 
     const transform = new Json2csvTransform(opts);
-    const processor = input.pipe(transform);
+    const processor = jsonFixtures.emptyObject().pipe(transform);
 
     let csv = '';
     processor
       .on('data', chunk => (csv += chunk.toString()))
       .on('end', () => {
-        t.equal(csv, '"carModel","price","color"');
+        t.equal(csv, csvFixtures.emptyObject);
         t.end();
       })
       .on('error', err => t.notOk(true, err.message));
@@ -118,7 +113,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     processor
       .on('data', chunk => (csv += chunk.toString()))
       .on('end', () => {
-        t.equal(csv, '"carModel","price","color"');
+        t.equal(csv, csvFixtures.emptyObject);
         t.end();
       })
       .on('error', err => t.notOk(true, err.message));
@@ -717,19 +712,14 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   });
 
   testRunner.add('should escape " when preceeded by \\', (t) => {
-    const input = new Readable();
-    input._read = () => {};
-    input.push(JSON.stringify([{field: '\\"'}]));
-    input.push(null);
-    // TODO
     const transform = new Json2csvTransform();
-    const processor = input.pipe(transform);
+    const processor = jsonFixtures.escapeDoubleBackslashedDoubleQuote().pipe(transform);
 
     let csv = '';
     processor
       .on('data', chunk => (csv += chunk.toString()))
       .on('end', () => {
-        t.equal(csv, '"field"\n"\\"""');
+        t.equal(csv, csvFixtures.escapeDoubleBackslashedDoubleQuote);
         t.end();
       })
       .on('error', err => t.notOk(true, err.message));
@@ -879,7 +869,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     processor
       .on('data', chunk => (csv += chunk.toString()))
       .on('end', () => {
-        t.equal(csv, '"carModel","price","color"');
+        t.equal(csv, csvFixtures.emptyObject);
         t.end();
       })
       .on('error', err => t.notOk(true, err.message));

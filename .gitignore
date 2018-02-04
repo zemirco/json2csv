@@ -10,3 +10,5 @@ published
 *.log
 _docpress
 .vscode
+
+test/fixtures/results

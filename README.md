@@ -49,7 +49,7 @@ $ npm install json2csv --save
     -i, --input <input>                 Path and name of the incoming json file. If not provided, will read from stdin.
     -o, --output [output]               Path and name of the resulting csv file. Defaults to stdout.
     -n, --ndjson                        Treat the input as NewLine-Delimited JSON.
-    -s, --no-streamming                 Process the whole JSON array in memory instead of doing it line by line.
+    -s, --no-streaming                  Process the whole JSON array in memory instead of doing it line by line.
     -f, --fields <fields>               Specify the fields to convert.
     -c, --fields-config [list]          Specify a file with a fields configuration as a JSON array.
     -u, --unwind <paths>                Creates multiple rows from a single JSON document similar to MongoDB unwind.
