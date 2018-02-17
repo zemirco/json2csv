@@ -368,7 +368,7 @@ car.make, car.model, price, color
 
 #### Example 5
 
-Use a custom delimiter to create tsv files. Add it as the value of the delimiter property on the parameters:
+Use a custom delimiter to create tsv files using the delimiter option:
 
 ```javascript
 const json2csv = require('json2csv');

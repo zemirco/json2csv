@@ -56,7 +56,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
       t.end();
     });
     processor.on('error', (err) => {
-      t.equal(err.message, 'params should include "fields" and/or non-empty "data" array of objects');
+      t.equal(err.message, 'Data should not be empty or the "fields" option should be included');
       t.end();
     });
   });
