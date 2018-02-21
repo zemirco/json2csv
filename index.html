@@ -15,31 +15,9 @@
           <ul class="submenu">
             <li class="menu-item -level-1"><a class="link title -active link-index" href="index.html">json2csv</a>
             </li>
-            <li class="menu-item -level-1"><a class="link title link-how-to-use" href="#how-to-use">How to use</a>
-            </li>
             <li class="menu-item -level-1"><a class="link title link-features" href="#features">Features</a>
             </li>
-            <li class="menu-item -level-1 -parent"><a class="link title link-use-as-a-module" href="#use-as-a-module">Use as a module</a>
-              <ul class="submenu">
-                <li class="menu-item -level-2"><a class="link title link-available-options" href="#available-options">Available Options</a>
-                </li>
-                <li class="menu-item -level-2"><a class="link title link-example-1" href="#example-1">Example 1</a>
-                </li>
-                <li class="menu-item -level-2"><a class="link title link-example-2" href="#example-2">Example 2</a>
-                </li>
-                <li class="menu-item -level-2"><a class="link title link-example-3" href="#example-3">Example 3</a>
-                </li>
-                <li class="menu-item -level-2"><a class="link title link-example-4" href="#example-4">Example 4</a>
-                </li>
-                <li class="menu-item -level-2"><a class="link title link-example-5" href="#example-5">Example 5</a>
-                </li>
-                <li class="menu-item -level-2"><a class="link title link-example-6" href="#example-6">Example 6</a>
-                </li>
-                <li class="menu-item -level-2"><a class="link title link-example-7" href="#example-7">Example 7</a>
-                </li>
-                <li class="menu-item -level-2"><a class="link title link-example-8" href="#example-8">Example 8</a>
-                </li>
-              </ul>
+            <li class="menu-item -level-1"><a class="link title link-how-to-install" href="#how-to-install">How to install</a>
             </li>
             <li class="menu-item -level-1 -parent"><a class="link title link-command-line-interface" href="#command-line-interface">Command Line Interface</a>
               <ul class="submenu">
@@ -47,17 +25,23 @@
                 </li>
               </ul>
             </li>
-            <li class="menu-item -level-1 -parent"><a class="link title link-include-using-a-script-tag-(not-recommended)" href="#include-using-a-script-tag-(not-recommended)">Include using a script tag (not recommended)</a>
+            <li class="menu-item -level-1 -parent"><a class="link title link-javascript-module" href="#javascript-module">Javascript module</a>
               <ul class="submenu">
-                <li class="menu-item -level-2"><a class="link title link-building" href="#building">Building</a>
+                <li class="menu-item -level-2"><a class="link title link-available-options" href="#available-options">Available Options</a>
+                </li>
+                <li class="menu-item -level-2"><a class="link title link-json2csv-parser-(synchronous-api)" href="#json2csv-parser-(synchronous-api)">json2csv parser (Synchronous API)</a>
+                </li>
+                <li class="menu-item -level-2"><a class="link title link-json2csv-transform-(streaming-api)" href="#json2csv-transform-(streaming-api)">json2csv transform (Streaming API)</a>
+                </li>
+                <li class="menu-item -level-2"><a class="link title link-javascript-module-examples" href="#javascript-module-examples">Javascript module examples</a>
                 </li>
               </ul>
+            </li>
+            <li class="menu-item -level-1"><a class="link title link-building" href="#building">Building</a>
             </li>
             <li class="menu-item -level-1"><a class="link title link-testing" href="#testing">Testing</a>
             </li>
             <li class="menu-item -level-1"><a class="link title link-contributors" href="#contributors">Contributors</a>
-            </li>
-            <li class="menu-item -level-1"><a class="link title link-but-i-want-streams!" href="#but-i-want-streams!">But I want streams!</a>
             </li>
             <li class="menu-item -level-1"><a class="link title link-similar-projects" href="#similar-projects">Similar Projects</a>
             </li>
@@ -79,24 +63,6 @@ Can be used as a module and from the command line.</p>
 <a href="https://coveralls.io/r/zemirco/json2csv?branch=master"><img src="https://coveralls.io/repos/zemirco/json2csv/badge.svg?branch=master" alt="Coverage Status"></a>
 <a href="https://david-dm.org/zemirco/json2csv"><img src="https://david-dm.org/zemirco/json2csv.svg" alt="Dependency Status"></a></p>
 <p>See the <a href="https://github.com/zemirco/json2csv/blob/master/CHANGELOG.md">CHANGELOG</a> for details about the latest release.</p>
-<h2 id="how-to-use">How to use</h2>
-<p>Install</p>
-<pre><code class="lang-bash">$ npm install json2csv --save
-</code></pre>
-<p>Include the module and run or <a href="https://github.com/zemirco/json2csv#command-line-interface">use it from the Command Line</a>. It&apos;s also possible to include <code>json2csv</code> as a global using an HTML script tag, though it&apos;s normally recommended that modules are used.</p>
-<pre><code class="lang-javascript"><span class="pl-k">var</span> json2csv = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>);
-<span class="pl-k">var</span> fields = [<span class="pl-s">&apos;field1&apos;</span>, <span class="pl-s">&apos;field2&apos;</span>, <span class="pl-s">&apos;field3&apos;</span>];
-
-<span class="pl-k">try</span> {
-  <span class="pl-k">var</span> result = json2csv({ <span class="hljs-attr">data</span>: myData, <span class="hljs-attr">fields</span>: fields });
-  <span class="pl-c1">console</span>.log(result);
-} <span class="pl-k">catch</span> (err) {
-  <span class="pl-c">// Errors are thrown for bad options, or if the data is empty and no fields are provided.</span>
-  <span class="pl-c">// Be sure to provide fields if it is possible that your data array will be empty.</span>
-  <span class="pl-c1">console</span>.error(err);
-}
-</code></pre>
-<p><a href="#example-1">other examples</a></p>
 <h2 id="features">Features</h2>
 <ul>
 <li>Uses proper line endings on various operating systems</li>
@@ -108,37 +74,162 @@ Can be used as a module and from the command line.</p>
 <li>Supports optional custom delimiters</li>
 <li>Supports optional custom eol value</li>
 <li>Supports optional custom quotation marks</li>
-<li>Not create CSV column title by passing hasCSVColumnTitle: false, into params.</li>
-<li>If field is not exist in object then the field value in CSV will be empty.</li>
+<li>Optional header.</li>
+<li>If field doesn&apos;t exist in object the field value in CSV will be empty.</li>
 <li>Preserve new lines in values. Should be used with \r\n line endings for full compatibility with Excel.</li>
 <li>Add a BOM character at the beginning of the csv to make Excel displaying special characters correctly.</li>
 </ul>
-<h2 id="use-as-a-module">Use as a module</h2>
+<h2 id="how-to-install">How to install</h2>
+<pre><code class="lang-bash"><span class="pl-c"># Global so it can be call from anywhere</span>
+$ npm install -g json2csv
+<span class="pl-c"># or as a dependency of a project</span>
+$ npm install json2csv --save
+</code></pre>
+<h2 id="command-line-interface">Command Line Interface</h2>
+<p><code>json2csv</code> can be called from the command line if installed globally (using the <code>-g</code> flag).</p>
+<pre><code class="lang-bash">  Usage: json2csv [options]
+
+
+  Options:
+
+    -V, --version                       output the version number
+    -i, --input &lt;input&gt;                 Path and name of the incoming json file. If not provided, will <span class="pl-c1">read</span> from stdin.
+    -o, --output [output]               Path and name of the resulting csv file. Defaults to stdout.
+    -n, --ndjson                        Treat the input as NewLine-Delimited JSON.
+    <span class="hljs-_">-s</span>, --no-streaming                  Process the whole JSON array <span class="pl-k">in</span> memory instead of doing it line by line.
+    <span class="hljs-_">-f</span>, --fields &lt;fields&gt;               Specify the fields to convert.
+    -c, --fields-config [list]          Specify a file with a fields configuration as a JSON array.
+    -u, --unwind &lt;paths&gt;                Creates multiple rows from a single JSON document similar to MongoDB unwind.
+    -F, --flatten                       Flatten nested objects
+    -v, --default-value [defaultValue]  Specify a default value other than empty string.
+    -q, --quote [value]                 Specify an alternate quote value.
+    -Q, --double-quotes [value]         Specify a value to replace double quote <span class="pl-k">in</span> strings
+    <span class="hljs-_">-d</span>, --delimiter [delimiter]         Specify a delimiter other than the default comma to use.
+    <span class="hljs-_">-e</span>, --eol [value]                   Specify an End-of-Line value <span class="pl-k">for</span> separating rows.
+    -E, --excel-strings                 Converts string data into normalized Excel style data
+    -H, --no-header                     Disable the column name header
+    <span class="hljs-_">-a</span>, --include-empty-rows            Includes empty rows <span class="pl-k">in</span> the resulting CSV output.
+    -b, --with-bom                      Includes BOM character at the beginning of the csv.
+    -p, --pretty                        Use only when printing to console. Logs output <span class="pl-k">in</span> pretty tables.
+    -h, --help                          output usage information
+</code></pre>
+<p>An input file <code>-i</code> and fields <code>-f</code> are required. If no output <code>-o</code> is specified the result is logged to the console.
+Use <code>-p</code> to show the result in a beautiful table inside the console.</p>
+<h3 id="cli-examples">CLI examples</h3>
+<h4 id="input-file-and-specify-fields">Input file and specify fields</h4>
+<pre><code class="lang-bash">$ json2csv -i input.json <span class="hljs-_">-f</span> carModel,price,color
+carModel,price,color
+<span class="pl-s">&quot;Audi&quot;</span>,10000,<span class="pl-s">&quot;blue&quot;</span>
+<span class="pl-s">&quot;BMW&quot;</span>,15000,<span class="pl-s">&quot;red&quot;</span>
+<span class="pl-s">&quot;Mercedes&quot;</span>,20000,<span class="pl-s">&quot;yellow&quot;</span>
+<span class="pl-s">&quot;Porsche&quot;</span>,30000,<span class="pl-s">&quot;green&quot;</span>
+</code></pre>
+<h4 id="input-file-specify-fields-and-use-pretty-logging">Input file, specify fields and use pretty logging</h4>
+<pre><code class="lang-bash">$ json2csv -i input.json <span class="hljs-_">-f</span> carModel,price,color -p
+</code></pre>
+<p><img src="https://s3.amazonaws.com/zeMirco/github/json2csv/json2csv-pretty.png" alt="Screenshot"></p>
+<h4 id="generating-csv-containing-only-specific-fields">Generating CSV containing only specific fields</h4>
+<pre><code class="lang-bash">$ json2csv -i input.json <span class="hljs-_">-f</span> carModel,price,color -o out.csv
+$ cat out.csv
+carModel,price,color
+<span class="pl-s">&quot;Audi&quot;</span>,10000,<span class="pl-s">&quot;blue&quot;</span>
+<span class="pl-s">&quot;BMW&quot;</span>,15000,<span class="pl-s">&quot;red&quot;</span>
+<span class="pl-s">&quot;Mercedes&quot;</span>,20000,<span class="pl-s">&quot;yellow&quot;</span>
+<span class="pl-s">&quot;Porsche&quot;</span>,30000,<span class="pl-s">&quot;green&quot;</span>
+</code></pre>
+<p>Same result will be obtained using passing the fields as a file.</p>
+<pre><code class="lang-bash">$ json2csv -i input.json <span class="hljs-_">-l</span> fieldList.txt -o out.csv
+</code></pre>
+<p>where the file <code>fieldList.txt</code> contains</p>
+<pre><code>carModel
+price
+color
+</code></pre>
+<h4 id="read-input-from-stdin">Read input from stdin</h4>
+<pre><code class="lang-bash">$ json2csv <span class="hljs-_">-f</span> price
+[{<span class="pl-s">&quot;price&quot;</span>:1000},{<span class="pl-s">&quot;price&quot;</span>:2000}]
+</code></pre>
+<p>Hit <kbd>Enter</kbd> and afterwards <kbd>CTRL</kbd> + <kbd>D</kbd> to end reading from stdin. The terminal should show</p>
+<pre><code>price
+1000
+2000
+</code></pre>
+<h4 id="appending-to-existing-csv">Appending to existing CSV</h4>
+<p>Sometimes you want to add some additional rows with the same columns.
+This is how you can do that.</p>
+<pre><code class="lang-bash"><span class="pl-c"># Initial creation of csv with headings</span>
+$ json2csv -i test.json <span class="hljs-_">-f</span> name,version &gt; test.csv
+<span class="pl-c"># Append additional rows</span>
+$ json2csv -i test.json <span class="hljs-_">-f</span> name,version --no-header &gt;&gt; test.csv
+</code></pre>
+<h2 id="javascript-module">Javascript module</h2>
+<p><code>json2csv</code> can also be use programatically from you javascript codebase.</p>
 <h3 id="available-options">Available Options</h3>
+<p>The programatic APIs take a configuration object very equivalent to the CLI options.</p>
 <ul>
-<li><code>options</code> - <strong>Required</strong>; Options hash.
-<ul>
-<li><code>data</code> - <strong>Required</strong>; Array of JSON objects.</li>
 <li><code>fields</code> - Array of Objects/Strings. Defaults to toplevel JSON attributes. See example below.</li>
-<li><code>fieldNames</code> Array of Strings, names for the fields at the same indexes.
-Must be the same length as <code>fields</code> array. (Optional. Maintained for backwards compatibility. Use <code>fields</code> config object for more features)</li>
-<li><code>del</code> - String, delimiter of columns. Defaults to <code>,</code> if not specified.</li>
-<li><code>defaultValue</code> - String, default value to use when missing data. Defaults to <code>&lt;empty&gt;</code> if not specified. (Overridden by <code>fields[].default</code>)</li>
-<li><code>quotes</code> - String, quotes around cell values and column names. Defaults to <code>&quot;</code> if not specified.</li>
-<li><code>doubleQuotes</code> - String, the value to replace double quotes in strings. Defaults to 2x<code>quotes</code> (for example <code>&quot;&quot;</code>) if not specified.</li>
-<li><code>hasCSVColumnTitle</code> - Boolean, determines whether or not CSV file will contain a title column. Defaults to <code>true</code> if not specified.</li>
-<li><code>eol</code> - String, it gets added to each row of data. Defaults to `` if not specified.</li>
-<li><code>newLine</code> - String, overrides the default OS line ending (i.e. <code>\n</code> on Unix and <code>\r\n</code> on Windows).</li>
+<li><code>ndjson</code> - Only effective on the streaming API. Indicates that data coming through the stream is NDJSON.</li>
+<li><code>unwind</code> - Array of Strings, creates multiple rows from a single JSON document similar to MongoDB&apos;s $unwind</li>
 <li><code>flatten</code> - Boolean, flattens nested JSON using <a href="https://www.npmjs.com/package/flat">flat</a>. Defaults to <code>false</code>.</li>
-<li><code>unwindPath</code> - Array of Strings, creates multiple rows from a single JSON document similar to MongoDB&apos;s $unwind</li>
+<li><code>defaultValue</code> - String, default value to use when missing data. Defaults to <code>&lt;empty&gt;</code> if not specified. (Overridden by <code>fields[].default</code>)</li>
+<li><code>quote</code> - String, quote around cell values and column names. Defaults to <code>&quot;</code> if not specified.</li>
+<li><code>doubleQuote</code> - String, the value to replace double quote in strings. Defaults to 2x<code>quotes</code> (for example <code>&quot;&quot;</code>) if not specified.</li>
+<li><code>delimiter</code> - String, delimiter of columns. Defaults to <code>,</code> if not specified.</li>
+<li><code>eol</code> - String, overrides the default OS line ending (i.e. <code>\n</code> on Unix and <code>\r\n</code> on Windows).</li>
 <li><code>excelStrings</code> - Boolean, converts string data into normalized Excel style data.</li>
+<li><code>header</code> - Boolean, determines whether or not CSV file will contain a title column. Defaults to <code>true</code> if not specified.</li>
 <li><code>includeEmptyRows</code> - Boolean, includes empty rows. Defaults to <code>false</code>.</li>
-<li><code>preserveNewLinesInValues</code> - Boolean, preserve \r and \n in values. Defaults to <code>false</code>.</li>
 <li><code>withBOM</code> - Boolean, with BOM character. Defaults to <code>false</code>.</li>
 </ul>
-</li>
-<li><code>callback</code> - <code>function (error, csvString) {}</code>. If provided, will callback asynchronously. Only supported for compatibility reasons.</li>
-</ul>
+<h3 id="json2csv-parser-(synchronous-api)">json2csv parser (Synchronous API)</h3>
+<p><code>json2csv</code> can also be use programatically as a synchronous converter using its <code>parse</code> method.</p>
+<pre><code class="lang-javascript"><span class="pl-k">const</span> Json2csvParser = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>).Parser;
+<span class="pl-k">const</span> fields = [<span class="pl-s">&apos;field1&apos;</span>, <span class="pl-s">&apos;field2&apos;</span>, <span class="pl-s">&apos;field3&apos;</span>];
+<span class="pl-k">const</span> opts = { fields };
+
+<span class="pl-k">try</span> {
+  <span class="pl-k">const</span> parser = <span class="pl-k">new</span> Json2csvParser(opts);
+  <span class="pl-k">const</span> csv = parser.parse(myData);
+  <span class="pl-c1">console</span>.log(csv);
+} <span class="pl-k">catch</span> (err) {
+  <span class="pl-c1">console</span>.error(err);
+}
+</code></pre>
+<p>you can also use the convenience method <code>parse</code></p>
+<pre><code class="lang-javascript"><span class="pl-k">const</span> json2csv = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>).parse;
+<span class="pl-k">const</span> fields = [<span class="pl-s">&apos;field1&apos;</span>, <span class="pl-s">&apos;field2&apos;</span>, <span class="pl-s">&apos;field3&apos;</span>];
+<span class="pl-k">const</span> opts = { fields };
+
+<span class="pl-k">try</span> {
+  <span class="pl-k">const</span> csv = json2csv(myData, opts);
+  <span class="pl-c1">console</span>.log(csv);
+} <span class="pl-k">catch</span> (err) {
+  <span class="pl-c1">console</span>.error(err);
+}
+</code></pre>
+<h3 id="json2csv-transform-(streaming-api)">json2csv transform (Streaming API)</h3>
+<p>The parse method is really good but has the downside of loading the entire JSON array in memory. This might not be optimal or even possible for large JSON files.</p>
+<p>For such cases json2csv offers a stream transform so pipe your json content into it and it will output it.</p>
+<p>One very important difference between the transform and the parser is that the json objects are processed one by one. In practice, this means that only the fields in the first object of the array are considered and fields in other other objects that were not present in the first one are just ignored. To avoid this. It&apos;s advisable to ensure that all the objects contain exactly the same fields or provide the list of fields using the <code>fields</code> option.</p>
+<pre><code class="lang-javascript"><span class="pl-k">const</span> fs = <span class="pl-c1">require</span>(<span class="pl-s">&apos;fs&apos;</span>);
+<span class="pl-k">const</span> Json2csvTransform = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>).Transform;
+
+<span class="pl-k">const</span> fields = [<span class="pl-s">&apos;field1&apos;</span>, <span class="pl-s">&apos;field2&apos;</span>, <span class="pl-s">&apos;field3&apos;</span>];
+<span class="pl-k">const</span> opts = { fields };
+
+<span class="pl-k">const</span> input = fs.createReadStream(inputPath, { <span class="hljs-attr">encoding</span>: <span class="pl-s">&apos;utf8&apos;</span> });
+<span class="pl-k">const</span> output = fs.createWriteStream(outputPath, { <span class="hljs-attr">encoding</span>: <span class="pl-s">&apos;utf8&apos;</span> });
+<span class="pl-k">const</span> json2csv = <span class="pl-k">new</span> Json2csvTransform(opts);
+
+<span class="pl-k">const</span> processor = input.pipe(json2csv).pipe(output);
+
+<span class="pl-c">// You can also listen for events on the conversion and see how the header or the lines are coming out.</span>
+json2csv
+  .on(<span class="pl-s">&apos;header&apos;</span>, header =&gt; <span class="pl-c1">console</span>.log(header))
+  .on(<span class="pl-s">&apos;line&apos;</span>, line =&gt; <span class="pl-c1">console</span>.log(line))
+  .on(<span class="pl-s">&apos;error&apos;</span>, err =&gt; <span class="pl-c1">console</span>.log(err));
+</code></pre>
+<h3 id="javascript-module-examples">Javascript module examples</h3>
 <h4 id="example-fields-option">Example <code>fields</code> option</h4>
 <pre><code class="lang-javascript">{
   <span class="hljs-attr">fields</span>: [
@@ -152,26 +243,22 @@ Must be the same length as <code>fields</code> array. (Optional. Maintained for 
     <span class="pl-c">// Supports label -&gt; derived value</span>
     {
       <span class="hljs-attr">label</span>: <span class="pl-s">&apos;some label&apos;</span>, <span class="pl-c">// Supports duplicate labels (required, else your column will be labeled [function])</span>
-      value: <span class="hljs-function"><span class="pl-k">function</span>(<span class="hljs-params">row, field, data</span>) </span>{
-        <span class="pl-c">// field = { label, default }</span>
-        <span class="pl-c">// data = full data object</span>
-        <span class="pl-k">return</span> row.path1 + row.path2;
-      },
-      <span class="hljs-attr">default</span>: <span class="pl-s">&apos;NULL&apos;</span>, <span class="pl-c">// default if value function returns null or undefined</span>
+      value: <span class="hljs-function">(<span class="hljs-params">row, field</span>) =&gt;</span> row.path1 + row.path2, <span class="pl-c">// field = { label, default }</span>
+      <span class="pl-k">default</span>: <span class="pl-s">&apos;NULL&apos;</span>, <span class="pl-c">// default if value function returns null or undefined</span>
       stringify: <span class="pl-c1">true</span> <span class="pl-c">// If value is function use this flag to signal if resulting string will be quoted (stringified) or not (optional, default: true)</span>
     },
 
     <span class="pl-c">// Support pathname -&gt; pathvalue</span>
     <span class="pl-s">&apos;simplepath&apos;</span>, <span class="pl-c">// equivalent to {value:&apos;simplepath&apos;}</span>
-    <span class="pl-s">&apos;path.to.value&apos;</span> <span class="pl-c">// also equivalent to {label:&apos;path.to.value&apos;, value:&apos;path.to.value&apos;}</span>
+    <span class="pl-s">&apos;path.to.value&apos;</span> <span class="pl-c">// also equivalent to {value:&apos;path.to.value&apos;}</span>
   ]
 }
 </code></pre>
-<h3 id="example-1">Example 1</h3>
-<pre><code class="lang-javascript"><span class="pl-k">var</span> json2csv = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>);
-<span class="pl-k">var</span> fs = <span class="pl-c1">require</span>(<span class="pl-s">&apos;fs&apos;</span>);
-<span class="pl-k">var</span> fields = [<span class="pl-s">&apos;car&apos;</span>, <span class="pl-s">&apos;price&apos;</span>, <span class="pl-s">&apos;color&apos;</span>];
-<span class="pl-k">var</span> myCars = [
+<h4 id="example-1">Example 1</h4>
+<pre><code class="lang-javascript"><span class="pl-k">const</span> json2csv = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>);
+<span class="pl-k">const</span> fs = <span class="pl-c1">require</span>(<span class="pl-s">&apos;fs&apos;</span>);
+<span class="pl-k">const</span> fields = [<span class="pl-s">&apos;car&apos;</span>, <span class="pl-s">&apos;price&apos;</span>, <span class="pl-s">&apos;color&apos;</span>];
+<span class="pl-k">const</span> myCars = [
   {
     <span class="pl-s">&quot;car&quot;</span>: <span class="pl-s">&quot;Audi&quot;</span>,
     <span class="pl-s">&quot;price&quot;</span>: <span class="hljs-number">40000</span>,
@@ -186,29 +273,24 @@ Must be the same length as <code>fields</code> array. (Optional. Maintained for 
     <span class="pl-s">&quot;color&quot;</span>: <span class="pl-s">&quot;green&quot;</span>
   }
 ];
-<span class="pl-k">var</span> csv = json2csv({ <span class="hljs-attr">data</span>: myCars, <span class="hljs-attr">fields</span>: fields });
+<span class="pl-k">const</span> csv = json2csv(myCars, { fields });
 
-fs.writeFile(<span class="pl-s">&apos;file.csv&apos;</span>, csv, <span class="hljs-function"><span class="pl-k">function</span>(<span class="hljs-params">err</span>) </span>{
-  <span class="pl-k">if</span> (err) <span class="pl-k">throw</span> err;
-  <span class="pl-c1">console</span>.log(<span class="pl-s">&apos;file saved&apos;</span>);
-});
+<span class="pl-c1">console</span>.log(csv);
 </code></pre>
-<p>The content of the &quot;file.csv&quot; should be</p>
+<p>will output to console</p>
 <pre><code>car, price, color
 &quot;Audi&quot;, 40000, &quot;blue&quot;
 &quot;BMW&quot;, 35000, &quot;black&quot;
 &quot;Porsche&quot;, 60000, &quot;green&quot;
 </code></pre>
-<h3 id="example-2">Example 2</h3>
-<p>Similarly to <a href="http://www.mongodb.org/display/DOCS/mongoexport">mongoexport</a> you can choose which fields to export.
-Note: this example uses the optional callback format.</p>
-<pre><code class="lang-javascript"><span class="pl-k">var</span> json2csv = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>);
-<span class="pl-k">var</span> fields = [<span class="pl-s">&apos;car&apos;</span>, <span class="pl-s">&apos;color&apos;</span>];
+<h4 id="example-2">Example 2</h4>
+<p>Similarly to <a href="http://www.mongodb.org/display/DOCS/mongoexport">mongoexport</a> you can choose which fields to export.</p>
+<pre><code class="lang-javascript"><span class="pl-k">const</span> json2csv = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>);
+<span class="pl-k">const</span> fields = [<span class="pl-s">&apos;car&apos;</span>, <span class="pl-s">&apos;color&apos;</span>];
 
-json2csv({ <span class="hljs-attr">data</span>: myCars, <span class="hljs-attr">fields</span>: fields }, <span class="hljs-function"><span class="pl-k">function</span>(<span class="hljs-params">err, csv</span>) </span>{
-  <span class="pl-k">if</span> (err) <span class="pl-c1">console</span>.log(err);
-  <span class="pl-c1">console</span>.log(csv);
-});
+<span class="pl-k">const</span> csv = json2csv(myCars, { fields });
+
+<span class="pl-c1">console</span>.log(csv);
 </code></pre>
 <p>Results in</p>
 <pre><code>car, color
@@ -216,58 +298,26 @@ json2csv({ <span class="hljs-attr">data</span>: myCars, <span class="hljs-attr">
 &quot;BMW&quot;, &quot;black&quot;
 &quot;Porsche&quot;, &quot;green&quot;
 </code></pre>
-<h3 id="example-3">Example 3</h3>
-<p>Use a custom delimiter to create tsv files. Add it as the value of the del property on the parameters:</p>
-<pre><code class="lang-javascript"><span class="pl-k">var</span> json2csv = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>);
-<span class="pl-k">var</span> fields = [<span class="pl-s">&apos;car&apos;</span>, <span class="pl-s">&apos;price&apos;</span>, <span class="pl-s">&apos;color&apos;</span>];
-<span class="pl-k">var</span> tsv = json2csv({ <span class="hljs-attr">data</span>: myCars, <span class="hljs-attr">fields</span>: fields, <span class="hljs-attr">del</span>: <span class="pl-s">&apos;\t&apos;</span> });
-
-<span class="pl-c1">console</span>.log(tsv);
-</code></pre>
-<p>Will output:</p>
-<pre><code>car price color
-&quot;Audi&quot;  10000 &quot;blue&quot;
-&quot;BMW&quot; 15000 &quot;red&quot;
-&quot;Mercedes&quot;  20000 &quot;yellow&quot;
-&quot;Porsche&quot; 30000 &quot;green&quot;
-</code></pre>
-<p>If no delimiter is specified, the default <code>,</code> is used</p>
-<h3 id="example-4">Example 4</h3>
+<h4 id="example-3">Example 3</h4>
 <p>You can choose custom column names for the exported file.</p>
-<pre><code class="lang-javascript"><span class="pl-k">var</span> json2csv = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>);
-<span class="pl-k">var</span> fields = [<span class="pl-s">&apos;car&apos;</span>, <span class="pl-s">&apos;price&apos;</span>];
-<span class="pl-k">var</span> fieldNames = [<span class="pl-s">&apos;Car Name&apos;</span>, <span class="pl-s">&apos;Price USD&apos;</span>];
-<span class="pl-k">var</span> csv = json2csv({ <span class="hljs-attr">data</span>: myCars, <span class="hljs-attr">fields</span>: fields, <span class="hljs-attr">fieldNames</span>: fieldNames });
+<pre><code class="lang-javascript"><span class="pl-k">const</span> json2csv = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>);
+<span class="pl-k">const</span> fields = [{
+  <span class="hljs-attr">label</span>: <span class="pl-s">&apos;Car Name&apos;</span>,
+  <span class="hljs-attr">value</span>: <span class="pl-s">&apos;car&apos;</span>
+},{
+  <span class="hljs-attr">label</span>: <span class="pl-s">&apos;Price USD&apos;</span>,
+  <span class="hljs-attr">value</span>: <span class="pl-s">&apos;price&apos;</span>
+}];
+<span class="pl-k">const</span> csv = json2csv(myCars, { fields });
 
 <span class="pl-c1">console</span>.log(csv);
 </code></pre>
-<h3 id="example-5">Example 5</h3>
-<p>You can choose custom quotation marks.</p>
-<pre><code class="lang-javascript"><span class="pl-k">var</span> json2csv = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>);
-<span class="pl-k">var</span> fields = [<span class="pl-s">&apos;car&apos;</span>, <span class="pl-s">&apos;price&apos;</span>];
-<span class="pl-k">var</span> fieldNames = [<span class="pl-s">&apos;Car Name&apos;</span>, <span class="pl-s">&apos;Price USD&apos;</span>];
-<span class="pl-k">var</span> opts = {
-  <span class="hljs-attr">data</span>: myCars,
-  <span class="hljs-attr">fields</span>: fields,
-  <span class="hljs-attr">fieldNames</span>: fieldNames,
-  <span class="hljs-attr">quotes</span>: <span class="pl-s">&apos;&apos;</span>
-};
-<span class="pl-k">var</span> csv = json2csv(opts);
-
-<span class="pl-c1">console</span>.log(csv);
-</code></pre>
-<p>Results in</p>
-<pre><code>Car Name, Price USD
-Audi, 10000
-BMW, 15000
-Porsche, 30000
-</code></pre>
-<h3 id="example-6">Example 6</h3>
+<h4 id="example-4">Example 4</h4>
 <p>You can also specify nested properties using dot notation.</p>
-<pre><code class="lang-javascript"><span class="pl-k">var</span> json2csv = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>);
-<span class="pl-k">var</span> fs = <span class="pl-c1">require</span>(<span class="pl-s">&apos;fs&apos;</span>);
-<span class="pl-k">var</span> fields = [<span class="pl-s">&apos;car.make&apos;</span>, <span class="pl-s">&apos;car.model&apos;</span>, <span class="pl-s">&apos;price&apos;</span>, <span class="pl-s">&apos;color&apos;</span>];
-<span class="pl-k">var</span> myCars = [
+<pre><code class="lang-javascript"><span class="pl-k">const</span> json2csv = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>);
+<span class="pl-k">const</span> fs = <span class="pl-c1">require</span>(<span class="pl-s">&apos;fs&apos;</span>);
+<span class="pl-k">const</span> fields = [<span class="pl-s">&apos;car.make&apos;</span>, <span class="pl-s">&apos;car.model&apos;</span>, <span class="pl-s">&apos;price&apos;</span>, <span class="pl-s">&apos;color&apos;</span>];
+<span class="pl-k">const</span> myCars = [
   {
     <span class="pl-s">&quot;car&quot;</span>: {<span class="pl-s">&quot;make&quot;</span>: <span class="pl-s">&quot;Audi&quot;</span>, <span class="pl-s">&quot;model&quot;</span>: <span class="pl-s">&quot;A3&quot;</span>},
     <span class="pl-s">&quot;price&quot;</span>: <span class="hljs-number">40000</span>,
@@ -282,25 +332,58 @@ Porsche, 30000
     <span class="pl-s">&quot;color&quot;</span>: <span class="pl-s">&quot;green&quot;</span>
   }
 ];
-<span class="pl-k">var</span> csv = json2csv({ <span class="hljs-attr">data</span>: myCars, <span class="hljs-attr">fields</span>: fields });
+<span class="pl-k">const</span> csv = json2csv(myCars, { fields });
 
-fs.writeFile(<span class="pl-s">&apos;file.csv&apos;</span>, csv, <span class="hljs-function"><span class="pl-k">function</span>(<span class="hljs-params">err</span>) </span>{
-  <span class="pl-k">if</span> (err) <span class="pl-k">throw</span> err;
-  <span class="pl-c1">console</span>.log(<span class="pl-s">&apos;file saved&apos;</span>);
-});
+<span class="pl-c1">console</span>.log(csv);
 </code></pre>
-<p>The content of the &quot;file.csv&quot; should be</p>
+<p>will output to console</p>
 <pre><code>car.make, car.model, price, color
 &quot;Audi&quot;, &quot;A3&quot;, 40000, &quot;blue&quot;
 &quot;BMW&quot;, &quot;F20&quot;, 35000, &quot;black&quot;
 &quot;Porsche&quot;, &quot;9PA AF1&quot;, 60000, &quot;green&quot;
 </code></pre>
-<h3 id="example-7">Example 7</h3>
-<p>You can unwind arrays similar to MongoDB&apos;s $unwind operation using the <code>unwindPath</code> option.</p>
-<pre><code class="lang-javascript"><span class="pl-k">var</span> json2csv = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>);
-<span class="pl-k">var</span> fs = <span class="pl-c1">require</span>(<span class="pl-s">&apos;fs&apos;</span>);
-<span class="pl-k">var</span> fields = [<span class="pl-s">&apos;carModel&apos;</span>, <span class="pl-s">&apos;price&apos;</span>, <span class="pl-s">&apos;colors&apos;</span>];
-<span class="pl-k">var</span> myCars = [
+<h4 id="example-5">Example 5</h4>
+<p>Use a custom delimiter to create tsv files. Add it as the value of the delimiter property on the parameters:</p>
+<pre><code class="lang-javascript"><span class="pl-k">const</span> json2csv = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>);
+<span class="pl-k">const</span> fields = [<span class="pl-s">&apos;car&apos;</span>, <span class="pl-s">&apos;price&apos;</span>, <span class="pl-s">&apos;color&apos;</span>];
+<span class="pl-k">const</span> tsv = json2csv(myCars, { fields, <span class="hljs-attr">delimiter</span>: <span class="pl-s">&apos;\t&apos;</span> });
+
+<span class="pl-c1">console</span>.log(tsv);
+</code></pre>
+<p>Will output:</p>
+<pre><code>car price color
+&quot;Audi&quot;  10000 &quot;blue&quot;
+&quot;BMW&quot; 15000 &quot;red&quot;
+&quot;Mercedes&quot;  20000 &quot;yellow&quot;
+&quot;Porsche&quot; 30000 &quot;green&quot;
+</code></pre>
+<p>If no delimiter is specified, the default <code>,</code> is used</p>
+<h4 id="example-6">Example 6</h4>
+<p>You can choose custom quotation marks.</p>
+<pre><code class="lang-javascript"><span class="pl-k">const</span> json2csv = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>);
+<span class="pl-k">const</span> fields = [{
+  <span class="hljs-attr">label</span>: <span class="pl-s">&apos;Car Name&apos;</span>,
+  <span class="hljs-attr">value</span>: <span class="pl-s">&apos;car&apos;</span>
+},{
+  <span class="hljs-attr">label</span>: <span class="pl-s">&apos;Price USD&apos;</span>,
+  <span class="hljs-attr">value</span>: <span class="pl-s">&apos;price&apos;</span>
+}];
+<span class="pl-k">const</span> csv = json2csv(myCars, { fields, <span class="hljs-attr">quote</span>: <span class="pl-s">&apos;&apos;</span> });
+
+<span class="pl-c1">console</span>.log(csv);
+</code></pre>
+<p>Results in</p>
+<pre><code>Car Name, Price USD
+Audi, 10000
+BMW, 15000
+Porsche, 30000
+</code></pre>
+<h4 id="example-7">Example 7</h4>
+<p>You can unwind arrays similar to MongoDB&apos;s $unwind operation using the <code>unwind</code> option.</p>
+<pre><code class="lang-javascript"><span class="pl-k">const</span> json2csv = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>);
+<span class="pl-k">const</span> fs = <span class="pl-c1">require</span>(<span class="pl-s">&apos;fs&apos;</span>);
+<span class="pl-k">const</span> fields = [<span class="pl-s">&apos;carModel&apos;</span>, <span class="pl-s">&apos;price&apos;</span>, <span class="pl-s">&apos;colors&apos;</span>];
+<span class="pl-k">const</span> myCars = [
   {
     <span class="pl-s">&quot;carModel&quot;</span>: <span class="pl-s">&quot;Audi&quot;</span>,
     <span class="pl-s">&quot;price&quot;</span>: <span class="hljs-number">0</span>,
@@ -319,14 +402,11 @@ fs.writeFile(<span class="pl-s">&apos;file.csv&apos;</span>, csv, <span class="h
     <span class="pl-s">&quot;colors&quot;</span>: [<span class="pl-s">&quot;green&quot;</span>,<span class="pl-s">&quot;teal&quot;</span>,<span class="pl-s">&quot;aqua&quot;</span>]
   }
 ];
-<span class="pl-k">var</span> csv = json2csv({ <span class="hljs-attr">data</span>: myCars, <span class="hljs-attr">fields</span>: fields, <span class="hljs-attr">unwindPath</span>: <span class="pl-s">&apos;colors&apos;</span> });
+<span class="pl-k">const</span> csv = json2csv(myCars, { fields, <span class="hljs-attr">unwind</span>: <span class="pl-s">&apos;colors&apos;</span> });
 
-fs.writeFile(<span class="pl-s">&apos;file.csv&apos;</span>, csv, <span class="hljs-function"><span class="pl-k">function</span>(<span class="hljs-params">err</span>) </span>{
-  <span class="pl-k">if</span> (err) <span class="pl-k">throw</span> err;
-  <span class="pl-c1">console</span>.log(<span class="pl-s">&apos;file saved&apos;</span>);
-});
+<span class="pl-c1">console</span>.log(csv);
 </code></pre>
-<p>The content of the &quot;file.csv&quot; should be</p>
+<p>will output to console</p>
 <pre><code>&quot;carModel&quot;,&quot;price&quot;,&quot;colors&quot;
 &quot;Audi&quot;,0,&quot;blue&quot;
 &quot;Audi&quot;,0,&quot;green&quot;
@@ -338,12 +418,12 @@ fs.writeFile(<span class="pl-s">&apos;file.csv&apos;</span>, csv, <span class="h
 &quot;Porsche&quot;,30000,&quot;teal&quot;
 &quot;Porsche&quot;,30000,&quot;aqua&quot;
 </code></pre>
-<h3 id="example-8">Example 8</h3>
+<h4 id="example-8">Example 8</h4>
 <p>You can also unwind arrays multiple times or with nested objects.</p>
-<pre><code class="lang-javascript"><span class="pl-k">var</span> json2csv = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>);
-<span class="pl-k">var</span> fs = <span class="pl-c1">require</span>(<span class="pl-s">&apos;fs&apos;</span>);
-<span class="pl-k">var</span> fields = [<span class="pl-s">&apos;carModel&apos;</span>, <span class="pl-s">&apos;price&apos;</span>, <span class="pl-s">&apos;items.name&apos;</span>, <span class="pl-s">&apos;items.color&apos;</span>, <span class="pl-s">&apos;items.items.position&apos;</span>, <span class="pl-s">&apos;items.items.color&apos;</span>];
-<span class="pl-k">var</span> myCars = [
+<pre><code class="lang-javascript"><span class="pl-k">const</span> json2csv = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>);
+<span class="pl-k">const</span> fs = <span class="pl-c1">require</span>(<span class="pl-s">&apos;fs&apos;</span>);
+<span class="pl-k">const</span> fields = [<span class="pl-s">&apos;carModel&apos;</span>, <span class="pl-s">&apos;price&apos;</span>, <span class="pl-s">&apos;items.name&apos;</span>, <span class="pl-s">&apos;items.color&apos;</span>, <span class="pl-s">&apos;items.items.position&apos;</span>, <span class="pl-s">&apos;items.items.color&apos;</span>];
+<span class="pl-k">const</span> myCars = [
   {
     <span class="pl-s">&quot;carModel&quot;</span>: <span class="pl-s">&quot;BMW&quot;</span>,
     <span class="pl-s">&quot;price&quot;</span>: <span class="hljs-number">15000</span>,
@@ -386,14 +466,11 @@ fs.writeFile(<span class="pl-s">&apos;file.csv&apos;</span>, csv, <span class="h
     ]
   }
 ];
-<span class="pl-k">var</span> csv = json2csv({ <span class="hljs-attr">data</span>: myCars, <span class="hljs-attr">fields</span>: fields, <span class="hljs-attr">unwindPath</span>: [<span class="pl-s">&apos;items&apos;</span>, <span class="pl-s">&apos;items.items&apos;</span>] });
+<span class="pl-k">const</span> csv = json2csv(myCars, { fields, <span class="hljs-attr">unwind</span>: [<span class="pl-s">&apos;items&apos;</span>, <span class="pl-s">&apos;items.items&apos;</span>] });
 
-fs.writeFile(<span class="pl-s">&apos;file.csv&apos;</span>, csv, <span class="hljs-function"><span class="pl-k">function</span>(<span class="hljs-params">err</span>) </span>{
-  <span class="pl-k">if</span> (err) <span class="pl-k">throw</span> err;
-  <span class="pl-c1">console</span>.log(<span class="pl-s">&apos;file saved&apos;</span>);
-});
+<span class="pl-c1">console</span>.log(csv);
 </code></pre>
-<p>The content of the &quot;file.csv&quot; should be</p>
+<p>will output to console</p>
 <pre><code>&quot;carModel&quot;,&quot;price&quot;,&quot;items.name&quot;,&quot;items.color&quot;,&quot;items.items.position&quot;,&quot;items.items.color&quot;
 &quot;BMW&quot;,15000,&quot;airbag&quot;,&quot;white&quot;,,
 &quot;BMW&quot;,15000,&quot;dashboard&quot;,&quot;black&quot;,,
@@ -402,113 +479,21 @@ fs.writeFile(<span class="pl-s">&apos;file.csv&apos;</span>, csv, <span class="h
 &quot;Porsche&quot;,30000,&quot;dashboard&quot;,,&quot;left&quot;,&quot;gray&quot;
 &quot;Porsche&quot;,30000,&quot;dashboard&quot;,,&quot;right&quot;,&quot;black&quot;
 </code></pre>
-<h2 id="command-line-interface">Command Line Interface</h2>
-<p><code>json2csv</code> can also be called from the command line if installed with <code>-g</code>.</p>
-<pre><code class="lang-bash">Usage: json2csv [options]
-
-  Options:
-
-    -h, --help                   output usage information
-    -V, --version                output the version number
-    -i, --input &lt;input&gt;          Path and name of the incoming json file.
-    -o, --output [output]        Path and name of the resulting csv file. Defaults to console.
-    <span class="hljs-_">-f</span>, --fields &lt;fields&gt;        Specify the fields to convert.
-    <span class="hljs-_">-l</span>, --fieldList [list]       Specify a file with a list of fields to include. One field per line.
-    <span class="hljs-_">-d</span>, --delimiter [delimiter]  Specify a delimiter other than the default comma to use.
-    <span class="hljs-_">-e</span>, --eol [value]            Specify an EOL value after each row.
-    -z, --newLine [value]        Specify an new line value <span class="pl-k">for</span> separating rows.
-    -q, --quote [value]          Specify an alternate quote value.
-    -n, --no-header              Disable the column name header
-    -F, --flatten                Flatten nested objects
-    -u, --unwindPath &lt;paths&gt;     Creates multiple rows from a single JSON document similar to MongoDB unwind.
-    -L, --ldjson                 Treat the input as Line-Delimited JSON.
-    -p, --pretty                 Use only when printing to console. Logs output <span class="pl-k">in</span> pretty tables.
-    <span class="hljs-_">-a</span>, --include-empty-rows     Includes empty rows <span class="pl-k">in</span> the resulting CSV output.
-    -b, --with-bom               Includes BOM character at the beginning of the CSV.
-</code></pre>
-<p>An input file <code>-i</code> and fields <code>-f</code> are required. If no output <code>-o</code> is specified the result is logged to the console.
-Use <code>-p</code> to show the result in a beautiful table inside the console.</p>
-<h3 id="cli-examples">CLI examples</h3>
-<h4 id="input-file-and-specify-fields">Input file and specify fields</h4>
-<pre><code class="lang-bash">$ json2csv -i input.json <span class="hljs-_">-f</span> carModel,price,color
-</code></pre>
-<pre><code>carModel,price,color
-&quot;Audi&quot;,10000,&quot;blue&quot;
-&quot;BMW&quot;,15000,&quot;red&quot;
-&quot;Mercedes&quot;,20000,&quot;yellow&quot;
-&quot;Porsche&quot;,30000,&quot;green&quot;
-</code></pre>
-<h4 id="input-file-specify-fields-and-use-pretty-logging">Input file, specify fields and use pretty logging</h4>
-<pre><code class="lang-bash">$ json2csv -i input.json <span class="hljs-_">-f</span> carModel,price,color -p
-</code></pre>
-<p><img src="https://s3.amazonaws.com/zeMirco/github/json2csv/json2csv-pretty.png" alt="Screenshot"></p>
-<h4 id="input-file-specify-fields-and-write-to-file">Input file, specify fields and write to file</h4>
-<pre><code class="lang-bash">$ json2csv -i input.json <span class="hljs-_">-f</span> carModel,price,color -o out.csv
-</code></pre>
-<p>Content of <code>out.csv</code> is</p>
-<pre><code>carModel,price,color
-&quot;Audi&quot;,10000,&quot;blue&quot;
-&quot;BMW&quot;,15000,&quot;red&quot;
-&quot;Mercedes&quot;,20000,&quot;yellow&quot;
-&quot;Porsche&quot;,30000,&quot;green&quot;
-</code></pre>
-<h4 id="input-file-use-field-list-and-write-to-file">Input file, use field list and write to file</h4>
-<p>The file <code>fieldList</code> contains</p>
-<pre><code>carModel
-price
-color
-</code></pre>
-<p>Use the following command with the <code>-l</code> flag</p>
-<pre><code class="lang-bash">$ json2csv -i input.json <span class="hljs-_">-l</span> fieldList -o out.csv
-</code></pre>
-<p>Content of <code>out.csv</code> is</p>
-<pre><code>carModel,price,color
-&quot;Audi&quot;,10000,&quot;blue&quot;
-&quot;BMW&quot;,15000,&quot;red&quot;
-&quot;Mercedes&quot;,20000,&quot;yellow&quot;
-&quot;Porsche&quot;,30000,&quot;green&quot;
-</code></pre>
-<h4 id="read-from-stdin">Read from stdin</h4>
-<pre><code class="lang-bash">$ json2csv <span class="hljs-_">-f</span> price
-[{<span class="pl-s">&quot;price&quot;</span>:1000},{<span class="pl-s">&quot;price&quot;</span>:2000}]
-</code></pre>
-<p>Hit <kbd>Enter</kbd> and afterwards <kbd>CTRL</kbd> + <kbd>D</kbd> to end reading from stdin. The terminal should show</p>
-<pre><code>price
-1000
-2000
-</code></pre>
-<h4 id="appending-to-existing-csv">Appending to existing CSV</h4>
-<p>Sometimes you want to add some additional rows with the same columns.
-This is how you can do that.</p>
-<pre><code class="lang-bash"><span class="pl-c"># Initial creation of csv with headings</span>
-$ json2csv -i test.json <span class="hljs-_">-f</span> name,version &gt; test.csv
-<span class="pl-c"># Append additional rows</span>
-$ json2csv -i test.json <span class="hljs-_">-f</span> name,version --no-header &gt;&gt; test.csv
-</code></pre>
-<h2 id="include-using-a-script-tag-(not-recommended)">Include using a script tag (not recommended)</h2>
-<p>If it&apos;s not possible to work with node modules, <code>json2csv</code> can be declared as a global by requesting <code>dist/json2csv.js</code> via an HTML script tag:</p>
-<pre><code>&lt;script src=&quot;node_modules/json2csv/dist/json2csv.js&quot;&gt;&lt;/script&gt;
-&lt;script&gt;
-  console.log(typeof json2csv === &apos;function&apos;); // true
-&lt;/script&gt;
-</code></pre>
-<h3 id="building">Building</h3>
+<h2 id="building">Building</h2>
 <p>When developing, it&apos;s necessary to run <code>webpack</code> to prepare the built script. This can be done easily with <code>npm run build</code>.</p>
 <p>If <code>webpack</code> is not already available from the command line, use <code>npm install -g webpack</code>.</p>
 <h2 id="testing">Testing</h2>
-<p>Run the following command to test and return coverage</p>
-<pre><code class="lang-bash">$ npm <span class="pl-c1">test</span>
+<p>Run the folowing command to check the code style.</p>
+<pre><code class="lang-bash">$ npm run lint
+</code></pre>
+<p>Run the following command to run the tests and return coverage</p>
+<pre><code class="lang-bash">$ npm run <span class="pl-c1">test</span>-with-coverage
 </code></pre>
 <h2 id="contributors">Contributors</h2>
-<p>Install require packages for development run following command under json2csv dir.</p>
-<p>Run</p>
+<p>After you clone the repository you just need to install the required packages for development by runnning following command under json2csv dir.</p>
 <pre><code class="lang-bash">$ npm install
 </code></pre>
-<p>Could you please make sure code is formatted and test passed before submit Pull Requests?</p>
-<p>See Testing section above.</p>
-<h2 id="but-i-want-streams!">But I want streams!</h2>
-<p>Check out my other module <a href="https://github.com/zemirco/json2csv-stream">json2csv-stream</a>. It transforms an incoming
-stream containing <code>json</code> data into an outgoing <code>csv</code> stream.</p>
+<p>Before making any pull request please ensure sure that your code is formatted, test are passing and test coverage haven&apos;t decreased. (See <a href="#testing">Testing</a>)</p>
 <h2 id="similar-projects">Similar Projects</h2>
 <ul>
 <li><a href="http://papaparse.com/">Papa Parse</a></li>

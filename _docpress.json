@@ -9,66 +9,14 @@
         "slug": "index",
         "headings": [
           {
-            "title": "How to use",
-            "depth": 2,
-            "id": "how-to-use"
-          },
-          {
             "title": "Features",
             "depth": 2,
             "id": "features"
           },
           {
-            "title": "Use as a module",
+            "title": "How to install",
             "depth": 2,
-            "id": "use-as-a-module",
-            "headings": [
-              {
-                "title": "Available Options",
-                "depth": 3,
-                "id": "available-options"
-              },
-              {
-                "title": "Example 1",
-                "depth": 3,
-                "id": "example-1"
-              },
-              {
-                "title": "Example 2",
-                "depth": 3,
-                "id": "example-2"
-              },
-              {
-                "title": "Example 3",
-                "depth": 3,
-                "id": "example-3"
-              },
-              {
-                "title": "Example 4",
-                "depth": 3,
-                "id": "example-4"
-              },
-              {
-                "title": "Example 5",
-                "depth": 3,
-                "id": "example-5"
-              },
-              {
-                "title": "Example 6",
-                "depth": 3,
-                "id": "example-6"
-              },
-              {
-                "title": "Example 7",
-                "depth": 3,
-                "id": "example-7"
-              },
-              {
-                "title": "Example 8",
-                "depth": 3,
-                "id": "example-8"
-              }
-            ]
+            "id": "how-to-install"
           },
           {
             "title": "Command Line Interface",
@@ -83,16 +31,36 @@
             ]
           },
           {
-            "title": "Include using a script tag (not recommended)",
+            "title": "Javascript module",
             "depth": 2,
-            "id": "include-using-a-script-tag-(not-recommended)",
+            "id": "javascript-module",
             "headings": [
               {
-                "title": "Building",
+                "title": "Available Options",
                 "depth": 3,
-                "id": "building"
+                "id": "available-options"
+              },
+              {
+                "title": "json2csv parser (Synchronous API)",
+                "depth": 3,
+                "id": "json2csv-parser-(synchronous-api)"
+              },
+              {
+                "title": "json2csv transform (Streaming API)",
+                "depth": 3,
+                "id": "json2csv-transform-(streaming-api)"
+              },
+              {
+                "title": "Javascript module examples",
+                "depth": 3,
+                "id": "javascript-module-examples"
               }
             ]
+          },
+          {
+            "title": "Building",
+            "depth": 2,
+            "id": "building"
           },
           {
             "title": "Testing",
@@ -103,11 +71,6 @@
             "title": "Contributors",
             "depth": 2,
             "id": "contributors"
-          },
-          {
-            "title": "But I want streams!",
-            "depth": 2,
-            "id": "but-i-want-streams!"
           },
           {
             "title": "Similar Projects",
@@ -131,66 +94,14 @@
       "slug": "index",
       "headings": [
         {
-          "title": "How to use",
-          "depth": 2,
-          "id": "how-to-use"
-        },
-        {
           "title": "Features",
           "depth": 2,
           "id": "features"
         },
         {
-          "title": "Use as a module",
+          "title": "How to install",
           "depth": 2,
-          "id": "use-as-a-module",
-          "headings": [
-            {
-              "title": "Available Options",
-              "depth": 3,
-              "id": "available-options"
-            },
-            {
-              "title": "Example 1",
-              "depth": 3,
-              "id": "example-1"
-            },
-            {
-              "title": "Example 2",
-              "depth": 3,
-              "id": "example-2"
-            },
-            {
-              "title": "Example 3",
-              "depth": 3,
-              "id": "example-3"
-            },
-            {
-              "title": "Example 4",
-              "depth": 3,
-              "id": "example-4"
-            },
-            {
-              "title": "Example 5",
-              "depth": 3,
-              "id": "example-5"
-            },
-            {
-              "title": "Example 6",
-              "depth": 3,
-              "id": "example-6"
-            },
-            {
-              "title": "Example 7",
-              "depth": 3,
-              "id": "example-7"
-            },
-            {
-              "title": "Example 8",
-              "depth": 3,
-              "id": "example-8"
-            }
-          ]
+          "id": "how-to-install"
         },
         {
           "title": "Command Line Interface",
@@ -205,16 +116,36 @@
           ]
         },
         {
-          "title": "Include using a script tag (not recommended)",
+          "title": "Javascript module",
           "depth": 2,
-          "id": "include-using-a-script-tag-(not-recommended)",
+          "id": "javascript-module",
           "headings": [
             {
-              "title": "Building",
+              "title": "Available Options",
               "depth": 3,
-              "id": "building"
+              "id": "available-options"
+            },
+            {
+              "title": "json2csv parser (Synchronous API)",
+              "depth": 3,
+              "id": "json2csv-parser-(synchronous-api)"
+            },
+            {
+              "title": "json2csv transform (Streaming API)",
+              "depth": 3,
+              "id": "json2csv-transform-(streaming-api)"
+            },
+            {
+              "title": "Javascript module examples",
+              "depth": 3,
+              "id": "javascript-module-examples"
             }
           ]
+        },
+        {
+          "title": "Building",
+          "depth": 2,
+          "id": "building"
         },
         {
           "title": "Testing",
@@ -225,11 +156,6 @@
           "title": "Contributors",
           "depth": 2,
           "id": "contributors"
-        },
-        {
-          "title": "But I want streams!",
-          "depth": 2,
-          "id": "but-i-want-streams!"
         },
         {
           "title": "Similar Projects",
