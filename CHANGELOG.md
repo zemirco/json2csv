@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="4.0.0-alpha.1"></a>
+# [4.0.0-alpha.1](https://github.com/zemirco/json2csv/compare/v4.0.0-alpha.0...v4.0.0-alpha.1) (2018-02-21)
+
+
+### Bug Fixes
+
+* Remove TypeScript definition ([#256](https://github.com/zemirco/json2csv/issues/256)) ([4f09694](https://github.com/zemirco/json2csv/commit/4f09694))
+
+
+
 <a name="4.0.0-alpha.0"></a>
 # [4.0.0-alpha.0](https://github.com/zemirco/json2csv/compare/v3.11.5...v4.0.0-alpha.0) (2018-02-21)
 
