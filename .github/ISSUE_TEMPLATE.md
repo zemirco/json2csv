@@ -12,7 +12,10 @@ Please follow the following instructions so we can help you best.
 
 ## Filing an issue
 
-1. Include the command or code you used.
-2. Include a sample dataset that we can test against.
-3. Include your output/error.
+1. Include the version of json2csv used.
+2. Include your node version/browser vendor and version.
+3. Include the command or code you used.
+4. Include a sample dataset that we can test against.
+5. Include your output/error.
+6. (optional) Submit a pull request with a test representing your breaking change.
 -->
