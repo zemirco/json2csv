@@ -1,3 +1,0 @@
-* text=auto
-test/fixtures/csv/eol.csv text eol=crlf
-test/fixtures/csv/escapeEOL.csv text eol=crlf
