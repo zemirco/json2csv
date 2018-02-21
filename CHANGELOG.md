@@ -2,6 +2,82 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="4.0.0-alpha.0"></a>
+# [4.0.0-alpha.0](https://github.com/zemirco/json2csv/compare/v3.11.5...v4.0.0-alpha.0) (2018-02-21)
+
+
+### Bug Fixes
+
+* Add CLI tests ([#247](https://github.com/zemirco/json2csv/issues/247)) ([bb8126f](https://github.com/zemirco/json2csv/commit/bb8126f))
+* Add excel string to cli and standardize ([#231](https://github.com/zemirco/json2csv/issues/231)) ([421baad](https://github.com/zemirco/json2csv/commit/421baad))
+* Allow passing ldjson input files ([#220](https://github.com/zemirco/json2csv/issues/220)) ([9c861ed](https://github.com/zemirco/json2csv/commit/9c861ed))
+* Avoid throwing an error on elements that can't be stringified (like functions) ([#223](https://github.com/zemirco/json2csv/issues/223)) ([679c687](https://github.com/zemirco/json2csv/commit/679c687))
+* backslash logic ([#222](https://github.com/zemirco/json2csv/issues/222)) ([29e9445](https://github.com/zemirco/json2csv/commit/29e9445))
+* broken stdin input ([#241](https://github.com/zemirco/json2csv/issues/241)) ([6cb407c](https://github.com/zemirco/json2csv/commit/6cb407c))
+* Combine EOL and newLine parameters ([#219](https://github.com/zemirco/json2csv/issues/219)) ([4668a8b](https://github.com/zemirco/json2csv/commit/4668a8b))
+* header flag ([#221](https://github.com/zemirco/json2csv/issues/221)) ([7f7338f](https://github.com/zemirco/json2csv/commit/7f7338f))
+* outdated jsdoc ([#243](https://github.com/zemirco/json2csv/issues/243)) ([efe9888](https://github.com/zemirco/json2csv/commit/efe9888))
+* pretty print issues ([#242](https://github.com/zemirco/json2csv/issues/242)) ([3bd9655](https://github.com/zemirco/json2csv/commit/3bd9655))
+* Process header cells as any other cell ([#244](https://github.com/zemirco/json2csv/issues/244)) ([1fcde13](https://github.com/zemirco/json2csv/commit/1fcde13))
+* Remove callback support ([2096ade](https://github.com/zemirco/json2csv/commit/2096ade))
+* Remove fieldNames ([#232](https://github.com/zemirco/json2csv/issues/232)) ([6cc74b2](https://github.com/zemirco/json2csv/commit/6cc74b2))
+* Remove path-is-absolute dependency ([#225](https://github.com/zemirco/json2csv/issues/225)) ([f71a3df](https://github.com/zemirco/json2csv/commit/f71a3df))
+* Rename hasCSVColumnTitle to noHeader ([#216](https://github.com/zemirco/json2csv/issues/216)) ([f053c8b](https://github.com/zemirco/json2csv/commit/f053c8b))
+* Rename ld-json to ndjson ([#240](https://github.com/zemirco/json2csv/issues/240)) ([24a7893](https://github.com/zemirco/json2csv/commit/24a7893))
+* Rename unwindPath to unwind ([#230](https://github.com/zemirco/json2csv/issues/230)) ([7143bc7](https://github.com/zemirco/json2csv/commit/7143bc7))
+* Streamify pretty print ([#248](https://github.com/zemirco/json2csv/issues/248)) ([fb7ad53](https://github.com/zemirco/json2csv/commit/fb7ad53))
+
+
+### Chores
+
+* Refactor the entire library to ES6 ([#233](https://github.com/zemirco/json2csv/issues/233)) ([dce4d33](https://github.com/zemirco/json2csv/commit/dce4d33))
+
+
+### Features
+
+* add doubleQuote to cli, rename other options to line up with the cli ([5e402dc](https://github.com/zemirco/json2csv/commit/5e402dc))
+* Add fields config option to CLI ([#245](https://github.com/zemirco/json2csv/issues/245)) ([74ef666](https://github.com/zemirco/json2csv/commit/74ef666))
+* Add streaming API ([#235](https://github.com/zemirco/json2csv/issues/235)) ([01ca93e](https://github.com/zemirco/json2csv/commit/01ca93e))
+* Split tests in multiple files ([#246](https://github.com/zemirco/json2csv/issues/246)) ([839de77](https://github.com/zemirco/json2csv/commit/839de77))
+
+
+### BREAKING CHANGES
+
+* Replaces field-list with field-config
+* Remove `preserveNewLinesInValues` option, preserve by default
+
+* Refactor the entire library to ES6
+
+* Fix PR issues
+
+* Add strict mode for node 4.X
+* Remove fieldNames
+
+* Increase coverage back to 100%
+* callback is no longer available, just return the csv from the json2csv.
+
+- updated tests
+- updated readme
+* * Rename unwindPath to unwind
+
+* Fix field-list in CLI
+* newLine removed, eol kept.
+* Rename del to delimiter to match the cli flag
+* Rename quotes to quote to match the cli flag
+
+* Remove unused double quotes comment
+
+* Fix noHeader in CLI
+
+* Revert "Remove unused double quotes comment"
+
+This reverts commit 250d3e6ddf3062cbdc1e0174493a37fa21197d8e.
+
+* Add doubleQuote to CLI
+* Rename hasCSVColumnTitle to noHeader to keep in line with the CLI
+
+
+
 <a name="3.11.5"></a>
 ## [3.11.5](https://github.com/zemirco/json2csv/compare/v3.11.4...v3.11.5) (2017-10-23)
 
