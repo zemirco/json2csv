@@ -5,3 +5,5 @@ CHANGELOG.md
 test
 coverage
 .nyc_output
+_docpress
+webpack.config.js
