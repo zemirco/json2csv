@@ -275,6 +275,18 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     t.end();
   });
 
+  testRunner.add('should support flattenning JSON with toJSON', (t) => {
+    const opts = {
+      flatten: true
+    };
+
+    const parser = new Json2csvParser(opts);
+    const csv = parser.parse(jsonFixtures.flattenToJSON);
+
+    t.equal(csv, csvFixtures.flattenToJSON);
+    t.end();
+  });
+
   testRunner.add('should unwind and flatten an object in the right order', (t) => {
     const opts = {
       unwind: ['items'],
