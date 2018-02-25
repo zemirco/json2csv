@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="4.0.0-alpha.2"></a>
+# [4.0.0-alpha.2](https://github.com/zemirco/json2csv/compare/v4.0.0-alpha.1...v4.0.0-alpha.2) (2018-02-25)
+
+
+### Bug Fixes
+
+* flatten issue with toJSON ([#259](https://github.com/zemirco/json2csv/issues/259)) ([7006d2b](https://github.com/zemirco/json2csv/commit/7006d2b))
+
+
+
 <a name="4.0.0-alpha.1"></a>
 # [4.0.0-alpha.1](https://github.com/zemirco/json2csv/compare/v4.0.0-alpha.0...v4.0.0-alpha.1) (2018-02-21)
 
