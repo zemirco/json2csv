@@ -257,8 +257,7 @@ json2csv
 #### Example 1
 
 ```javascript
-const json2csv = require('json2csv');
-const fs = require('fs');
+const Json2csvParser = require('json2csv').Parser;
 const fields = ['car', 'price', 'color'];
 const myCars = [
   {
@@ -275,7 +274,9 @@ const myCars = [
     "color": "green"
   }
 ];
-const csv = json2csv(myCars, { fields });
+
+const json2csvParser = new Json2csvParser({ fields });
+const csv = json2csvParser.parse(myCars);
 
 console.log(csv);
 ```
@@ -294,10 +295,11 @@ car, price, color
 Similarly to [mongoexport](http://www.mongodb.org/display/DOCS/mongoexport) you can choose which fields to export.
 
 ```javascript
-const json2csv = require('json2csv');
+const Json2csvParser = require('json2csv').Parser;
 const fields = ['car', 'color'];
 
-const csv = json2csv(myCars, { fields });
+const json2csvParser = new Json2csvParser({ fields });
+const csv = json2csvParser.parse(myCars);
 
 console.log(csv);
 ```
@@ -316,7 +318,7 @@ car, color
 You can choose custom column names for the exported file.
 
 ```javascript
-const json2csv = require('json2csv');
+const Json2csvParser = require('json2csv').Parser;
 const fields = [{
   label: 'Car Name',
   value: 'car'
@@ -324,7 +326,9 @@ const fields = [{
   label: 'Price USD',
   value: 'price'
 }];
-const csv = json2csv(myCars, { fields });
+
+const json2csvParser = new Json2csvParser({ fields });
+const csv = json2csvParser.parse(myCars, { fields });
 
 console.log(csv);
 ```
@@ -334,8 +338,7 @@ console.log(csv);
 You can also specify nested properties using dot notation.
 
 ```javascript
-const json2csv = require('json2csv');
-const fs = require('fs');
+const Json2csvParser = require('json2csv').Parser;
 const fields = ['car.make', 'car.model', 'price', 'color'];
 const myCars = [
   {
@@ -352,7 +355,9 @@ const myCars = [
     "color": "green"
   }
 ];
-const csv = json2csv(myCars, { fields });
+
+const json2csvParser = new Json2csvParser({ fields });
+const csv = json2csvParser.parse(myCars);
 
 console.log(csv);
 ```
@@ -371,9 +376,11 @@ car.make, car.model, price, color
 Use a custom delimiter to create tsv files using the delimiter option:
 
 ```javascript
-const json2csv = require('json2csv');
+const Json2csvParser = require('json2csv').Parser;
 const fields = ['car', 'price', 'color'];
-const tsv = json2csv(myCars, { fields, delimiter: '\t' });
+
+const json2csvParser = new Json2csvParser({ fields, delimiter: '\t' });
+const tsv = json2csvParser.parse(myCars);
 
 console.log(tsv);
 ```
@@ -395,7 +402,7 @@ If no delimiter is specified, the default `,` is used
 You can choose custom quotation marks.
 
 ```javascript
-const json2csv = require('json2csv');
+const Json2csvParser = require('json2csv').Parser;
 const fields = [{
   label: 'Car Name',
   value: 'car'
@@ -403,7 +410,9 @@ const fields = [{
   label: 'Price USD',
   value: 'price'
 }];
-const csv = json2csv(myCars, { fields, quote: '' });
+
+const json2csvParser = new Json2csvParser({ fields, quote: '' });
+const csv = json2csvParser.parse(myCars);
 
 console.log(csv);
 ```
@@ -422,8 +431,7 @@ Porsche, 30000
 You can unwind arrays similar to MongoDB's $unwind operation using the `unwind` option.
 
 ```javascript
-const json2csv = require('json2csv');
-const fs = require('fs');
+const Json2csvParser = require('json2csv').Parser;
 const fields = ['carModel', 'price', 'colors'];
 const myCars = [
   {
@@ -444,7 +452,9 @@ const myCars = [
     "colors": ["green","teal","aqua"]
   }
 ];
-const csv = json2csv(myCars, { fields, unwind: 'colors' });
+
+const json2csvParser = new Json2csvParser({ fields, unwind: 'colors' });
+const csv = json2csvParser.parse(myCars);
 
 console.log(csv);
 ```
@@ -469,8 +479,7 @@ will output to console
 You can also unwind arrays multiple times or with nested objects.
 
 ```javascript
-const json2csv = require('json2csv');
-const fs = require('fs');
+const Json2csvParser = require('json2csv').Parser;
 const fields = ['carModel', 'price', 'items.name', 'items.color', 'items.items.position', 'items.items.color'];
 const myCars = [
   {
@@ -515,7 +524,9 @@ const myCars = [
     ]
   }
 ];
-const csv = json2csv(myCars, { fields, unwind: ['items', 'items.items'] });
+
+const json2csvParser = new Json2csvParser({ fields, unwind: ['items', 'items.items'] });
+const csv = json2csvParser.parse(myCars);
 
 console.log(csv);
 ```
@@ -531,6 +542,29 @@ will output to console
 "Porsche",30000,"dashboard",,"left","gray"
 "Porsche",30000,"dashboard",,"right","black"
 ```
+
+### Migrating from 3.X to 4.X
+
+What in 3.X used to be
+```
+const json2csv = require('json2csv');
+const csv = json2csv({ data: myData, fields: myFields, unwindPath: paths, ... });
+```
+
+can be replaced by
+```
+const Json2csvParser = require('json2csv').Parser;
+const json2csvParser = new Json2csvParser({ fields: myFields, unwind: paths, ... });
+const csv = json2csvParser.parse(myData);
+```
+
+or the convenience method
+```
+const json2csv = require('json2csv');
+const csv = json2csv.parse(myData, { fields: myFields, unwind: paths, ... });
+```
+
+Please note that many of the configuration parameters have been slightly renamed. Please check one by one that all your parameters are correct.
 
 ## Building
 
