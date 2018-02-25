@@ -35,6 +35,8 @@
                 </li>
                 <li class="menu-item -level-2"><a class="link title link-javascript-module-examples" href="#javascript-module-examples">Javascript module examples</a>
                 </li>
+                <li class="menu-item -level-2"><a class="link title link-migrating-from-3.x-to-4.x" href="#migrating-from-3.x-to-4.x">Migrating from 3.X to 4.X</a>
+                </li>
               </ul>
             </li>
             <li class="menu-item -level-1"><a class="link title link-building" href="#building">Building</a>
@@ -255,8 +257,7 @@ json2csv
 }
 </code></pre>
 <h4 id="example-1">Example 1</h4>
-<pre><code class="lang-javascript"><span class="pl-k">const</span> json2csv = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>);
-<span class="pl-k">const</span> fs = <span class="pl-c1">require</span>(<span class="pl-s">&apos;fs&apos;</span>);
+<pre><code class="lang-javascript"><span class="pl-k">const</span> Json2csvParser = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>).Parser;
 <span class="pl-k">const</span> fields = [<span class="pl-s">&apos;car&apos;</span>, <span class="pl-s">&apos;price&apos;</span>, <span class="pl-s">&apos;color&apos;</span>];
 <span class="pl-k">const</span> myCars = [
   {
@@ -273,7 +274,9 @@ json2csv
     <span class="pl-s">&quot;color&quot;</span>: <span class="pl-s">&quot;green&quot;</span>
   }
 ];
-<span class="pl-k">const</span> csv = json2csv(myCars, { fields });
+
+<span class="pl-k">const</span> json2csvParser = <span class="pl-k">new</span> Json2csvParser({ fields });
+<span class="pl-k">const</span> csv = json2csvParser.parse(myCars);
 
 <span class="pl-c1">console</span>.log(csv);
 </code></pre>
@@ -285,10 +288,11 @@ json2csv
 </code></pre>
 <h4 id="example-2">Example 2</h4>
 <p>Similarly to <a href="http://www.mongodb.org/display/DOCS/mongoexport">mongoexport</a> you can choose which fields to export.</p>
-<pre><code class="lang-javascript"><span class="pl-k">const</span> json2csv = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>);
+<pre><code class="lang-javascript"><span class="pl-k">const</span> Json2csvParser = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>).Parser;
 <span class="pl-k">const</span> fields = [<span class="pl-s">&apos;car&apos;</span>, <span class="pl-s">&apos;color&apos;</span>];
 
-<span class="pl-k">const</span> csv = json2csv(myCars, { fields });
+<span class="pl-k">const</span> json2csvParser = <span class="pl-k">new</span> Json2csvParser({ fields });
+<span class="pl-k">const</span> csv = json2csvParser.parse(myCars);
 
 <span class="pl-c1">console</span>.log(csv);
 </code></pre>
@@ -300,7 +304,7 @@ json2csv
 </code></pre>
 <h4 id="example-3">Example 3</h4>
 <p>You can choose custom column names for the exported file.</p>
-<pre><code class="lang-javascript"><span class="pl-k">const</span> json2csv = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>);
+<pre><code class="lang-javascript"><span class="pl-k">const</span> Json2csvParser = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>).Parser;
 <span class="pl-k">const</span> fields = [{
   <span class="hljs-attr">label</span>: <span class="pl-s">&apos;Car Name&apos;</span>,
   <span class="hljs-attr">value</span>: <span class="pl-s">&apos;car&apos;</span>
@@ -308,14 +312,15 @@ json2csv
   <span class="hljs-attr">label</span>: <span class="pl-s">&apos;Price USD&apos;</span>,
   <span class="hljs-attr">value</span>: <span class="pl-s">&apos;price&apos;</span>
 }];
-<span class="pl-k">const</span> csv = json2csv(myCars, { fields });
+
+<span class="pl-k">const</span> json2csvParser = <span class="pl-k">new</span> Json2csvParser({ fields });
+<span class="pl-k">const</span> csv = json2csvParser.parse(myCars, { fields });
 
 <span class="pl-c1">console</span>.log(csv);
 </code></pre>
 <h4 id="example-4">Example 4</h4>
 <p>You can also specify nested properties using dot notation.</p>
-<pre><code class="lang-javascript"><span class="pl-k">const</span> json2csv = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>);
-<span class="pl-k">const</span> fs = <span class="pl-c1">require</span>(<span class="pl-s">&apos;fs&apos;</span>);
+<pre><code class="lang-javascript"><span class="pl-k">const</span> Json2csvParser = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>).Parser;
 <span class="pl-k">const</span> fields = [<span class="pl-s">&apos;car.make&apos;</span>, <span class="pl-s">&apos;car.model&apos;</span>, <span class="pl-s">&apos;price&apos;</span>, <span class="pl-s">&apos;color&apos;</span>];
 <span class="pl-k">const</span> myCars = [
   {
@@ -332,7 +337,9 @@ json2csv
     <span class="pl-s">&quot;color&quot;</span>: <span class="pl-s">&quot;green&quot;</span>
   }
 ];
-<span class="pl-k">const</span> csv = json2csv(myCars, { fields });
+
+<span class="pl-k">const</span> json2csvParser = <span class="pl-k">new</span> Json2csvParser({ fields });
+<span class="pl-k">const</span> csv = json2csvParser.parse(myCars);
 
 <span class="pl-c1">console</span>.log(csv);
 </code></pre>
@@ -343,10 +350,12 @@ json2csv
 &quot;Porsche&quot;, &quot;9PA AF1&quot;, 60000, &quot;green&quot;
 </code></pre>
 <h4 id="example-5">Example 5</h4>
-<p>Use a custom delimiter to create tsv files. Add it as the value of the delimiter property on the parameters:</p>
-<pre><code class="lang-javascript"><span class="pl-k">const</span> json2csv = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>);
+<p>Use a custom delimiter to create tsv files using the delimiter option:</p>
+<pre><code class="lang-javascript"><span class="pl-k">const</span> Json2csvParser = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>).Parser;
 <span class="pl-k">const</span> fields = [<span class="pl-s">&apos;car&apos;</span>, <span class="pl-s">&apos;price&apos;</span>, <span class="pl-s">&apos;color&apos;</span>];
-<span class="pl-k">const</span> tsv = json2csv(myCars, { fields, <span class="hljs-attr">delimiter</span>: <span class="pl-s">&apos;\t&apos;</span> });
+
+<span class="pl-k">const</span> json2csvParser = <span class="pl-k">new</span> Json2csvParser({ fields, <span class="hljs-attr">delimiter</span>: <span class="pl-s">&apos;\t&apos;</span> });
+<span class="pl-k">const</span> tsv = json2csvParser.parse(myCars);
 
 <span class="pl-c1">console</span>.log(tsv);
 </code></pre>
@@ -360,7 +369,7 @@ json2csv
 <p>If no delimiter is specified, the default <code>,</code> is used</p>
 <h4 id="example-6">Example 6</h4>
 <p>You can choose custom quotation marks.</p>
-<pre><code class="lang-javascript"><span class="pl-k">const</span> json2csv = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>);
+<pre><code class="lang-javascript"><span class="pl-k">const</span> Json2csvParser = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>).Parser;
 <span class="pl-k">const</span> fields = [{
   <span class="hljs-attr">label</span>: <span class="pl-s">&apos;Car Name&apos;</span>,
   <span class="hljs-attr">value</span>: <span class="pl-s">&apos;car&apos;</span>
@@ -368,7 +377,9 @@ json2csv
   <span class="hljs-attr">label</span>: <span class="pl-s">&apos;Price USD&apos;</span>,
   <span class="hljs-attr">value</span>: <span class="pl-s">&apos;price&apos;</span>
 }];
-<span class="pl-k">const</span> csv = json2csv(myCars, { fields, <span class="hljs-attr">quote</span>: <span class="pl-s">&apos;&apos;</span> });
+
+<span class="pl-k">const</span> json2csvParser = <span class="pl-k">new</span> Json2csvParser({ fields, <span class="hljs-attr">quote</span>: <span class="pl-s">&apos;&apos;</span> });
+<span class="pl-k">const</span> csv = json2csvParser.parse(myCars);
 
 <span class="pl-c1">console</span>.log(csv);
 </code></pre>
@@ -380,8 +391,7 @@ Porsche, 30000
 </code></pre>
 <h4 id="example-7">Example 7</h4>
 <p>You can unwind arrays similar to MongoDB&apos;s $unwind operation using the <code>unwind</code> option.</p>
-<pre><code class="lang-javascript"><span class="pl-k">const</span> json2csv = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>);
-<span class="pl-k">const</span> fs = <span class="pl-c1">require</span>(<span class="pl-s">&apos;fs&apos;</span>);
+<pre><code class="lang-javascript"><span class="pl-k">const</span> Json2csvParser = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>).Parser;
 <span class="pl-k">const</span> fields = [<span class="pl-s">&apos;carModel&apos;</span>, <span class="pl-s">&apos;price&apos;</span>, <span class="pl-s">&apos;colors&apos;</span>];
 <span class="pl-k">const</span> myCars = [
   {
@@ -402,7 +412,9 @@ Porsche, 30000
     <span class="pl-s">&quot;colors&quot;</span>: [<span class="pl-s">&quot;green&quot;</span>,<span class="pl-s">&quot;teal&quot;</span>,<span class="pl-s">&quot;aqua&quot;</span>]
   }
 ];
-<span class="pl-k">const</span> csv = json2csv(myCars, { fields, <span class="hljs-attr">unwind</span>: <span class="pl-s">&apos;colors&apos;</span> });
+
+<span class="pl-k">const</span> json2csvParser = <span class="pl-k">new</span> Json2csvParser({ fields, <span class="hljs-attr">unwind</span>: <span class="pl-s">&apos;colors&apos;</span> });
+<span class="pl-k">const</span> csv = json2csvParser.parse(myCars);
 
 <span class="pl-c1">console</span>.log(csv);
 </code></pre>
@@ -420,8 +432,7 @@ Porsche, 30000
 </code></pre>
 <h4 id="example-8">Example 8</h4>
 <p>You can also unwind arrays multiple times or with nested objects.</p>
-<pre><code class="lang-javascript"><span class="pl-k">const</span> json2csv = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>);
-<span class="pl-k">const</span> fs = <span class="pl-c1">require</span>(<span class="pl-s">&apos;fs&apos;</span>);
+<pre><code class="lang-javascript"><span class="pl-k">const</span> Json2csvParser = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>).Parser;
 <span class="pl-k">const</span> fields = [<span class="pl-s">&apos;carModel&apos;</span>, <span class="pl-s">&apos;price&apos;</span>, <span class="pl-s">&apos;items.name&apos;</span>, <span class="pl-s">&apos;items.color&apos;</span>, <span class="pl-s">&apos;items.items.position&apos;</span>, <span class="pl-s">&apos;items.items.color&apos;</span>];
 <span class="pl-k">const</span> myCars = [
   {
@@ -466,7 +477,9 @@ Porsche, 30000
     ]
   }
 ];
-<span class="pl-k">const</span> csv = json2csv(myCars, { fields, <span class="hljs-attr">unwind</span>: [<span class="pl-s">&apos;items&apos;</span>, <span class="pl-s">&apos;items.items&apos;</span>] });
+
+<span class="pl-k">const</span> json2csvParser = <span class="pl-k">new</span> Json2csvParser({ fields, <span class="hljs-attr">unwind</span>: [<span class="pl-s">&apos;items&apos;</span>, <span class="pl-s">&apos;items.items&apos;</span>] });
+<span class="pl-k">const</span> csv = json2csvParser.parse(myCars);
 
 <span class="pl-c1">console</span>.log(csv);
 </code></pre>
@@ -479,6 +492,21 @@ Porsche, 30000
 &quot;Porsche&quot;,30000,&quot;dashboard&quot;,,&quot;left&quot;,&quot;gray&quot;
 &quot;Porsche&quot;,30000,&quot;dashboard&quot;,,&quot;right&quot;,&quot;black&quot;
 </code></pre>
+<h3 id="migrating-from-3.x-to-4.x">Migrating from 3.X to 4.X</h3>
+<p>What in 3.X used to be</p>
+<pre><code>const json2csv = require(&apos;json2csv&apos;);
+const csv = json2csv({ data: myData, fields: myFields, unwindPath: paths, ... });
+</code></pre>
+<p>can be replaced by</p>
+<pre><code>const Json2csvParser = require(&apos;json2csv&apos;).Parser;
+const json2csvParser = new Json2csvParser({ fields: myFields, unwind: paths, ... });
+const csv = json2csvParser.parse(myData);
+</code></pre>
+<p>or the convenience method</p>
+<pre><code>const json2csv = require(&apos;json2csv&apos;);
+const csv = json2csv.parse(myData, { fields: myFields, unwind: paths, ... });
+</code></pre>
+<p>Please note that many of the configuration parameters have been slightly renamed. Please check one by one that all your parameters are correct.</p>
 <h2 id="building">Building</h2>
 <p>When developing, it&apos;s necessary to run <code>webpack</code> to prepare the built script. This can be done easily with <code>npm run build</code>.</p>
 <p>If <code>webpack</code> is not already available from the command line, use <code>npm install -g webpack</code>.</p>

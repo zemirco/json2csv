@@ -54,6 +54,11 @@
                 "title": "Javascript module examples",
                 "depth": 3,
                 "id": "javascript-module-examples"
+              },
+              {
+                "title": "Migrating from 3.X to 4.X",
+                "depth": 3,
+                "id": "migrating-from-3.x-to-4.x"
               }
             ]
           },
@@ -139,6 +144,11 @@
               "title": "Javascript module examples",
               "depth": 3,
               "id": "javascript-module-examples"
+            },
+            {
+              "title": "Migrating from 3.X to 4.X",
+              "depth": 3,
+              "id": "migrating-from-3.x-to-4.x"
             }
           ]
         },
