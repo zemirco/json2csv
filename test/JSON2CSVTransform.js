@@ -1,7 +1,7 @@
 'use strict';
 
 const Readable = require('stream').Readable;
-const Json2csvTransform = require('../dist/json2csv.cjs').Transform;
+const Json2csvTransform = require('../lib/json2csv').Transform;
 
 module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   testRunner.add('should handle ndjson', (t) => {

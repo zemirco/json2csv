@@ -1,6 +1,6 @@
 'use strict';
 
-const json2csv = require('../dist/json2csv.cjs');
+const json2csv = require('../lib/json2csv');
 const Json2csvParser = json2csv.Parser;
 
 module.exports = (testRunner, jsonFixtures, csvFixtures) => {
