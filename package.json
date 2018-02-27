@@ -20,13 +20,16 @@
   "bin": {
     "json2csv": "./bin/json2csv.js"
   },
-  "main": "./lib/json2csv.js",
+  "main": "dist/json2csv.cjs.js",
+  "module": "dist/json2csv.esm.js",
+  "browser": "dist/json2csv.umd.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/zemirco/json2csv"
   },
   "scripts": {
-    "build": "webpack",
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
     "test": "node test | tap-spec",
     "lint": "eslint bin lib test",
     "test-with-coverage": "nyc --reporter=text node test | tap-spec",
@@ -45,15 +48,22 @@
     "lodash.set": "^4.3.0"
   },
   "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-preset-es2015-rollup": "^3.0.0",
     "coveralls": "^3.0.0",
     "docpress": "^0.7.0",
     "eslint": "^4.16.0",
     "git-update-ghpages": "^1.3.0",
     "in-publish": "^2.0.0",
     "nyc": "^11.4.1",
+    "rollup": "^0.56.3",
+    "rollup-plugin-babel": "^3.0.3",
+    "rollup-plugin-commonjs": "^8.3.0",
+    "rollup-plugin-node-builtins": "^2.1.2",
+    "rollup-plugin-node-globals": "^1.1.0",
+    "rollup-plugin-node-resolve": "^3.0.3",
     "standard-version": "^4.0.0",
     "tap-spec": "^4.1.1",
-    "tape": "^4.8.0",
-    "webpack": "^1.13.1"
+    "tape": "^4.8.0"
   }
 }
