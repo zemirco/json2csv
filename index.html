@@ -218,10 +218,11 @@ $ json2csv -i test.json <span class="hljs-_">-f</span> name,version --no-header 
 
 <span class="pl-k">const</span> fields = [<span class="pl-s">&apos;field1&apos;</span>, <span class="pl-s">&apos;field2&apos;</span>, <span class="pl-s">&apos;field3&apos;</span>];
 <span class="pl-k">const</span> opts = { fields };
+<span class="pl-k">const</span> transformOpts = { <span class="hljs-attr">highWaterMark</span>: <span class="hljs-number">16384</span>, <span class="hljs-attr">encoding</span>: <span class="pl-s">&apos;utf-8&apos;</span> };
 
 <span class="pl-k">const</span> input = fs.createReadStream(inputPath, { <span class="hljs-attr">encoding</span>: <span class="pl-s">&apos;utf8&apos;</span> });
 <span class="pl-k">const</span> output = fs.createWriteStream(outputPath, { <span class="hljs-attr">encoding</span>: <span class="pl-s">&apos;utf8&apos;</span> });
-<span class="pl-k">const</span> json2csv = <span class="pl-k">new</span> Json2csvTransform(opts);
+<span class="pl-k">const</span> json2csv = <span class="pl-k">new</span> Json2csvTransform(opts, transformOpts);
 
 <span class="pl-k">const</span> processor = input.pipe(json2csv).pipe(output);
 
