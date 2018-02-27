@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="4.0.0"></a>
+# [4.0.0](https://github.com/zemirco/json2csv/compare/v4.0.0-alpha.2...v4.0.0) (2018-02-27)
+
+
+### Bug Fixes
+
+* Replace webpack with rollup packaging ([#266](https://github.com/zemirco/json2csv/issues/266)) ([a9f8020](https://github.com/zemirco/json2csv/commit/a9f8020))
+
+
+### Features
+
+* Pass transform options through ([#262](https://github.com/zemirco/json2csv/issues/262)) ([650913f](https://github.com/zemirco/json2csv/commit/650913f))
+
+
+
 <a name="4.0.0-alpha.2"></a>
 # [4.0.0-alpha.2](https://github.com/zemirco/json2csv/compare/v4.0.0-alpha.1...v4.0.0-alpha.2) (2018-02-25)
 
