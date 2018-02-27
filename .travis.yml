@@ -7,6 +7,7 @@ node_js:
   - "8"
   - "9"
 script:
+  - "npm run build"
   - "npm run lint"
   - "npm run test-with-coverage"
 after_success:
