@@ -212,10 +212,11 @@ const Json2csvTransform = require('json2csv').Transform;
 
 const fields = ['field1', 'field2', 'field3'];
 const opts = { fields };
+const transformOpts = { highWaterMark: 16384, encoding: 'utf-8' };
 
 const input = fs.createReadStream(inputPath, { encoding: 'utf8' });
 const output = fs.createWriteStream(outputPath, { encoding: 'utf8' });
-const json2csv = new Json2csvTransform(opts);
+const json2csv = new Json2csvTransform(opts, transformOpts);
 
 const processor = input.pipe(json2csv).pipe(output);
 
