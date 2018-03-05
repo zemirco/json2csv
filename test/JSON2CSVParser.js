@@ -425,6 +425,18 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     t.end();
   });
 
+  testRunner.add('should escape quotes before new line with value in \'doubleQuote\'', (t) => {
+    const opts = {
+      fields: ['a string']
+    };
+
+    const parser = new Json2csvParser(opts);
+    const csv = parser.parse(jsonFixtures.backslashBeforeNewLine);
+
+    t.equal(csv, csvFixtures.backslashBeforeNewLine);
+    t.end();
+  });
+
   // Delimiter
 
   testRunner.add('should use a custom delimiter when \'delimiter\' property is defined', (t) => {

@@ -1,0 +1,5 @@
+[
+  {"a string": "with a description"},
+  {"a string": "with a description and \"\nquotes and backslash\\"},
+  {"a string": "with a description and \"\nquotes and backslash\\\\"}
+]
