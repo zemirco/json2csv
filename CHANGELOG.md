@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="4.0.2"></a>
+## [4.0.2](https://github.com/zemirco/json2csv/compare/v4.0.1...v4.0.2) (2018-03-09)
+
+
+### Bug Fixes
+
+* **parser:** RangeError ([#271](https://github.com/zemirco/json2csv/issues/271)) ([c8d5a87](https://github.com/zemirco/json2csv/commit/c8d5a87))
+
+
+
 <a name="4.0.1"></a>
 ## [4.0.1](https://github.com/zemirco/json2csv/compare/v4.0.0...v4.0.1) (2018-03-05)
 
