@@ -7,7 +7,8 @@ module.exports = {
   },
   lorem: {
     ipsum: {
-      dolor: 'good evening'
+      dolor: 'good evening',
+      value: null
     }
   }
 } 

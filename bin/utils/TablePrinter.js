@@ -15,11 +15,12 @@ class TablePrinter {
     const lines = csv.split(this.opts.eol);
 
     const chars = {
-        'bottom': '',
-        'bottom-mid': '',
-        'bottom-left': '',
-        'bottom-right': ''
-      };
+      'bottom': '',
+      'bottom-mid': '',
+      'bottom-left': '',
+      'bottom-right': ''
+    };
+
     if (!this._hasWritten) {
       this.colWidths = this.getColumnWidths(lines[0]);
       if (this.opts.header) {
