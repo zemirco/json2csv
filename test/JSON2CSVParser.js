@@ -37,6 +37,18 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     t.end();
   });
 
+  testRunner.add('should handle empty array', (t) => {
+    const opts = {
+      fields: ['carModel', 'price', 'color']
+    };
+
+    const parser = new Json2csvParser(opts);
+    const csv = parser.parse(jsonFixtures.emptyArray);
+
+    t.equal(csv, csvFixtures.emptyObject);
+    t.end();
+  });
+
   testRunner.add('should hanlde array with nulls', (t) => {
     const input = [null];
     const opts = {
