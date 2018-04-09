@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="4.0.3"></a>
+## [4.0.3](https://github.com/zemirco/json2csv/compare/v4.0.2...v4.0.3) (2018-04-09)
+
+
+### Bug Fixes
+
+* error when a field is null and flatten is used ([#274](https://github.com/zemirco/json2csv/issues/274)) ([1349a94](https://github.com/zemirco/json2csv/commit/1349a94))
+* throw error for empty dataset only if fields not specified ([0d8534e](https://github.com/zemirco/json2csv/commit/0d8534e))
+
+
+
 <a name="4.0.2"></a>
 ## [4.0.2](https://github.com/zemirco/json2csv/compare/v4.0.1...v4.0.2) (2018-03-09)
 
