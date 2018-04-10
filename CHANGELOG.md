@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="4.0.4"></a>
+## [4.0.4](https://github.com/zemirco/json2csv/compare/v4.0.3...v4.0.4) (2018-04-10)
+
+
+### Bug Fixes
+
+* comment out failing tests ([#283](https://github.com/zemirco/json2csv/issues/283)) ([5b25eaa](https://github.com/zemirco/json2csv/commit/5b25eaa))
+* Support empty array with opts.fields ([#281](https://github.com/zemirco/json2csv/issues/281)) ([eccca89](https://github.com/zemirco/json2csv/commit/eccca89))
+* **tests:** emit correct lines from transform ([#282](https://github.com/zemirco/json2csv/issues/282)) ([2322ddf](https://github.com/zemirco/json2csv/commit/2322ddf))
+
+
+
 <a name="4.0.3"></a>
 ## [4.0.3](https://github.com/zemirco/json2csv/compare/v4.0.2...v4.0.3) (2018-04-09)
 
