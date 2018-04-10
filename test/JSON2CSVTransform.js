@@ -97,6 +97,24 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
       .on('error', err => t.notOk(true, err.message));
   });
 
+  testRunner.add('should handle empty array', (t) => {
+    const opts = {
+      fields: ['carModel', 'price', 'color']
+    };
+
+    const transform = new Json2csvTransform(opts);
+    const processor = jsonFixtures.emptyArray().pipe(transform);
+
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.equal(csv, csvFixtures.emptyObject);
+        t.end();
+      })
+      .on('error', err => t.notOk(true, err.message));
+  });
+
   testRunner.add('should hanlde array with nulls', (t) => {
     const input = new Readable();
     input._read = () => {};
