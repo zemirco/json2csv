@@ -53,6 +53,7 @@ $ npm install json2csv --save
     -f, --fields <fields>               Specify the fields to convert.
     -c, --fields-config [list]          Specify a file with a fields configuration as a JSON array.
     -u, --unwind <paths>                Creates multiple rows from a single JSON document similar to MongoDB unwind.
+    -B, --unwind-blank                  When unwinding, blank out instead of repeating data.
     -F, --flatten                       Flatten nested objects
     -v, --default-value [defaultValue]  Specify a default value other than empty string.
     -q, --quote [value]                 Specify an alternate quote value.
@@ -155,6 +156,7 @@ The programatic APIs take a configuration object very equivalent to the CLI opti
 - `fields` - Array of Objects/Strings. Defaults to toplevel JSON attributes. See example below.
 - `ndjson` - Only effective on the streaming API. Indicates that data coming through the stream is NDJSON.
 - `unwind` - Array of Strings, creates multiple rows from a single JSON document similar to MongoDB's $unwind
+- `unwindBlank` - Boolean, unwind using blank values instead of repeating data.
 - `flatten` - Boolean, flattens nested JSON using [flat]. Defaults to `false`.
 - `defaultValue` - String, default value to use when missing data. Defaults to `<empty>` if not specified. (Overridden by `fields[].default`)
 - `quote` - String, quote around cell values and column names. Defaults to `"` if not specified.

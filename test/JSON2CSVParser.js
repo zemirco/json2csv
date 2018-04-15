@@ -275,6 +275,21 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     t.end();
   });
 
+  testRunner.add('should unwind and blank out repeated data', (t) => {
+    const opts = {
+      fields: ['carModel', 'price', 'items.name', 'items.color', 'items.items.position', 'items.items.color'],
+      unwind: ['items', 'items.items'],
+      unwindBlank: true,
+    };
+
+    const parser = new Json2csvParser(opts);
+    const csv = parser.parse(jsonFixtures.unwind2);
+
+    t.equal(csv, csvFixtures.unwind2Blank);
+    t.end();
+  });
+
+
   testRunner.add('should support flattenning deep JSON', (t) => {
     const opts = {
       flatten: true
