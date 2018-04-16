@@ -51,13 +51,13 @@ $ npm install json2csv --save
     -n, --ndjson                        Treat the input as NewLine-Delimited JSON.
     -s, --no-streaming                  Process the whole JSON array in memory instead of doing it line by line.
     -f, --fields <fields>               Specify the fields to convert.
-    -c, --fields-config [list]          Specify a file with a fields configuration as a JSON array.
+    -c, --fields-config <path>          Specify a file with a fields configuration as a JSON array.
     -u, --unwind <paths>                Creates multiple rows from a single JSON document similar to MongoDB unwind.
     -B, --unwind-blank                  When unwinding, blank out instead of repeating data.
     -F, --flatten                       Flatten nested objects
     -v, --default-value [defaultValue]  Specify a default value other than empty string.
     -q, --quote [value]                 Specify an alternate quote value.
-    -Q, --double-quotes [value]         Specify a value to replace double quote in strings
+    -Q, --double-quote [value]          Specify a value to replace double quote in strings
     -d, --delimiter [delimiter]         Specify a delimiter other than the default comma to use.
     -e, --eol [value]                   Specify an End-of-Line value for separating rows.
     -E, --excel-strings                 Converts string data into normalized Excel style data
