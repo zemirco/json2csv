@@ -100,13 +100,13 @@ $ npm install json2csv --save
     -n, --ndjson                        Treat the input as NewLine-Delimited JSON.
     <span class="hljs-_">-s</span>, --no-streaming                  Process the whole JSON array <span class="pl-k">in</span> memory instead of doing it line by line.
     <span class="hljs-_">-f</span>, --fields &lt;fields&gt;               Specify the fields to convert.
-    -c, --fields-config [list]          Specify a file with a fields configuration as a JSON array.
+    -c, --fields-config &lt;path&gt;          Specify a file with a fields configuration as a JSON array.
     -u, --unwind &lt;paths&gt;                Creates multiple rows from a single JSON document similar to MongoDB unwind.
     -B, --unwind-blank                  When unwinding, blank out instead of repeating data.
     -F, --flatten                       Flatten nested objects
     -v, --default-value [defaultValue]  Specify a default value other than empty string.
     -q, --quote [value]                 Specify an alternate quote value.
-    -Q, --double-quotes [value]         Specify a value to replace double quote <span class="pl-k">in</span> strings
+    -Q, --double-quote [value]          Specify a value to replace double quote <span class="pl-k">in</span> strings
     <span class="hljs-_">-d</span>, --delimiter [delimiter]         Specify a delimiter other than the default comma to use.
     <span class="hljs-_">-e</span>, --eol [value]                   Specify an End-of-Line value <span class="pl-k">for</span> separating rows.
     -E, --excel-strings                 Converts string data into normalized Excel style data
@@ -494,6 +494,68 @@ Porsche, 30000
 &quot;Porsche&quot;,30000,&quot;airbag&quot;,,&quot;right&quot;,&quot;gray&quot;
 &quot;Porsche&quot;,30000,&quot;dashboard&quot;,,&quot;left&quot;,&quot;gray&quot;
 &quot;Porsche&quot;,30000,&quot;dashboard&quot;,,&quot;right&quot;,&quot;black&quot;
+</code></pre>
+<h4 id="example-9">Example 9</h4>
+<p>You can also unwind arrays blanking the repeated fields.</p>
+<pre><code class="lang-javascript"><span class="pl-k">const</span> Json2csvParser = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>).Parser;
+<span class="pl-k">const</span> fields = [<span class="pl-s">&apos;carModel&apos;</span>, <span class="pl-s">&apos;price&apos;</span>, <span class="pl-s">&apos;items.name&apos;</span>, <span class="pl-s">&apos;items.color&apos;</span>, <span class="pl-s">&apos;items.items.position&apos;</span>, <span class="pl-s">&apos;items.items.color&apos;</span>];
+<span class="pl-k">const</span> myCars = [
+  {
+    <span class="pl-s">&quot;carModel&quot;</span>: <span class="pl-s">&quot;BMW&quot;</span>,
+    <span class="pl-s">&quot;price&quot;</span>: <span class="hljs-number">15000</span>,
+    <span class="pl-s">&quot;items&quot;</span>: [
+      {
+        <span class="pl-s">&quot;name&quot;</span>: <span class="pl-s">&quot;airbag&quot;</span>,
+        <span class="pl-s">&quot;color&quot;</span>: <span class="pl-s">&quot;white&quot;</span>
+      }, {
+        <span class="pl-s">&quot;name&quot;</span>: <span class="pl-s">&quot;dashboard&quot;</span>,
+        <span class="pl-s">&quot;color&quot;</span>: <span class="pl-s">&quot;black&quot;</span>
+      }
+    ]
+  }, {
+    <span class="pl-s">&quot;carModel&quot;</span>: <span class="pl-s">&quot;Porsche&quot;</span>,
+    <span class="pl-s">&quot;price&quot;</span>: <span class="hljs-number">30000</span>,
+    <span class="pl-s">&quot;items&quot;</span>: [
+      {
+        <span class="pl-s">&quot;name&quot;</span>: <span class="pl-s">&quot;airbag&quot;</span>,
+        <span class="pl-s">&quot;items&quot;</span>: [
+          {
+            <span class="pl-s">&quot;position&quot;</span>: <span class="pl-s">&quot;left&quot;</span>,
+            <span class="pl-s">&quot;color&quot;</span>: <span class="pl-s">&quot;white&quot;</span>
+          }, {
+            <span class="pl-s">&quot;position&quot;</span>: <span class="pl-s">&quot;right&quot;</span>,
+            <span class="pl-s">&quot;color&quot;</span>: <span class="pl-s">&quot;gray&quot;</span>
+          }
+        ]
+      }, {
+        <span class="pl-s">&quot;name&quot;</span>: <span class="pl-s">&quot;dashboard&quot;</span>,
+        <span class="pl-s">&quot;items&quot;</span>: [
+          {
+            <span class="pl-s">&quot;position&quot;</span>: <span class="pl-s">&quot;left&quot;</span>,
+            <span class="pl-s">&quot;color&quot;</span>: <span class="pl-s">&quot;gray&quot;</span>
+          }, {
+            <span class="pl-s">&quot;position&quot;</span>: <span class="pl-s">&quot;right&quot;</span>,
+            <span class="pl-s">&quot;color&quot;</span>: <span class="pl-s">&quot;black&quot;</span>
+          }
+        ]
+      }
+    ]
+  }
+];
+
+<span class="pl-k">const</span> json2csvParser = <span class="pl-k">new</span> Json2csvParser({ fields, <span class="hljs-attr">unwind</span>: [<span class="pl-s">&apos;items&apos;</span>, <span class="pl-s">&apos;items.items&apos;</span>], <span class="hljs-attr">unwindBlank</span>: <span class="pl-c1">true</span> });
+<span class="pl-k">const</span> csv = json2csvParser.parse(myCars);
+
+<span class="pl-c1">console</span>.log(csv);
+</code></pre>
+<p>will output to console</p>
+<pre><code>&quot;carModel&quot;,&quot;price&quot;,&quot;items.name&quot;,&quot;items.color&quot;,&quot;items.items.position&quot;,&quot;items.items.color&quot;
+&quot;BMW&quot;,15000,&quot;airbag&quot;,&quot;white&quot;,,
+,,&quot;dashboard&quot;,&quot;black&quot;,,
+&quot;Porsche&quot;,30000,&quot;airbag&quot;,,&quot;left&quot;,&quot;white&quot;
+,,,,&quot;right&quot;,&quot;gray&quot;
+,,&quot;dashboard&quot;,,&quot;left&quot;,&quot;gray&quot;
+,,,,&quot;right&quot;,&quot;black&quot;
 </code></pre>
 <h3 id="migrating-from-3.x-to-4.x">Migrating from 3.X to 4.X</h3>
 <p>What in 3.X used to be</p>
