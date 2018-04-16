@@ -706,50 +706,52 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
 
   // Pretty print
   // TODO Fix this tests in Node < 8
-  // testRunner.add('should print pretty table', (t) => {
-  //   const opts = ' --pretty';
+  if (Number(process.versions.node[0]) < 8) return;
 
-  //   child_process.exec(cli + '-i ' + getFixturePath('/json/default.json') + opts, (err, stdout, stderr) => {
-  //     t.notOk(stderr);
-  //     const csv = stdout;
-  //     t.equal(csv, csvFixtures.prettyprint);
-  //     t.end();
-  //   });
-  // });
+  testRunner.add('should print pretty table', (t) => {
+    const opts = ' --pretty';
 
-  // testRunner.add('should print pretty table without header', (t) => {
-  //   const opts = ' --no-header --pretty';
+    child_process.exec(cli + '-i ' + getFixturePath('/json/default.json') + opts, (err, stdout, stderr) => {
+      t.notOk(stderr);
+      const csv = stdout;
+      t.equal(csv, csvFixtures.prettyprint);
+      t.end();
+    });
+  });
 
-  //   child_process.exec(cli + '-i ' + getFixturePath('/json/default.json') + opts, (err, stdout, stderr) => {
-  //     t.notOk(stderr);
-  //     const csv = stdout;
-  //     t.equal(csv, csvFixtures.prettyprintWithoutHeader);
-  //     t.end();
-  //   });
-  // });
+  testRunner.add('should print pretty table without header', (t) => {
+    const opts = ' --no-header --pretty';
 
-  // testRunner.add('should print pretty table without streaming', (t) => {
-  //   const opts = ' --fields carModel,price,color'
-  //     + ' --no-streaming --pretty ';
+    child_process.exec(cli + '-i ' + getFixturePath('/json/default.json') + opts, (err, stdout, stderr) => {
+      t.notOk(stderr);
+      const csv = stdout;
+      t.equal(csv, csvFixtures.prettyprintWithoutHeader);
+      t.end();
+    });
+  });
 
-  //   child_process.exec(cli + '-i ' + getFixturePath('/json/default.json') + opts, (err, stdout, stderr) => {
-  //     t.notOk(stderr);
-  //     const csv = stdout;
-  //     t.equal(csv, csvFixtures.prettyprint);
-  //     t.end();
-  //   });
-  // });
+  testRunner.add('should print pretty table without streaming', (t) => {
+    const opts = ' --fields carModel,price,color'
+      + ' --no-streaming --pretty ';
 
-  // testRunner.add('should print pretty table without streaming and without header', (t) => {
-  //   const opts = ' --fields carModel,price,color'
-  //     + ' --no-streaming --no-header --pretty ';
+    child_process.exec(cli + '-i ' + getFixturePath('/json/default.json') + opts, (err, stdout, stderr) => {
+      t.notOk(stderr);
+      const csv = stdout;
+      t.equal(csv, csvFixtures.prettyprint);
+      t.end();
+    });
+  });
 
-  //   child_process.exec(cli + '-i ' + getFixturePath('/json/default.json') + opts, (err, stdout, stderr) => {
-  //     t.notOk(stderr);
-  //     const csv = stdout;
-  //     t.equal(csv, csvFixtures.prettyprintWithoutHeader);
-  //     t.end();
-  //   });
-  // });
+  testRunner.add('should print pretty table without streaming and without header', (t) => {
+    const opts = ' --fields carModel,price,color'
+      + ' --no-streaming --no-header --pretty ';
+
+    child_process.exec(cli + '-i ' + getFixturePath('/json/default.json') + opts, (err, stdout, stderr) => {
+      t.notOk(stderr);
+      const csv = stdout;
+      t.equal(csv, csvFixtures.prettyprintWithoutHeader);
+      t.end();
+    });
+  });
 };
 
