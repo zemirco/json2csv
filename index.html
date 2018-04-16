@@ -102,6 +102,7 @@ $ npm install json2csv --save
     <span class="hljs-_">-f</span>, --fields &lt;fields&gt;               Specify the fields to convert.
     -c, --fields-config [list]          Specify a file with a fields configuration as a JSON array.
     -u, --unwind &lt;paths&gt;                Creates multiple rows from a single JSON document similar to MongoDB unwind.
+    -B, --unwind-blank                  When unwinding, blank out instead of repeating data.
     -F, --flatten                       Flatten nested objects
     -v, --default-value [defaultValue]  Specify a default value other than empty string.
     -q, --quote [value]                 Specify an alternate quote value.
@@ -172,6 +173,7 @@ $ json2csv -i test.json <span class="hljs-_">-f</span> name,version --no-header 
 <li><code>fields</code> - Array of Objects/Strings. Defaults to toplevel JSON attributes. See example below.</li>
 <li><code>ndjson</code> - Only effective on the streaming API. Indicates that data coming through the stream is NDJSON.</li>
 <li><code>unwind</code> - Array of Strings, creates multiple rows from a single JSON document similar to MongoDB&apos;s $unwind</li>
+<li><code>unwindBlank</code> - Boolean, unwind using blank values instead of repeating data.</li>
 <li><code>flatten</code> - Boolean, flattens nested JSON using <a href="https://www.npmjs.com/package/flat">flat</a>. Defaults to <code>false</code>.</li>
 <li><code>defaultValue</code> - String, default value to use when missing data. Defaults to <code>&lt;empty&gt;</code> if not specified. (Overridden by <code>fields[].default</code>)</li>
 <li><code>quote</code> - String, quote around cell values and column names. Defaults to <code>&quot;</code> if not specified.</li>
