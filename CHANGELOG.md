@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="4.1.0"></a>
+# [4.1.0](https://github.com/zemirco/json2csv/compare/v4.0.4...v4.1.0) (2018-04-16)
+
+
+### Bug Fixes
+
+* Avoid redundant deep cloning when unwinding. ([#286](https://github.com/zemirco/json2csv/issues/286)) ([95a6ca9](https://github.com/zemirco/json2csv/commit/95a6ca9))
+
+
+### Features
+
+* Add ability to unwind by blanking out instead of repeating data ([#285](https://github.com/zemirco/json2csv/issues/285)) ([61d9808](https://github.com/zemirco/json2csv/commit/61d9808))
+
+
+
 <a name="4.0.4"></a>
 ## [4.0.4](https://github.com/zemirco/json2csv/compare/v4.0.3...v4.0.4) (2018-04-10)
 
