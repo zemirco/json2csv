@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="4.1.1"></a>
+## [4.1.1](https://github.com/zemirco/json2csv/compare/v4.1.0...v4.1.1) (2018-04-16)
+
+
+### Bug Fixes
+
+*  readme CLI's info ([#289](https://github.com/zemirco/json2csv/issues/289)) ([9fe65b3](https://github.com/zemirco/json2csv/commit/9fe65b3))
+* Add tests and docs to unwind-blank feature ([#287](https://github.com/zemirco/json2csv/issues/287)) ([e3d4a05](https://github.com/zemirco/json2csv/commit/e3d4a05))
+* **perf:** Improve unwind performance and maintainability ([#288](https://github.com/zemirco/json2csv/issues/288)) ([80e496d](https://github.com/zemirco/json2csv/commit/80e496d))
+
+
+
 <a name="4.1.0"></a>
 # [4.1.0](https://github.com/zemirco/json2csv/compare/v4.0.4...v4.1.0) (2018-04-16)
 
