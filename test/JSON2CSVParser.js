@@ -279,7 +279,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     const opts = {
       fields: ['carModel', 'price', 'items.name', 'items.color', 'items.items.position', 'items.items.color'],
       unwind: ['items', 'items.items'],
-      unwindBlank: true,
+      unwindBlank: true
     };
 
     const parser = new Json2csvParser(opts);

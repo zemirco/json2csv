@@ -546,6 +546,75 @@ will output to console
 "Porsche",30000,"dashboard",,"right","black"
 ```
 
+#### Example 9
+
+You can also unwind arrays blanking the repeated fields.
+
+```javascript
+const Json2csvParser = require('json2csv').Parser;
+const fields = ['carModel', 'price', 'items.name', 'items.color', 'items.items.position', 'items.items.color'];
+const myCars = [
+  {
+    "carModel": "BMW",
+    "price": 15000,
+    "items": [
+      {
+        "name": "airbag",
+        "color": "white"
+      }, {
+        "name": "dashboard",
+        "color": "black"
+      }
+    ]
+  }, {
+    "carModel": "Porsche",
+    "price": 30000,
+    "items": [
+      {
+        "name": "airbag",
+        "items": [
+          {
+            "position": "left",
+            "color": "white"
+          }, {
+            "position": "right",
+            "color": "gray"
+          }
+        ]
+      }, {
+        "name": "dashboard",
+        "items": [
+          {
+            "position": "left",
+            "color": "gray"
+          }, {
+            "position": "right",
+            "color": "black"
+          }
+        ]
+      }
+    ]
+  }
+];
+
+const json2csvParser = new Json2csvParser({ fields, unwind: ['items', 'items.items'], unwindBlank: true });
+const csv = json2csvParser.parse(myCars);
+
+console.log(csv);
+```
+
+will output to console
+
+```
+"carModel","price","items.name","items.color","items.items.position","items.items.color"
+"BMW",15000,"airbag","white",,
+,,"dashboard","black",,
+"Porsche",30000,"airbag",,"left","white"
+,,,,"right","gray"
+,,"dashboard",,"left","gray"
+,,,,"right","black"
+```
+
 ### Migrating from 3.X to 4.X
 
 What in 3.X used to be

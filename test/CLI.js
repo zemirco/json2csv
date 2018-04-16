@@ -301,6 +301,18 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     });
   });
 
+  testRunner.add('hould unwind and blank out repeated data', (t) => {
+    const opts = ' --fields carModel,price,items.name,items.color,items.items.position,items.items.color'
+      + ' --unwind items,items.items --unwind-blank';
+
+    child_process.exec(cli + '-i ' + getFixturePath('/json/unwind2.json') + opts, (err, stdout, stderr) => {
+      t.notOk(stderr);
+      const csv = stdout;
+      t.equal(csv, csvFixtures.unwind2Blank);
+      t.end();
+    });
+  });
+
   testRunner.add('should support flattenning deep JSON', (t) => {
     const opts = ' --flatten';
 
