@@ -637,6 +637,7 @@ const csv = json2csv.parse(myData, { fields: myFields, unwind: paths, ... });
 ```
 
 Please note that many of the configuration parameters have been slightly renamed. Please check one by one that all your parameters are correct.
+You can se the documentation for json2csv 3.11.5 [here](https://github.com/zemirco/json2csv/blob/v3.11.5/README.md).
 
 ## Building
 
