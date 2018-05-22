@@ -25,7 +25,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 
 <a name="4.1.0"></a>
-# [4.1.0](https://github.com/zemirco/json2csv/compare/v4.0.4...v4.1.0) (2018-04-16)
+## [4.1.0](https://github.com/zemirco/json2csv/compare/v4.0.4...v4.1.0) (2018-04-16)
 
 
 ### Bug Fixes
