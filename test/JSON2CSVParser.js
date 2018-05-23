@@ -413,6 +413,19 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     t.end();
   });
 
+  testRunner.add('should escape quotes when setting \'quote\' property is present', (t) => {
+    const opts = {
+      fields: ['carModel', 'color'],
+      quote: '\''
+    };
+
+    const parser = new Json2csvParser(opts);
+    const csv = parser.parse(jsonFixtures.escapeCustomQuotes);
+
+    t.equal(csv, csvFixtures.escapeCustomQuotes);
+    t.end();
+  });
+
   // Double Quote
 
   testRunner.add('should escape quotes with double quotes', (t) => {

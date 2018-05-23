@@ -396,6 +396,17 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     });
   });
 
+  testRunner.add('should escape quotes when setting \'quote\' property is present', (t) => {
+    const opts = ' --fields carModel,color --quote "\'"';
+
+    child_process.exec(cli + '-i ' + getFixturePath('/json/escapeCustomQuotes.json') + opts, (err, stdout, stderr) => {
+      t.notOk(stderr); 
+      const csv = stdout;
+        t.equal(csv, csvFixtures.escapeCustomQuotes);
+        t.end();
+      });
+  });
+
   // Double Quote
 
   testRunner.add('should escape quotes with double quotes', (t) => {
