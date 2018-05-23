@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="4.1.3"></a>
+## [4.1.3](https://github.com/zemirco/json2csv/compare/v4.1.2...v4.1.3) (2018-05-23)
+
+
+### Bug Fixes
+
+* Escape custom quotes correctly ([#301](https://github.com/zemirco/json2csv/issues/301)) ([7d57208](https://github.com/zemirco/json2csv/commit/7d57208))
+
+
+
 <a name="4.1.2"></a>
 ## [4.1.2](https://github.com/zemirco/json2csv/compare/v4.1.1...v4.1.2) (2018-04-16)
 
