@@ -1,6 +1,6 @@
 'use strict';
 
-const Table = require('cli-table2');
+const Table = require('cli-table3');
 
 const MIN_CELL_WIDTH = 15;
 
@@ -24,7 +24,7 @@ class TablePrinter {
     if (!this._hasWritten) {
       this.colWidths = this.getColumnWidths(lines[0]);
       if (this.opts.header) {
-        const head = lines.shift().split(this.opts.delimiter);    
+        const head = lines.shift().split(this.opts.delimiter);
         const table = new Table({ head, colWidths: this.colWidths, chars });
         this.print(table, []);
         this._hasWritten = true;
@@ -56,7 +56,7 @@ class TablePrinter {
     const head = this.opts.header
       ? lines.shift().split(this.opts.delimiter)
       : undefined;
-    
+
     const table = new Table(head
       ? { head, colWidths: this.colWidths }
       : { colWidths: this.colWidths });
@@ -73,7 +73,7 @@ class TablePrinter {
   print(table, lines) {
     lines.forEach(line => table.push(line.split(this.opts.delimiter)));
     // eslint-disable-next-line no-console
-    console.log(table.toString());  
+    console.log(table.toString());
   }
 }
 
