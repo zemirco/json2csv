@@ -1,0 +1,23 @@
+[
+  {
+    "Id": "a13f4000001NrzWAAS",
+    "Name": "a13f4000001NrzW",
+    "CreatedById": "005f4000002OzPRAA0",
+    "CreatedDate": "2018-06-20T15:49:06.000+0000",
+    "IsDeleted": "FALSE",
+    "LastModifiedById": "005f4000002OzPRAA0",
+    "LastModifiedDate": "2018-06-20T15:51:36.000+0000",
+    "LastReferencedDate": "2018-06-20T15:51:36.000+0000",
+    "LastViewedDate": "2018-06-20T15:51:36.000+0000",
+    "OwnerId": "005f4000002OzPRAA0",
+    "SBQQ__CustomSource__c": "",
+    "SBQQ__FontFamily__c": "",
+    "SBQQ__FontSize__c": "",
+    "SBQQ__Markup__c": "",
+    "SBQQ__RawMarkup__c": "<table width=\"100%\">\n\t<tbody>\n\t\t<tr>\n\t\t\t<td style=\"text-align: left; width: 25%;\">{!companyLogo}</td>\n\t\t\t<td style=\"width: 10%;\">&#160;</td>\n\t\t\t<td style=\"text-align: left; width: 30%;\">\n\t\t\t<p><span style=\"font-size:10px;\">{!quote.Name__c}<br />\n\t\t\t{!quote.Street__c}<br />\n\t\t\t{!quote.City__c}, {!quote.State__c} {!quote.Postal_Code__c}<br />\n\t\t\tOffice: {!quote.Phone__c}<br />\n\t\t\tFax: {!quote.Fax__c}</span></p>\n\t\t\t</td>\n\t\t\t<td style=\"width: 3%;\">&#160;</td>\n\t\t\t<td style=\"width: 30%;border: 1px solid black;\" valign=\"middle\">&#160;\n\t\t\t<p><span style=\"font-size: 10px;\">&#160; Agreement&#160;#: {!quote.Name}-{!document.SBQQ__Version__c}</span></p>\n\n\t\t\t<p><span style=\"font-size: 10px;\">&#160; Start Date: {!quote.SBQQ__StartDate__c}<br />\n\t\t\t&#160; Expiration Date: {!quote.SBQQ__ExpirationDate__c}<br />\n\t\t\t&#160; Sales Contact: {!salesRep.Name}</span></p>\n\t\t\t</td>\n\t\t</tr>\n\t</tbody>\n</table>",
+    "SBQQ__TableStyle__c": "Standard",
+    "SBQQ__TextColor__c": "",
+    "SBQQ__Type__c": "HTML",
+    "SystemModstamp": "2018-06-20T15:51:36.000+0000"
+  }
+]

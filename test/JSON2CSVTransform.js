@@ -824,6 +824,20 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
       .on('error', err => t.notOk(true, err.message));
   });
 
+  testRunner.add('should preserve tabs in values', (t) => {
+    const transform = new Json2csvTransform();
+    const processor = jsonFixtures.escapeTab().pipe(transform);
+
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.equal(csv, csvFixtures.escapeTab);
+        t.end();
+      })
+      .on('error', err => t.notOk(true, err.message));
+  });
+
   // Header
 
   testRunner.add('should parse json to csv without column title', (t) => {
