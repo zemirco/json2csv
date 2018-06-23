@@ -534,6 +534,15 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     });
   });
 
+  testRunner.add('should preserve tabs in values', (t) => {
+    child_process.exec(cli + '-i ' + getFixturePath('/json/escapeTab.json'), (err, stdout, stderr) => {
+      t.notOk(stderr); 
+      const csv = stdout;
+      t.equal(csv, csvFixtures.escapeTab);
+      t.end();
+    });
+  });
+
   // Header
 
   testRunner.add('should parse json to csv without column title', (t) => {
