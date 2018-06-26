@@ -151,21 +151,20 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
       .on('error', err => t.notOk(true, err.message));
   });
 
-  // TODO infer only from first element
-  // testRunner.add('should parse json to csv and infer the fields automatically ', (t) => {
-  //   const transform = new Json2csvTransform();
-  //   const processor = jsonFixtures.default().pipe(transform);
+  testRunner.add('should parse json to csv and infer the fields automatically ', (t) => {
+    const transform = new Json2csvTransform();
+    const processor = jsonFixtures.default().pipe(transform);
 
-  //   let csv = '';
-  //   processor
-  //     .on('data', chunk => (csv += chunk.toString()))
-  //     .on('end', () => {
-  //       t.ok(typeof csv === 'string');
-  //       t.equal(csv, csvFixtures.default);
-  //       t.end();
-  //     })
-  //     .on('error', err => t.notOk(true, err.message));
-  // });
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.ok(typeof csv === 'string');
+        t.equal(csv, csvFixtures.defaultStream);
+        t.end();
+      })
+      .on('error', err => t.notOk(true, err.message));
+  });
 
   testRunner.add('should parse json to csv using custom fields', (t) => {
     const opts = {

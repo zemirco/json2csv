@@ -68,6 +68,16 @@ function getFields() {
       : undefined;
 }
 
+function getInputStream() {
+  if (!inputPath) {
+    process.stdin.resume();
+    process.stdin.setEncoding('utf8');
+    return process.stdin;
+  }
+
+  return fs.createReadStream(inputPath, { encoding: 'utf8' })
+}
+
 function getInput() {
   if (!inputPath) {
     return getInputFromStdin();
@@ -157,14 +167,14 @@ Promise.resolve()
       withBOM: program.withBom
     };
 
-    if (!inputPath || program.streaming === false) {
+    if (!program.streaming) {
       return getInput()
         .then(input => new JSON2CSVParser(opts).parse(input))
         .then(processOutput);
     }
 
     const transform = new Json2csvTransform(opts);
-    const input = fs.createReadStream(inputPath, { encoding: 'utf8' });
+    const input = getInputStream();
     const stream = input.pipe(transform);
     
     if (program.output) {

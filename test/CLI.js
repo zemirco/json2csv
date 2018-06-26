@@ -626,8 +626,30 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
 
   // Get input from stdin
 
-  testRunner.add('should get input from stdin', (t) => {
+  testRunner.add('should get input from stdin and process as stream', (t) => {
     const test = child_process.exec(cli, (err, stdout, stderr) => {
+      t.notOk(stderr); 
+      const csv = stdout;
+      t.equal(csv, csvFixtures.defaultStream);
+      t.end();
+    });
+
+    test.stdin.write(JSON.stringify(jsonFixtures.default));
+    test.stdin.end();
+  });
+
+  testRunner.add('should error if stdin data is not valid', (t) => {
+    const test = child_process.exec(cli, (err, stdout, stderr) => {
+      t.ok(stderr.indexOf('Invalid data received from stdin') !== -1);
+      t.end();
+    });
+
+    test.stdin.write('{ "b": 1,');
+    test.stdin.end();
+  });
+
+  testRunner.add('should get input from stdin with -s flag', (t) => {
+    const test = child_process.exec(cli + '-s', (err, stdout, stderr) => {
       t.notOk(stderr); 
       const csv = stdout;
       t.equal(csv, csvFixtures.default + '\n'); // console.log append the new line
@@ -638,8 +660,8 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     test.stdin.end();
   });
 
-  testRunner.add('should error if stdin data is not valid', (t) => {
-    const test = child_process.exec(cli, (err, stdout, stderr) => {
+  testRunner.add('should error if stdin data is not valid with -s flag', (t) => {
+    const test = child_process.exec(cli + '-s', (err, stdout, stderr) => {
       t.ok(stderr.indexOf('Invalid data received from stdin') !== -1);
       t.end();
     });
