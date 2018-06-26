@@ -331,7 +331,7 @@ const fields = [{
 }];
 
 const json2csvParser = new Json2csvParser({ fields });
-const csv = json2csvParser.parse(myCars, { fields });
+const csv = json2csvParser.parse(myCars);
 
 console.log(csv);
 ```
