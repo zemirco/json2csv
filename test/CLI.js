@@ -23,7 +23,7 @@ function readFile(filePath) {
 }
 
 module.exports = (testRunner, jsonFixtures, csvFixtures) => {
-  testRunner.addBefore(() => new Promise((resolve, reject) => 
+  testRunner.addBefore(() => new Promise((resolve, reject) =>
     fs.mkdir(resultsPath, (err) => {
       if (err && err.code !== 'EEXIST') {
         reject(err);
@@ -64,7 +64,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   testRunner.add('should error on invalid ndjson input path without streaming', (t) => {
     const opts = ' --fields carModel,price,color,transmission --ndjson --no-streaming';
 
-    child_process.exec(cli + '-i ' + getFixturePath('/json2/ndjsonInvalid.json') + opts, (err, stdout, stderr) => {   
+    child_process.exec(cli + '-i ' + getFixturePath('/json2/ndjsonInvalid.json') + opts, (err, stdout, stderr) => {
       t.ok(stderr.indexOf('Invalid input file.') !== -1);
       t.end();
     });
@@ -73,7 +73,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   testRunner.add('should error on invalid ndjson input data', (t) => {
     const opts = ' --fields carModel,price,color,transmission --ndjson';
 
-    child_process.exec(cli + '-i ' + getFixturePath('/json/ndjsonInvalid.json') + opts, (err, stdout, stderr) => {   
+    child_process.exec(cli + '-i ' + getFixturePath('/json/ndjsonInvalid.json') + opts, (err, stdout, stderr) => {
       t.ok(stderr.indexOf('Invalid JSON') !== -1);
       t.end();
     });
@@ -341,7 +341,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     const opts = ' --fields carModel,price --default-value ""';
 
     child_process.exec(cli + '-i ' + getFixturePath('/json/defaultValueEmpty.json') + opts, (err, stdout, stderr) => {
-      t.notOk(stderr); 
+      t.notOk(stderr);
       const csv = stdout;
       t.equal(csv, csvFixtures.defaultValueEmpty);
       t.end();
@@ -378,7 +378,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     const opts = ' --fields carModel,price --quote "\'"';
 
     child_process.exec(cli + '-i ' + getFixturePath('/json/default.json') + opts, (err, stdout, stderr) => {
-      t.notOk(stderr); 
+      t.notOk(stderr);
       const csv = stdout;
       t.equal(csv, csvFixtures.withSimpleQuotes);
       t.end();
@@ -389,7 +389,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     const opts = ' --fields carModel,price --quote ""';
 
     child_process.exec(cli + '-i ' + getFixturePath('/json/default.json') + opts, (err, stdout, stderr) => {
-      t.notOk(stderr); 
+      t.notOk(stderr);
       const csv = stdout;
       t.equal(csv, csvFixtures.withoutQuotes);
       t.end();
@@ -400,7 +400,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     const opts = ' --fields carModel,color --quote "\'"';
 
     child_process.exec(cli + '-i ' + getFixturePath('/json/escapeCustomQuotes.json') + opts, (err, stdout, stderr) => {
-      t.notOk(stderr); 
+      t.notOk(stderr);
       const csv = stdout;
         t.equal(csv, csvFixtures.escapeCustomQuotes);
         t.end();
@@ -411,7 +411,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
 
   testRunner.add('should escape quotes with double quotes', (t) => {
     child_process.exec(cli + '-i ' + getFixturePath('/json/quotes.json'), (err, stdout, stderr) => {
-      t.notOk(stderr); 
+      t.notOk(stderr);
       const csv = stdout;
       t.equal(csv, csvFixtures.quotes);
       t.end();
@@ -420,7 +420,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
 
   testRunner.add('should not escape quotes with double quotes, when there is a backslah in the end', (t) => {
     child_process.exec(cli + '-i ' + getFixturePath('/json/backslashAtEnd.json'), (err, stdout, stderr) => {
-      t.notOk(stderr); 
+      t.notOk(stderr);
       const csv = stdout;
       t.equal(csv, csvFixtures.backslashAtEnd);
       t.end();
@@ -429,7 +429,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
 
   testRunner.add('should not escape quotes with double quotes, when there is a backslah in the end, and its not the last column', (t) => {
     child_process.exec(cli + '-i ' + getFixturePath('/json/backslashAtEndInMiddleColumn.json'), (err, stdout, stderr) => {
-      t.notOk(stderr); 
+      t.notOk(stderr);
       const csv = stdout;
       t.equal(csv, csvFixtures.backslashAtEndInMiddleColumn);
       t.end();
@@ -440,7 +440,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     const opts = ' --fields "a string" --double-quote "*"';
 
     child_process.exec(cli + '-i ' + getFixturePath('/json/doubleQuotes.json') + opts, (err, stdout, stderr) => {
-      t.notOk(stderr); 
+      t.notOk(stderr);
       const csv = stdout;
       t.equal(csv, csvFixtures.doubleQuotes);
       t.end();
@@ -453,7 +453,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     const opts = ' --fields carModel,price,color --delimiter "\t"';
 
     child_process.exec(cli + '-i ' + getFixturePath('/json/default.json') + opts, (err, stdout, stderr) => {
-      t.notOk(stderr); 
+      t.notOk(stderr);
       const csv = stdout;
       t.equal(csv, csvFixtures.tsv);
       t.end();
@@ -464,7 +464,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     const opts = ' --delimiter "|@|"';
 
     child_process.exec(cli + '-i ' + getFixturePath('/json/delimiter.json') + opts, (err, stdout, stderr) => {
-      t.notOk(stderr); 
+      t.notOk(stderr);
       const csv = stdout;
       t.equal(csv, csvFixtures.delimiter);
       t.end();
@@ -477,7 +477,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     const opts = ' --fields carModel,price,color --eol "\r\n"';
 
     child_process.exec(cli + '-i ' + getFixturePath('/json/default.json') + opts, (err, stdout, stderr) => {
-      t.notOk(stderr); 
+      t.notOk(stderr);
       const csv = stdout;
       t.equal(csv, csvFixtures.eol);
       t.end();
@@ -490,7 +490,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     const opts = ' --fields carModel,price,color --excel-strings';
 
     child_process.exec(cli + '-i ' + getFixturePath('/json/default.json') + opts, (err, stdout, stderr) => {
-      t.notOk(stderr); 
+      t.notOk(stderr);
       const csv = stdout;
       t.equal(csv, csvFixtures.excelStrings);
       t.end();
@@ -503,7 +503,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     const opts = ' --fields carModel,price,color';
 
     child_process.exec(cli + '-i ' + getFixturePath('/json/trailingBackslash.json') + opts, (err, stdout, stderr) => {
-      t.notOk(stderr); 
+      t.notOk(stderr);
       const csv = stdout;
       t.equal(csv, csvFixtures.trailingBackslash);
       t.end();
@@ -512,7 +512,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
 
   testRunner.add('should escape " when preceeded by \\', (t) => {
     child_process.exec(cli + '-i ' + getFixturePath('/json/escapeDoubleBackslashedDoubleQuote.json'), (err, stdout, stderr) => {
-      t.notOk(stderr); 
+      t.notOk(stderr);
       const csv = stdout;
       t.equal(csv, csvFixtures.escapeDoubleBackslashedDoubleQuote);
       t.end();
@@ -523,7 +523,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     const opts = ' --eol "\r\n"';
 
     child_process.exec(cli + '-i ' + getFixturePath('/json/escapeEOL.json') + opts, (err, stdout, stderr) => {
-      t.notOk(stderr); 
+      t.notOk(stderr);
       const csv = stdout;
       t.equal(csv, [
       '"a string"',
@@ -540,7 +540,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     const opts = ' --fields carModel,price,color,transmission --no-header';
 
     child_process.exec(cli + '-i ' + getFixturePath('/json/default.json') + opts, (err, stdout, stderr) => {
-      t.notOk(stderr); 
+      t.notOk(stderr);
       const csv = stdout;
       t.equal(csv, csvFixtures.withoutHeader);
       t.end();
@@ -551,7 +551,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
 
   testRunner.add('should not include empty rows when options.includeEmptyRows is not specified', (t) => {
     child_process.exec(cli + '-i ' + getFixturePath('/json/emptyRow.json'), (err, stdout, stderr) => {
-      t.notOk(stderr); 
+      t.notOk(stderr);
       const csv = stdout;
       t.equal(csv, csvFixtures.emptyRowNotIncluded);
       t.end();
@@ -562,7 +562,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     const opts = ' --include-empty-rows';
 
     child_process.exec(cli + '-i ' + getFixturePath('/json/emptyRow.json') + opts, (err, stdout, stderr) => {
-      t.notOk(stderr); 
+      t.notOk(stderr);
       const csv = stdout;
       t.equal(csv, csvFixtures.emptyRow);
       t.end();
@@ -605,7 +605,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     const opts = ' --fields carModel,price,color,transmission --with-bom';
 
     child_process.exec(cli + '-i ' + getFixturePath('/json/specialCharacters.json') + opts, (err, stdout, stderr) => {
-      t.notOk(stderr); 
+      t.notOk(stderr);
       const csv = stdout;
     // Compare csv length to check if the BOM character is present
       t.equal(csv[0], '\ufeff');
@@ -619,7 +619,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
 
   testRunner.add('should get input from stdin', (t) => {
     const test = child_process.exec(cli, (err, stdout, stderr) => {
-      t.notOk(stderr); 
+      t.notOk(stderr);
       const csv = stdout;
       t.equal(csv, csvFixtures.default + '\n'); // console.log append the new line
       t.end();
@@ -716,8 +716,6 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   });
 
   // Pretty print
-  // TODO Fix this tests in Node < 8
-  if (Number(process.versions.node[0]) < 8) return;
 
   testRunner.add('should print pretty table', (t) => {
     const opts = ' --pretty';
@@ -765,4 +763,3 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     });
   });
 };
-
