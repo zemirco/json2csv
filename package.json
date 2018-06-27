@@ -1,6 +1,8 @@
 {
   "name": "json2csv",
-  "engines" : { "node" : ">=6.0.0" },
+  "engines": {
+    "node": ">=6.0.0"
+  },
   "preferGlobal": "true",
   "version": "4.1.5",
   "description": "Convert JSON to CSV",
