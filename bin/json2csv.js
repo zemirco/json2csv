@@ -35,6 +35,7 @@ program
   .option('-a, --include-empty-rows', 'Includes empty rows in the resulting CSV output.')
   .option('-b, --with-bom', 'Includes BOM character at the beginning of the csv.')
   .option('-p, --pretty', 'Use only when printing to console. Logs output in pretty tables.')
+  .option('-P, --pretty-without-color', 'Use only when printing to console. Logs output in pretty tables, but without color.')
   .parse(process.argv);
 
 function makePathAbsolute(filePath) {
@@ -131,9 +132,10 @@ function getInputFromStdin() {
 }
 
 function processOutput(csv) {
+
   if (!outputPath) {
     // eslint-disable-next-line no-console
-    program.pretty ? (new TablePrinter(program)).printCSV(csv) : console.log(csv);
+    (program.pretty || program.prettyWithoutColor) ? (new TablePrinter(program)).printCSV(csv) : console.log(csv);
     return;
   }
 
@@ -176,7 +178,7 @@ Promise.resolve()
     const transform = new Json2csvTransform(opts);
     const input = getInputStream();
     const stream = input.pipe(transform);
-    
+
     if (program.output) {
       const outputStream = fs.createWriteStream(outputPath, { encoding: 'utf8' });
       const output = stream.pipe(outputStream);
@@ -188,7 +190,7 @@ Promise.resolve()
       });
     }
 
-    if (!program.pretty) {
+    if (!(program.pretty || program.prettyWithoutColor)) {
       const output = stream.pipe(process.stdout);
       return new Promise((resolve, reject) => {
         input.on('error', reject);

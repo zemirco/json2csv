@@ -14,6 +14,7 @@ class TablePrinter {
     this.opts = opts;
     this._hasWritten = false;
     this.colWidths;
+    this.style = opts.prettyWithoutColor ? noColorStyle : {};
   }
 
   push(csv) {
@@ -30,7 +31,7 @@ class TablePrinter {
       this.colWidths = this.getColumnWidths(lines[0]);
       if (this.opts.header) {
         const head = lines.shift().split(this.opts.delimiter);
-        const table = new Table({ head, colWidths: this.colWidths, style: noColorStyle, chars });
+        const table = new Table({ head, colWidths: this.colWidths, style: this.style, chars });
         this.print(table, []);
         this._hasWritten = true;
       }
@@ -42,7 +43,7 @@ class TablePrinter {
 
     if (!lines.length) return;
 
-    const table = new Table({ colWidths: this.colWidths, style: noColorStyle, chars });
+    const table = new Table({ colWidths: this.colWidths, style: this.style, chars });
     this.print(table, lines);
     this._hasWritten = true;
   }
@@ -50,7 +51,7 @@ class TablePrinter {
   end(csv) {
     const lines = csv.split(this.opts.eol);
     const chars = { 'top-left': '├' , 'top-mid': '┼', 'top-right': '┤' };
-    const table = new Table({ colWidths: this.colWidths, style: noColorStyle, chars });
+    const table = new Table({ colWidths: this.colWidths, style: this.style, chars });
     this.print(table, lines);
   }
 
@@ -63,8 +64,8 @@ class TablePrinter {
       : undefined;
 
     const table = new Table(head
-      ? { head, colWidths: this.colWidths, style: noColorStyle }
-      : { colWidths: this.colWidths, style: noColorStyle });
+      ? { head, colWidths: this.colWidths, style: this.style }
+      : { colWidths: this.colWidths, style: this.style });
 
     this.print(table, lines);
   }

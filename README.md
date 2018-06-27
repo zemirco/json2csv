@@ -65,6 +65,7 @@ $ npm install json2csv --save
     -a, --include-empty-rows            Includes empty rows in the resulting CSV output.
     -b, --with-bom                      Includes BOM character at the beginning of the csv.
     -p, --pretty                        Use only when printing to console. Logs output in pretty tables.
+    -P, --pretty-without-color          Use only when printing to console. Logs output in pretty tables, but without color.
     -h, --help                          output usage information
 ```
 
@@ -151,7 +152,7 @@ $ json2csv -i test.json -f name,version --no-header >> test.csv
 
 ### Available Options
 
-The programatic APIs take a configuration object very equivalent to the CLI options. 
+The programatic APIs take a configuration object very equivalent to the CLI options.
 
 - `fields` - Array of Objects/Strings. Defaults to toplevel JSON attributes. See example below.
 - `ndjson` - Only effective on the streaming API. Indicates that data coming through the stream is NDJSON.
@@ -170,7 +171,7 @@ The programatic APIs take a configuration object very equivalent to the CLI opti
 
 ### json2csv parser (Synchronous API)
 
-`json2csv` can also be use programatically as a synchronous converter using its `parse` method. 
+`json2csv` can also be use programatically as a synchronous converter using its `parse` method.
 ```javascript
 const Json2csvParser = require('json2csv').Parser;
 const fields = ['field1', 'field2', 'field3'];

@@ -749,7 +749,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   // Pretty print
 
   testRunner.add('should print pretty table', (t) => {
-    const opts = ' --pretty';
+    const opts = ' --pretty-without-color';
 
     child_process.exec(cli + '-i ' + getFixturePath('/json/default.json') + opts, (err, stdout, stderr) => {
       t.notOk(stderr);
@@ -760,7 +760,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   });
 
   testRunner.add('should print pretty table without header', (t) => {
-    const opts = ' --no-header --pretty';
+    const opts = ' --no-header --pretty-without-color';
 
     child_process.exec(cli + '-i ' + getFixturePath('/json/default.json') + opts, (err, stdout, stderr) => {
       t.notOk(stderr);
@@ -772,7 +772,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
 
   testRunner.add('should print pretty table without streaming', (t) => {
     const opts = ' --fields carModel,price,color'
-      + ' --no-streaming --pretty ';
+      + ' --no-streaming --pretty-without-color ';
 
     child_process.exec(cli + '-i ' + getFixturePath('/json/default.json') + opts, (err, stdout, stderr) => {
       t.notOk(stderr);
@@ -784,7 +784,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
 
   testRunner.add('should print pretty table without streaming and without header', (t) => {
     const opts = ' --fields carModel,price,color'
-      + ' --no-streaming --no-header --pretty ';
+      + ' --no-streaming --no-header --pretty-without-color ';
 
     child_process.exec(cli + '-i ' + getFixturePath('/json/default.json') + opts, (err, stdout, stderr) => {
       t.notOk(stderr);
