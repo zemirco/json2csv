@@ -1,14 +1,20 @@
 'use strict';
 
-const Table = require('cli-table2');
+const Table = require('cli-table3');
 
 const MIN_CELL_WIDTH = 15;
+const noColorStyle =
+  {
+    head: [],   // disable colors in header cells
+    border: []  // disable colors for borders
+  };
 
 class TablePrinter {
   constructor(opts) {
     this.opts = opts;
     this._hasWritten = false;
     this.colWidths;
+    this.style = opts.prettyWithoutColor ? noColorStyle : {};
   }
 
   push(csv) {
@@ -24,8 +30,8 @@ class TablePrinter {
     if (!this._hasWritten) {
       this.colWidths = this.getColumnWidths(lines[0]);
       if (this.opts.header) {
-        const head = lines.shift().split(this.opts.delimiter);    
-        const table = new Table({ head, colWidths: this.colWidths, chars });
+        const head = lines.shift().split(this.opts.delimiter);
+        const table = new Table({ head, colWidths: this.colWidths, style: this.style, chars });
         this.print(table, []);
         this._hasWritten = true;
       }
@@ -37,7 +43,7 @@ class TablePrinter {
 
     if (!lines.length) return;
 
-    const table = new Table({ colWidths: this.colWidths, chars });
+    const table = new Table({ colWidths: this.colWidths, style: this.style, chars });
     this.print(table, lines);
     this._hasWritten = true;
   }
@@ -45,7 +51,7 @@ class TablePrinter {
   end(csv) {
     const lines = csv.split(this.opts.eol);
     const chars = { 'top-left': '├' , 'top-mid': '┼', 'top-right': '┤' };
-    const table = new Table({ colWidths: this.colWidths, chars });
+    const table = new Table({ colWidths: this.colWidths, style: this.style, chars });
     this.print(table, lines);
   }
 
@@ -56,10 +62,10 @@ class TablePrinter {
     const head = this.opts.header
       ? lines.shift().split(this.opts.delimiter)
       : undefined;
-    
+
     const table = new Table(head
-      ? { head, colWidths: this.colWidths }
-      : { colWidths: this.colWidths });
+      ? { head, colWidths: this.colWidths, style: this.style }
+      : { colWidths: this.colWidths, style: this.style });
 
     this.print(table, lines);
   }
@@ -73,7 +79,7 @@ class TablePrinter {
   print(table, lines) {
     lines.forEach(line => table.push(line.split(this.opts.delimiter)));
     // eslint-disable-next-line no-console
-    console.log(table.toString());  
+    console.log(table.toString());
   }
 }
 
