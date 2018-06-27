@@ -3,6 +3,11 @@
 const Table = require('cli-table3');
 
 const MIN_CELL_WIDTH = 15;
+const noColorStyle =
+  {
+    head: [],   // disable colors in header cells
+    border: []  // disable colors for borders
+  };
 
 class TablePrinter {
   constructor(opts) {
@@ -37,7 +42,7 @@ class TablePrinter {
 
     if (!lines.length) return;
 
-    const table = new Table({ colWidths: this.colWidths, chars });
+    const table = new Table({ colWidths: this.colWidths, style: noColorStyle, chars });
     this.print(table, lines);
     this._hasWritten = true;
   }
@@ -45,7 +50,7 @@ class TablePrinter {
   end(csv) {
     const lines = csv.split(this.opts.eol);
     const chars = { 'top-left': '├' , 'top-mid': '┼', 'top-right': '┤' };
-    const table = new Table({ colWidths: this.colWidths, chars });
+    const table = new Table({ colWidths: this.colWidths, style: noColorStyle, chars });
     this.print(table, lines);
   }
 
@@ -58,8 +63,8 @@ class TablePrinter {
       : undefined;
 
     const table = new Table(head
-      ? { head, colWidths: this.colWidths }
-      : { colWidths: this.colWidths });
+      ? { head, colWidths: this.colWidths, style: noColorStyle }
+      : { colWidths: this.colWidths, style: noColorStyle });
 
     this.print(table, lines);
   }
