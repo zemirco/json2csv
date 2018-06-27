@@ -151,21 +151,20 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
       .on('error', err => t.notOk(true, err.message));
   });
 
-  // TODO infer only from first element
-  // testRunner.add('should parse json to csv and infer the fields automatically ', (t) => {
-  //   const transform = new Json2csvTransform();
-  //   const processor = jsonFixtures.default().pipe(transform);
+  testRunner.add('should parse json to csv and infer the fields automatically ', (t) => {
+    const transform = new Json2csvTransform();
+    const processor = jsonFixtures.default().pipe(transform);
 
-  //   let csv = '';
-  //   processor
-  //     .on('data', chunk => (csv += chunk.toString()))
-  //     .on('end', () => {
-  //       t.ok(typeof csv === 'string');
-  //       t.equal(csv, csvFixtures.default);
-  //       t.end();
-  //     })
-  //     .on('error', err => t.notOk(true, err.message));
-  // });
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.ok(typeof csv === 'string');
+        t.equal(csv, csvFixtures.defaultStream);
+        t.end();
+      })
+      .on('error', err => t.notOk(true, err.message));
+  });
 
   testRunner.add('should parse json to csv using custom fields', (t) => {
     const opts = {
@@ -819,6 +818,20 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
       '"with a \ndescription\\n and\na new line"',
       '"with a \r\ndescription and\r\nanother new line"'
     ].join('\r\n'));
+        t.end();
+      })
+      .on('error', err => t.notOk(true, err.message));
+  });
+
+  testRunner.add('should preserve tabs in values', (t) => {
+    const transform = new Json2csvTransform();
+    const processor = jsonFixtures.escapeTab().pipe(transform);
+
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.equal(csv, csvFixtures.escapeTab);
         t.end();
       })
       .on('error', err => t.notOk(true, err.message));

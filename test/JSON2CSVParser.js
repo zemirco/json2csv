@@ -570,6 +570,14 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     t.end();
   });
 
+  testRunner.add('should preserve tabs in values', (t) => {
+    const parser = new Json2csvParser();
+    const csv = parser.parse(jsonFixtures.escapeTab);
+
+    t.equal(csv, csvFixtures.escapeTab);
+    t.end();
+  });
+
   // Header
 
   testRunner.add('should parse json to csv without column title', (t) => {

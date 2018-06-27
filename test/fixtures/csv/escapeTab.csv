@@ -1,0 +1,24 @@
+"Id","Name","CreatedById","CreatedDate","IsDeleted","LastModifiedById","LastModifiedDate","LastReferencedDate","LastViewedDate","OwnerId","SBQQ__CustomSource__c","SBQQ__FontFamily__c","SBQQ__FontSize__c","SBQQ__Markup__c","SBQQ__RawMarkup__c","SBQQ__TableStyle__c","SBQQ__TextColor__c","SBQQ__Type__c","SystemModstamp"
+"a13f4000001NrzWAAS","a13f4000001NrzW","005f4000002OzPRAA0","2018-06-20T15:49:06.000+0000","FALSE","005f4000002OzPRAA0","2018-06-20T15:51:36.000+0000","2018-06-20T15:51:36.000+0000","2018-06-20T15:51:36.000+0000","005f4000002OzPRAA0","","","","","<table width=""100%"">
+	<tbody>
+		<tr>
+			<td style=""text-align: left; width: 25%;"">{!companyLogo}</td>
+			<td style=""width: 10%;"">&#160;</td>
+			<td style=""text-align: left; width: 30%;"">
+			<p><span style=""font-size:10px;"">{!quote.Name__c}<br />
+			{!quote.Street__c}<br />
+			{!quote.City__c}, {!quote.State__c} {!quote.Postal_Code__c}<br />
+			Office: {!quote.Phone__c}<br />
+			Fax: {!quote.Fax__c}</span></p>
+			</td>
+			<td style=""width: 3%;"">&#160;</td>
+			<td style=""width: 30%;border: 1px solid black;"" valign=""middle"">&#160;
+			<p><span style=""font-size: 10px;"">&#160; Agreement&#160;#: {!quote.Name}-{!document.SBQQ__Version__c}</span></p>
+
+			<p><span style=""font-size: 10px;"">&#160; Start Date: {!quote.SBQQ__StartDate__c}<br />
+			&#160; Expiration Date: {!quote.SBQQ__ExpirationDate__c}<br />
+			&#160; Sales Contact: {!salesRep.Name}</span></p>
+			</td>
+		</tr>
+	</tbody>
+</table>","Standard","","HTML","2018-06-20T15:51:36.000+0000"
