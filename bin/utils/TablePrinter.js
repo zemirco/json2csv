@@ -30,7 +30,7 @@ class TablePrinter {
       this.colWidths = this.getColumnWidths(lines[0]);
       if (this.opts.header) {
         const head = lines.shift().split(this.opts.delimiter);
-        const table = new Table({ head, colWidths: this.colWidths, chars });
+        const table = new Table({ head, colWidths: this.colWidths, style: noColorStyle, chars });
         this.print(table, []);
         this._hasWritten = true;
       }
