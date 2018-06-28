@@ -747,8 +747,6 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   });
 
   // Pretty print
-  // TODO Fix this tests in Node < 8
-  if (parseFloat(process.versions.node) < 8) return;
 
   testRunner.add('should print pretty table', (t) => {
     const opts = ' --pretty';
