@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="4.1.6"></a>
+## [4.1.6](https://github.com/zemirco/json2csv/compare/v4.1.5...v4.1.6) (2018-07-12)
+
+
+### Bug Fixes
+
+* Update dependencies and remove cli-table2 dependency ([#312](https://github.com/zemirco/json2csv/issues/312)) ([5981ba3](https://github.com/zemirco/json2csv/commit/5981ba3))
+
+
+
 <a name="4.1.5"></a>
 ## [4.1.5](https://github.com/zemirco/json2csv/compare/v4.1.4...v4.1.5) (2018-06-26)
 
