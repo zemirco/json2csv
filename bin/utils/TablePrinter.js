@@ -1,79 +1,99 @@
 'use strict';
 
-const Table = require('cli-table2');
-
 const MIN_CELL_WIDTH = 15;
 
 class TablePrinter {
   constructor(opts) {
     this.opts = opts;
     this._hasWritten = false;
-    this.colWidths;
   }
 
   push(csv) {
     const lines = csv.split(this.opts.eol);
 
-    const chars = {
-      'bottom': '',
-      'bottom-mid': '',
-      'bottom-left': '',
-      'bottom-right': ''
-    };
-
-    if (!this._hasWritten) {
-      this.colWidths = this.getColumnWidths(lines[0]);
-      if (this.opts.header) {
-        const head = lines.shift().split(this.opts.delimiter);    
-        const table = new Table({ head, colWidths: this.colWidths, chars });
-        this.print(table, []);
-        this._hasWritten = true;
-      }
-    } else {
-      chars['top-left'] = '├';
-      chars['top-mid'] = '┼';
-      chars['top-right'] = '┤';
-    }
-
     if (!lines.length) return;
 
-    const table = new Table({ colWidths: this.colWidths, chars });
-    this.print(table, lines);
+    if (!this._hasWritten) {
+      this.setColumnWidths(lines[0]);
+    }
+
+    const top = this._hasWritten ? this.middleLine : this.topLine;
+    this.print(top, lines);
     this._hasWritten = true;
   }
 
   end(csv) {
     const lines = csv.split(this.opts.eol);
-    const chars = { 'top-left': '├' , 'top-mid': '┼', 'top-right': '┤' };
-    const table = new Table({ colWidths: this.colWidths, chars });
-    this.print(table, lines);
+    this.print(this.middleLine, lines, this.bottomLine);
   }
 
   printCSV(csv) {
     let lines = csv.split(this.opts.eol);
 
-    this.colWidths = this.getColumnWidths(lines[0]);
-    const head = this.opts.header
-      ? lines.shift().split(this.opts.delimiter)
-      : undefined;
-    
-    const table = new Table(head
-      ? { head, colWidths: this.colWidths }
-      : { colWidths: this.colWidths });
+    this.setColumnWidths(lines[0]);
 
-    this.print(table, lines);
+    this.print(this.topLine, lines, this.bottomLine);
   }
 
-  getColumnWidths(line) {
-    return line
+  setColumnWidths(line) {
+    this.colWidths = line
       .split(this.opts.delimiter)
       .map(elem => Math.max(elem.length * 2, MIN_CELL_WIDTH));
+
+    this.topLine = `┌${this.colWidths.map(i => '─'.repeat(i)).join('┬')}┐`;
+    this.middleLine = `├${this.colWidths.map(i => '─'.repeat(i)).join('┼')}┤`;
+    this.bottomLine = `└${this.colWidths.map(i => '─'.repeat(i)).join('┴')}┘`;
   }
 
-  print(table, lines) {
-    lines.forEach(line => table.push(line.split(this.opts.delimiter)));
+  print(top, lines, bottom) {
+    const table = `${top}\n`
+      + lines
+        .map(row => this.formatRow(row))
+        .join(`\n${this.middleLine}\n`)
+      + (bottom ? `\n${bottom}` : '');
+
     // eslint-disable-next-line no-console
-    console.log(table.toString());  
+    console.log(table);  
+  }
+
+  formatRow(row) {
+    const wrappedRow = row
+      .split(this.opts.delimiter)
+      .map((cell, i) => cell.match(new RegExp(`(.{1,${this.colWidths[i] - 2}})`, 'g')) || []);
+
+    const height = wrappedRow.reduce((acc, cell) => Math.max(acc, cell.length), 0);
+
+    const processedCells = wrappedRow
+      .map((cell, i) => this.formatCell(cell, height, this.colWidths[i]));
+
+    return Array(height).fill('')
+      .map((_, i) => `│${processedCells.map(cell => cell[i]).join('│')}│`)
+      .join('\n');
+  }
+
+  formatCell(content, heigth, width) {
+    const paddedContent = this.padCellHorizontally(content, width);
+    return this.padCellVertically(paddedContent, heigth, width);
+  }
+
+  padCellVertically(content, heigth, width) {
+    const vertPad = heigth - content.length;
+    const vertPadTop = Math.ceil(vertPad / 2);
+    const vertPadBottom = vertPad - vertPadTop;
+    const emptyLine = ' '.repeat(width);
+
+    return [
+      ...Array(vertPadTop).fill(emptyLine),
+      ...content,
+      ...Array(vertPadBottom).fill(emptyLine)
+    ];
+  }
+
+  padCellHorizontally(content, width) {
+    return content.map((line) => {
+      const horPad = width - line.length - 2;
+      return ` ${line}${' '.repeat(horPad)} `;
+    });
   }
 }
 
