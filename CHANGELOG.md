@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="4.2.0"></a>
+# [4.2.0](https://github.com/zemirco/json2csv/compare/v4.1.6...v4.2.0) (2018-07-31)
+
+
+### Features
+
+* Added flattenSeparator option ([#314](https://github.com/zemirco/json2csv/issues/314)) ([5c5de9f](https://github.com/zemirco/json2csv/commit/5c5de9f))
+
+
+
 <a name="4.1.6"></a>
 ## [4.1.6](https://github.com/zemirco/json2csv/compare/v4.1.5...v4.1.6) (2018-07-12)
 
