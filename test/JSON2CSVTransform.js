@@ -453,6 +453,25 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
       .on('error', err => t.notOk(true, err.message));
   });
 
+  testRunner.add('should support custom flatten separator', (t) => {
+    const opts = {
+      flatten: true,
+      flattenSeparator: '__',
+    };
+
+    const transform = new Json2csvTransform(opts);
+    const processor = jsonFixtures.deepJSON().pipe(transform);
+
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.equal(csv, csvFixtures.flattenedCustomSeparatorDeepJSON);
+        t.end();
+      })
+      .on('error', err => t.notOk(true, err.message));
+  });
+
   testRunner.add('should unwind and flatten an object in the right order', (t) => {
     const opts = {
       unwind: ['items'],

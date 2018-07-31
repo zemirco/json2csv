@@ -24,14 +24,15 @@ program
   .option('-c, --fields-config <path>', 'Specify a file with a fields configuration as a JSON array.')
   .option('-u, --unwind <paths>', 'Creates multiple rows from a single JSON document similar to MongoDB unwind.')
   .option('-B, --unwind-blank', 'When unwinding, blank out instead of repeating data.')
-  .option('-F, --flatten', 'Flatten nested objects')
+  .option('-F, --flatten', 'Flatten nested objects.')
+  .option('-S, --flatten-separator <separator>', 'Flattened keys separator.')
   .option('-v, --default-value [defaultValue]', 'Specify a default value other than empty string.')
   .option('-q, --quote [value]', 'Specify an alternate quote value.')
-  .option('-Q, --double-quote [value]', 'Specify a value to replace double quote in strings')
+  .option('-Q, --double-quote [value]', 'Specify a value to replace double quote in strings.')
   .option('-d, --delimiter [delimiter]', 'Specify a delimiter other than the default comma to use.')
   .option('-e, --eol [value]', 'Specify an End-of-Line value for separating rows.')
-  .option('-E, --excel-strings','Converts string data into normalized Excel style data')
-  .option('-H, --no-header', 'Disable the column name header')
+  .option('-E, --excel-strings','Converts string data into normalized Excel style data.')
+  .option('-H, --no-header', 'Disable the column name header.')
   .option('-a, --include-empty-rows', 'Includes empty rows in the resulting CSV output.')
   .option('-b, --with-bom', 'Includes BOM character at the beginning of the csv.')
   .option('-p, --pretty', 'Use only when printing to console. Logs output in pretty tables.')
@@ -156,6 +157,7 @@ Promise.resolve()
       unwind: program.unwind ? program.unwind.split(',') : [],
       unwindBlank: program.unwindBlank,
       flatten: program.flatten,
+      flattenSeparator: program.flattenSeparator,
       defaultValue: program.defaultValue,
       quote: program.quote,
       doubleQuote: program.doubleQuote,

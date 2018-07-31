@@ -45,27 +45,28 @@ $ npm install json2csv --save
 
   Options:
 
-    -V, --version                       output the version number
-    -i, --input <input>                 Path and name of the incoming json file. If not provided, will read from stdin.
-    -o, --output [output]               Path and name of the resulting csv file. Defaults to stdout.
-    -n, --ndjson                        Treat the input as NewLine-Delimited JSON.
-    -s, --no-streaming                  Process the whole JSON array in memory instead of doing it line by line.
-    -f, --fields <fields>               Specify the fields to convert.
-    -c, --fields-config <path>          Specify a file with a fields configuration as a JSON array.
-    -u, --unwind <paths>                Creates multiple rows from a single JSON document similar to MongoDB unwind.
-    -B, --unwind-blank                  When unwinding, blank out instead of repeating data.
-    -F, --flatten                       Flatten nested objects
-    -v, --default-value [defaultValue]  Specify a default value other than empty string.
-    -q, --quote [value]                 Specify an alternate quote value.
-    -Q, --double-quote [value]          Specify a value to replace double quote in strings
-    -d, --delimiter [delimiter]         Specify a delimiter other than the default comma to use.
-    -e, --eol [value]                   Specify an End-of-Line value for separating rows.
-    -E, --excel-strings                 Converts string data into normalized Excel style data
-    -H, --no-header                     Disable the column name header
-    -a, --include-empty-rows            Includes empty rows in the resulting CSV output.
-    -b, --with-bom                      Includes BOM character at the beginning of the csv.
-    -p, --pretty                        Use only when printing to console. Logs output in pretty tables.
-    -h, --help                          output usage information
+    -V, --version                        output the version number
+    -i, --input <input>                  Path and name of the incoming json file. If not provided, will read from stdin.
+    -o, --output [output]                Path and name of the resulting csv file. Defaults to stdout.
+    -n, --ndjson                         Treat the input as NewLine-Delimited JSON.
+    -s, --no-streaming                   Process the whole JSON array in memory instead of doing it line by line.
+    -f, --fields <fields>                Specify the fields to convert.
+    -c, --fields-config <path>           Specify a file with a fields configuration as a JSON array.
+    -u, --unwind <paths>                 Creates multiple rows from a single JSON document similar to MongoDB unwind.
+    -B, --unwind-blank                   When unwinding, blank out instead of repeating data.
+    -F, --flatten                        Flatten nested objects.
+    -S, --flatten-separator <separator>  Flattened keys separator.
+    -v, --default-value [defaultValue]   Specify a default value other than empty string.
+    -q, --quote [value]                  Specify an alternate quote value.
+    -Q, --double-quote [value]           Specify a value to replace double quote in strings.
+    -d, --delimiter [delimiter]          Specify a delimiter other than the default comma to use.
+    -e, --eol [value]                    Specify an End-of-Line value for separating rows.
+    -E, --excel-strings                  Converts string data into normalized Excel style data.
+    -H, --no-header                      Disable the column name header.
+    -a, --include-empty-rows             Includes empty rows in the resulting CSV output.
+    -b, --with-bom                       Includes BOM character at the beginning of the csv.
+    -p, --pretty                         Use only when printing to console. Logs output in pretty tables.
+    -h, --help                           output usage information
 ```
 
 An input file `-i` and fields `-f` are required. If no output `-o` is specified the result is logged to the console.
@@ -158,6 +159,7 @@ The programatic APIs take a configuration object very equivalent to the CLI opti
 - `unwind` - Array of Strings, creates multiple rows from a single JSON document similar to MongoDB's $unwind
 - `unwindBlank` - Boolean, unwind using blank values instead of repeating data.
 - `flatten` - Boolean, flattens nested JSON using [flat]. Defaults to `false`.
+- `flattenSeparator` - String, separator to use between nested JSON keys when `flatten` option enabled. Defaults to `.` if not specified.
 - `defaultValue` - String, default value to use when missing data. Defaults to `<empty>` if not specified. (Overridden by `fields[].default`)
 - `quote` - String, quote around cell values and column names. Defaults to `"` if not specified.
 - `doubleQuote` - String, the value to replace double quote in strings. Defaults to 2x`quotes` (for example `""`) if not specified.
