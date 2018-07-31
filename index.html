@@ -94,27 +94,28 @@ $ npm install json2csv --save
 
   Options:
 
-    -V, --version                       output the version number
-    -i, --input &lt;input&gt;                 Path and name of the incoming json file. If not provided, will <span class="pl-c1">read</span> from stdin.
-    -o, --output [output]               Path and name of the resulting csv file. Defaults to stdout.
-    -n, --ndjson                        Treat the input as NewLine-Delimited JSON.
-    <span class="hljs-_">-s</span>, --no-streaming                  Process the whole JSON array <span class="pl-k">in</span> memory instead of doing it line by line.
-    <span class="hljs-_">-f</span>, --fields &lt;fields&gt;               Specify the fields to convert.
-    -c, --fields-config &lt;path&gt;          Specify a file with a fields configuration as a JSON array.
-    -u, --unwind &lt;paths&gt;                Creates multiple rows from a single JSON document similar to MongoDB unwind.
-    -B, --unwind-blank                  When unwinding, blank out instead of repeating data.
-    -F, --flatten                       Flatten nested objects
-    -v, --default-value [defaultValue]  Specify a default value other than empty string.
-    -q, --quote [value]                 Specify an alternate quote value.
-    -Q, --double-quote [value]          Specify a value to replace double quote <span class="pl-k">in</span> strings
-    <span class="hljs-_">-d</span>, --delimiter [delimiter]         Specify a delimiter other than the default comma to use.
-    <span class="hljs-_">-e</span>, --eol [value]                   Specify an End-of-Line value <span class="pl-k">for</span> separating rows.
-    -E, --excel-strings                 Converts string data into normalized Excel style data
-    -H, --no-header                     Disable the column name header
-    <span class="hljs-_">-a</span>, --include-empty-rows            Includes empty rows <span class="pl-k">in</span> the resulting CSV output.
-    -b, --with-bom                      Includes BOM character at the beginning of the csv.
-    -p, --pretty                        Use only when printing to console. Logs output <span class="pl-k">in</span> pretty tables.
-    -h, --help                          output usage information
+    -V, --version                        output the version number
+    -i, --input &lt;input&gt;                  Path and name of the incoming json file. If not provided, will <span class="pl-c1">read</span> from stdin.
+    -o, --output [output]                Path and name of the resulting csv file. Defaults to stdout.
+    -n, --ndjson                         Treat the input as NewLine-Delimited JSON.
+    <span class="hljs-_">-s</span>, --no-streaming                   Process the whole JSON array <span class="pl-k">in</span> memory instead of doing it line by line.
+    <span class="hljs-_">-f</span>, --fields &lt;fields&gt;                Specify the fields to convert.
+    -c, --fields-config &lt;path&gt;           Specify a file with a fields configuration as a JSON array.
+    -u, --unwind &lt;paths&gt;                 Creates multiple rows from a single JSON document similar to MongoDB unwind.
+    -B, --unwind-blank                   When unwinding, blank out instead of repeating data.
+    -F, --flatten                        Flatten nested objects.
+    -S, --flatten-separator &lt;separator&gt;  Flattened keys separator.
+    -v, --default-value [defaultValue]   Specify a default value other than empty string.
+    -q, --quote [value]                  Specify an alternate quote value.
+    -Q, --double-quote [value]           Specify a value to replace double quote <span class="pl-k">in</span> strings.
+    <span class="hljs-_">-d</span>, --delimiter [delimiter]          Specify a delimiter other than the default comma to use.
+    <span class="hljs-_">-e</span>, --eol [value]                    Specify an End-of-Line value <span class="pl-k">for</span> separating rows.
+    -E, --excel-strings                  Converts string data into normalized Excel style data.
+    -H, --no-header                      Disable the column name header.
+    <span class="hljs-_">-a</span>, --include-empty-rows             Includes empty rows <span class="pl-k">in</span> the resulting CSV output.
+    -b, --with-bom                       Includes BOM character at the beginning of the csv.
+    -p, --pretty                         Use only when printing to console. Logs output <span class="pl-k">in</span> pretty tables.
+    -h, --help                           output usage information
 </code></pre>
 <p>An input file <code>-i</code> and fields <code>-f</code> are required. If no output <code>-o</code> is specified the result is logged to the console.
 Use <code>-p</code> to show the result in a beautiful table inside the console.</p>
@@ -175,6 +176,7 @@ $ json2csv -i test.json <span class="hljs-_">-f</span> name,version --no-header 
 <li><code>unwind</code> - Array of Strings, creates multiple rows from a single JSON document similar to MongoDB&apos;s $unwind</li>
 <li><code>unwindBlank</code> - Boolean, unwind using blank values instead of repeating data.</li>
 <li><code>flatten</code> - Boolean, flattens nested JSON using <a href="https://www.npmjs.com/package/flat">flat</a>. Defaults to <code>false</code>.</li>
+<li><code>flattenSeparator</code> - String, separator to use between nested JSON keys when <code>flatten</code> option enabled. Defaults to <code>.</code> if not specified.</li>
 <li><code>defaultValue</code> - String, default value to use when missing data. Defaults to <code>&lt;empty&gt;</code> if not specified. (Overridden by <code>fields[].default</code>)</li>
 <li><code>quote</code> - String, quote around cell values and column names. Defaults to <code>&quot;</code> if not specified.</li>
 <li><code>doubleQuote</code> - String, the value to replace double quote in strings. Defaults to 2x<code>quotes</code> (for example <code>&quot;&quot;</code>) if not specified.</li>
