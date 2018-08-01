@@ -290,7 +290,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   });
 
 
-  testRunner.add('should support flattenning deep JSON', (t) => {
+  testRunner.add('should support flattening deep JSON', (t) => {
     const opts = {
       flatten: true
     };
@@ -302,7 +302,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     t.end();
   });
 
-  testRunner.add('should support flattenning JSON with toJSON', (t) => {
+  testRunner.add('should support flattening JSON with toJSON', (t) => {
     const opts = {
       flatten: true
     };
@@ -311,6 +311,19 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     const csv = parser.parse(jsonFixtures.flattenToJSON);
 
     t.equal(csv, csvFixtures.flattenToJSON);
+    t.end();
+  });
+
+  testRunner.add('should support custom flatten separator', (t) => {
+    const opts = {
+      flatten: true,
+      flattenSeparator: '__',
+    };
+
+    const parser = new Json2csvParser(opts);
+    const csv = parser.parse(jsonFixtures.deepJSON);
+
+    t.equal(csv, csvFixtures.flattenedCustomSeparatorDeepJSON);
     t.end();
   });
 
