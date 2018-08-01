@@ -435,7 +435,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
       .on('error', err => t.notOk(true, err.message));
   });
 
-  testRunner.add('should support flattenning deep JSON', (t) => {
+  testRunner.add('should support flattening deep JSON', (t) => {
     const opts = {
       flatten: true
     };

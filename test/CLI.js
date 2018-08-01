@@ -313,13 +313,24 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     });
   });
 
-  testRunner.add('should support flattenning deep JSON', (t) => {
+  testRunner.add('should support flattening deep JSON', (t) => {
     const opts = ' --flatten';
 
     child_process.exec(cli + '-i ' + getFixturePath('/json/deepJSON.json') + opts, (err, stdout, stderr) => {
       t.notOk(stderr);
       const csv = stdout;
       t.equal(csv, csvFixtures.flattenedDeepJSON);
+      t.end();
+    });
+  });
+
+  testRunner.add('should support custom flatten separator', (t) => {
+    const opts = ' --flatten --flatten-separator __';
+
+    child_process.exec(cli + '-i ' + getFixturePath('/json/deepJSON.json') + opts, (err, stdout, stderr) => {
+      t.notOk(stderr);
+      const csv = stdout;
+      t.equal(csv, csvFixtures.flattenedCustomSeparatorDeepJSON);
       t.end();
     });
   });
