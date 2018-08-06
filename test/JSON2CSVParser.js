@@ -4,11 +4,32 @@ const json2csv = require('../lib/json2csv');
 const Json2csvParser = json2csv.Parser;
 
 module.exports = (testRunner, jsonFixtures, csvFixtures) => {
+  testRunner.add('should not modify the opts passed using parse method', (t) => {
+    const opts = {};
+    const csv = json2csv.parse(jsonFixtures.default);
+
+    t.ok(typeof csv === 'string');
+    t.equal(csv, csvFixtures.default);
+    t.deepEqual(opts, {});
+    t.end();
+  });
+
   testRunner.add('should parse json to csv and infer the fields automatically using parse method', (t) => {
     const csv = json2csv.parse(jsonFixtures.default);
 
     t.ok(typeof csv === 'string');
     t.equal(csv, csvFixtures.default);
+    t.end();
+  });
+
+  testRunner.add('should not modify the opts passed', (t) => {
+    const opts = {};
+    const parser = new Json2csvParser(opts);
+    const csv = parser.parse(jsonFixtures.default);
+
+    t.ok(typeof csv === 'string');
+    t.equal(csv, csvFixtures.default);
+    t.deepEqual(opts, {});
     t.end();
   });
 

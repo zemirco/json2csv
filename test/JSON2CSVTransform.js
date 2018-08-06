@@ -42,6 +42,23 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     });
   });
 
+  testRunner.add('should not modify the opts passed', (t) => {
+    const opts = {};
+    const transform = new Json2csvTransform(opts);
+    const processor = jsonFixtures.default().pipe(transform);
+
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.ok(typeof csv === 'string');
+        t.equal(csv, csvFixtures.defaultStream);
+        t.deepEqual(opts, {});
+        t.end();
+      })
+      .on('error', err => t.notOk(true, err.message));
+  });
+
   testRunner.add('should error if input data is not an object', (t) => {
     const input = new Readable();
     input._read = () => {};
