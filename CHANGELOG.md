@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="4.2.1"></a>
+## [4.2.1](https://github.com/zemirco/json2csv/compare/v4.2.0...v4.2.1) (2018-08-06)
+
+
+### Bug Fixes
+
+* bug that modifies opts after parsing an object/stream ([#318](https://github.com/zemirco/json2csv/issues/318)) ([f0a4830](https://github.com/zemirco/json2csv/commit/f0a4830))
+* Clean up the flattening separator feature ([#315](https://github.com/zemirco/json2csv/issues/315)) ([ee3d181](https://github.com/zemirco/json2csv/commit/ee3d181))
+
+
+
 <a name="4.2.0"></a>
 # [4.2.0](https://github.com/zemirco/json2csv/compare/v4.1.6...v4.2.0) (2018-07-31)
 
