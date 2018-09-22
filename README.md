@@ -231,6 +231,23 @@ json2csv
   .on('error', err => console.log(err));
 ```
 
+The stream API can also work on object mode. This is useful when you have an input stream in object mode or if you are getting JSON objects one by one and want to convert them to CSV as they come.
+
+```javascript
+    const input = new Readable({ objectMode: true });
+    input._read = () => {};
+    // myObjectEmitter is just a fake example representing anything that emit objects.
+    myObjectEmitter.on('object', obj => input.push(obj));
+    // Pushing a null close the stream
+    myObjectEmitter.end(()) => input.push(null));
+
+    const opts = {};
+    const transformOpts = { objectMode: true };
+
+    const json2csv = new Json2csvTransform(opts, transformOpts);
+    const processor = input.pipe(transform).pipe(output);
+```
+
 ### Javascript module examples
 
 #### Example `fields` option
