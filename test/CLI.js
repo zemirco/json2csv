@@ -198,7 +198,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     });
   });
 
-  testRunner.add('should output keep fields order', (t) => {
+  testRunner.add('should output fields in the order provided', (t) => {
     const opts = ' --fields price,carModel';
 
     child_process.exec(cli + '-i ' + getFixturePath('/json/default.json') + opts, (err, stdout, stderr) => {
