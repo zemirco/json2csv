@@ -244,7 +244,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       .on('error', err => t.notOk(true, err.message));
   });
 
-  testRunner.add('should output keep fields order', (t) => {
+  testRunner.add('should output fields in the order provided', (t) => {
     const opts = {
       fields: ['price', 'carModel']
     };
@@ -302,6 +302,43 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => t.notOk(true, err.message));
+  });
+
+
+
+  testRunner.add('should error on invalid \'fields\' property', (t) => {
+    const opts = {
+      fields: [ { value: 'price', stringify: true }, () => {} ]
+    };
+
+    try {
+      const transform = new Json2csvTransform(opts);
+      jsonFixtures.default().pipe(transform);
+
+      t.notOk(true);
+    } catch(error) {
+      t.equal(error.message, 'Invalid field info option. ' + JSON.stringify(opts.fields[1]));
+    }
+    t.end();
+  });
+
+  testRunner.add('should error on invalid \'fields.value\' property', (t) => {
+    const opts = {
+      fields: [
+        { value: row => row.price, stringify: true }, 
+        { label: 'Price USD', value: [] }
+      ]
+    };
+
+    try {
+      const transform = new Json2csvTransform(opts);
+      jsonFixtures.default().pipe(transform);
+
+      t.notOk(true);
+    } catch(error) {
+      t.equal(error.message, 'Invalid field info option. ' + JSON.stringify(opts.fields[1]));
+    }
+    t.end();
   });
 
   testRunner.add('should support nested properties selectors', (t) => {
