@@ -41,7 +41,7 @@ Promise.all([
 
   CLI(testRunner, jsonFixtures, csvFixtures);
   JSON2CSVParser(testRunner, jsonFixtures, csvFixtures);
-  JSON2CSVTransform(testRunner, jsonFixturesStreams, csvFixtures);
+  JSON2CSVTransform(testRunner, jsonFixturesStreams, csvFixtures, jsonFixtures);
   parseNdjson(testRunner, jsonFixtures);
 
   testRunner.run();
