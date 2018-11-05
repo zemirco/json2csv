@@ -119,18 +119,20 @@ carModel,price,color
 "Porsche",30000,"green"
 ```
 
-Same result will be obtained using passing the fields as a file.
+Same result will be obtained passing the fields config as a file.
 
 ```bash
-$ json2csv -i input.json -l fieldList.txt -o out.csv
+$ json2csv -i input.json -c fieldsConfig.json -o out.csv
 ```
 
-where the file `fieldList.txt` contains
+where the file `fieldsConfig.json` contains
 
-```
-carModel
-price
-color
+```json
+[
+  "carModel",
+  "price",
+  "color"
+]
 ```
 
 #### Read input from stdin
