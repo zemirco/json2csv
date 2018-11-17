@@ -1,5 +1,7 @@
-[
-  { "value": "carModel" },
-  { "value": "price", "default": 1 },
-  { "value": "color" }
-]
+{
+  "fields": [
+    { "value": "carModel" },
+    { "value": "price", "default": 1 },
+    { "value": "color" }
+  ]
+}

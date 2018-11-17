@@ -60,12 +60,12 @@ By default, the above script will get the latest release of json2csv. You can al
   Options:
 
     -V, --version                        output the version number
+    -c, --config <path>                  Specify a file with a valid JSON configuration.
     -i, --input <input>                  Path and name of the incoming json file. If not provided, will read from stdin.
     -o, --output [output]                Path and name of the resulting csv file. Defaults to stdout.
     -n, --ndjson                         Treat the input as NewLine-Delimited JSON.
     -s, --no-streaming                   Process the whole JSON array in memory instead of doing it line by line.
     -f, --fields <fields>                Specify the fields to convert.
-    -c, --fields-config <path>           Specify a file with a fields configuration as a JSON array.
     -u, --unwind <paths>                 Creates multiple rows from a single JSON document similar to MongoDB unwind.
     -B, --unwind-blank                   When unwinding, blank out instead of repeating data.
     -F, --flatten                        Flatten nested objects.
@@ -85,6 +85,8 @@ By default, the above script will get the latest release of json2csv. You can al
 
 An input file `-i` and fields `-f` are required. If no output `-o` is specified the result is logged to the console.
 Use `-p` to show the result in a beautiful table inside the console.
+
+Any option pass through a config file `-c` will be overriden if a specific flag is passed as well. For example, the fields option of the config will be overriden if the fields flag `-f` is used.
 
 ### CLI examples
 
