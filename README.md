@@ -83,8 +83,10 @@ By default, the above script will get the latest release of json2csv. You can al
     -h, --help                           output usage information
 ```
 
-An input file `-i` and fields `-f` are required. If no output `-o` is specified the result is logged to the console.
-Use `-p` to show the result in a beautiful table inside the console.
+If no input `-i` is specified the result is expected from to the console standard input.
+If no output `-o` is specified the result is printed to the console standard output.
+If no fields `-f` or `-c` are passed the fields of the first element are used since json2csv CLI process the items one at a time. You can use the `--no-streaming` flag to load the entire JSON in memory and get all the headers. However, keep in mind that this is slower and requires much more memory.
+Use `-p` to show the result as a table in the console.
 
 ### CLI examples
 
