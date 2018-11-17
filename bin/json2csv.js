@@ -55,7 +55,7 @@ program.eol = program.eol || os.EOL;
 /* istanbul ignore next */
 process.stdout.on('error', (error) => {
   if (error.code === 'EPIPE') {
-    process.exit();
+    process.exit(1);
   }
 });
 
@@ -235,4 +235,5 @@ Promise.resolve()
     }
     // eslint-disable-next-line no-console
     console.error(err);
+    process.exit(1);
   });
