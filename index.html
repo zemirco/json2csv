@@ -124,8 +124,10 @@ $ npm install json2csv --save
     -p, --pretty                         Use only when printing to console. Logs output <span class="pl-k">in</span> pretty tables.
     -h, --help                           output usage information
 </code></pre>
-<p>An input file <code>-i</code> and fields <code>-f</code> are required. If no output <code>-o</code> is specified the result is logged to the console.
-Use <code>-p</code> to show the result in a beautiful table inside the console.</p>
+<p>If no input <code>-i</code> is specified the result is expected from to the console standard input.
+If no output <code>-o</code> is specified the result is printed to the console standard output.
+If no fields <code>-f</code> or <code>-c</code> are passed the fields of the first element are used since json2csv CLI process the items one at a time. You can use the <code>--no-streaming</code> flag to load the entire JSON in memory and get all the headers. However, keep in mind that this is slower and requires much more memory.
+Use <code>-p</code> to show the result as a table in the console.</p>
 <h3 id="cli-examples">CLI examples</h3>
 <h4 id="input-file-and-specify-fields">Input file and specify fields</h4>
 <pre><code class="lang-bash">$ json2csv -i input.json <span class="hljs-_">-f</span> carModel,price,color
