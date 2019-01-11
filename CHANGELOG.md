@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="4.3.3"></a>
+## [4.3.3](https://github.com/zemirco/json2csv/compare/v4.3.2...v4.3.3) (2019-01-11)
+
+
+### Bug Fixes
+
+* audit dep fix ([1ef4bcd](https://github.com/zemirco/json2csv/commit/1ef4bcd))
+* Remove invalid reference to flat ([#347](https://github.com/zemirco/json2csv/issues/347)) ([130ef7d](https://github.com/zemirco/json2csv/commit/130ef7d))
+* Remove preferGlobal from package.json ([#346](https://github.com/zemirco/json2csv/issues/346)) ([2b6ad3a](https://github.com/zemirco/json2csv/commit/2b6ad3a))
+
+
+
 <a name="4.3.2"></a>
 ## [4.3.2](https://github.com/zemirco/json2csv/compare/v4.3.1...v4.3.2) (2018-12-08)
 
