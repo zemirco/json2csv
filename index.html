@@ -186,7 +186,7 @@ $ json2csv -i test.json <span class="hljs-_">-f</span> name,version --no-header 
 <li><code>ndjson</code> - Only effective on the streaming API. Indicates that data coming through the stream is NDJSON.</li>
 <li><code>unwind</code> - Array of Strings, creates multiple rows from a single JSON document similar to MongoDB&apos;s $unwind</li>
 <li><code>unwindBlank</code> - Boolean, unwind using blank values instead of repeating data.</li>
-<li><code>flatten</code> - Boolean, flattens nested JSON using <a href="https://www.npmjs.com/package/flat">flat</a>. Defaults to <code>false</code>.</li>
+<li><code>flatten</code> - Boolean, flattens nested objects. Defaults to <code>false</code>.</li>
 <li><code>flattenSeparator</code> - String, separator to use between nested JSON keys when <code>flatten</code> option enabled. Defaults to <code>.</code> if not specified.</li>
 <li><code>defaultValue</code> - String, default value to use when missing data. Defaults to <code>&lt;empty&gt;</code> if not specified. (Overridden by <code>fields[].default</code>)</li>
 <li><code>quote</code> - String, quote around cell values and column names. Defaults to <code>&quot;</code> if not specified.</li>
