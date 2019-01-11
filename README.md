@@ -724,4 +724,3 @@ See [LICENSE.md].
 [dev-badge-url]: https://david-dm.org/zemirco/json2csv
 [CHANGELOG]: https://github.com/zemirco/json2csv/blob/master/CHANGELOG.md
 [LICENSE.md]: https://github.com/zemirco/json2csv/blob/master/LICENSE.md
-[flat]: https://www.npmjs.com/package/flat
