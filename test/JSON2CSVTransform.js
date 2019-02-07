@@ -374,6 +374,31 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       .on('error', err => t.notOk(true, err.message));
   });
 
+  testRunner.add('field.value function should receive a valid field object', (t) => {
+    const opts = {
+      fields: [{
+        label: 'Value1',
+        default: 'default value',
+        value: (row, field) => {
+          t.deepEqual(field, { label: 'Value1', default: 'default value' });
+          return row.value1.toLocaleString();
+        }
+      }]
+    };
+
+    const transform = new Json2csvTransform(opts);
+    const processor = jsonFixtures.functionStringifyByDefault().pipe(transform);
+
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.equal(csv, csvFixtures.functionStringifyByDefault);
+        t.end();
+      })
+      .on('error', err => t.notOk(true, err.message));
+  });
+
   testRunner.add('field.value function should stringify results by default', (t) => {
     const opts = {
       fields: [{
