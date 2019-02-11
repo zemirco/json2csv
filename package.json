@@ -1,6 +1,6 @@
 {
   "name": "json2csv",
-  "version": "4.3.3",
+  "version": "4.3.4",
   "description": "Convert JSON to CSV",
   "keywords": [
     "json",
@@ -48,7 +48,7 @@
     "babel-core": "^6.26.3",
     "babel-preset-es2015-rollup": "^3.0.0",
     "coveralls": "^3.0.1",
-    "docpress": "^0.7.4",
+    "docpress": "~0.7.5",
     "eslint": "^5.0.1",
     "gh-pages": "^2.0.1",
     "in-publish": "^2.0.0",

@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="4.3.4"></a>
+## [4.3.4](https://github.com/zemirco/json2csv/compare/v4.3.3...v4.3.4) (2019-02-11)
+
+
+### Bug Fixes
+
+* issue with fields.value function not receiving correct fields ([#353](https://github.com/zemirco/json2csv/issues/353)) ([851c02f](https://github.com/zemirco/json2csv/commit/851c02f))
+
+
+
 <a name="4.3.3"></a>
 ## [4.3.3](https://github.com/zemirco/json2csv/compare/v4.3.2...v4.3.3) (2019-01-11)
 
