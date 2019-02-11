@@ -105,8 +105,8 @@ $ npm install json2csv --save
     -i, --input &lt;input&gt;                  Path and name of the incoming json file. If not provided, will <span class="pl-c1">read</span> from stdin.
     -o, --output [output]                Path and name of the resulting csv file. Defaults to stdout.
     -n, --ndjson                         Treat the input as NewLine-Delimited JSON.
-    <span class="hljs-_">-s</span>, --no-streaming                   Process the whole JSON array <span class="pl-k">in</span> memory instead of doing it line by line.
-    <span class="hljs-_">-f</span>, --fields &lt;fields&gt;                Specify the fields to convert.
+    -s, --no-streaming                   Process the whole JSON array <span class="pl-k">in</span> memory instead of doing it line by line.
+    -f, --fields &lt;fields&gt;                Specify the fields to convert.
     -c, --fields-config &lt;path&gt;           Specify a file with a fields configuration as a JSON array.
     -u, --unwind &lt;paths&gt;                 Creates multiple rows from a single JSON document similar to MongoDB unwind.
     -B, --unwind-blank                   When unwinding, blank out instead of repeating data.
@@ -115,14 +115,14 @@ $ npm install json2csv --save
     -v, --default-value [defaultValue]   Specify a default value other than empty string.
     -q, --quote [value]                  Specify an alternate quote value.
     -Q, --double-quote [value]           Specify a value to replace double quote <span class="pl-k">in</span> strings.
-    <span class="hljs-_">-d</span>, --delimiter [delimiter]          Specify a delimiter other than the default comma to use.
-    <span class="hljs-_">-e</span>, --eol [value]                    Specify an End-of-Line value <span class="pl-k">for</span> separating rows.
+    -d, --delimiter [delimiter]          Specify a delimiter other than the default comma to use.
+    -e, --eol [value]                    Specify an End-of-Line value <span class="pl-k">for</span> separating rows.
     -E, --excel-strings                  Converts string data into normalized Excel style data.
     -H, --no-header                      Disable the column name header.
-    <span class="hljs-_">-a</span>, --include-empty-rows             Includes empty rows <span class="pl-k">in</span> the resulting CSV output.
+    -a, --include-empty-rows             Includes empty rows <span class="pl-k">in</span> the resulting CSV output.
     -b, --with-bom                       Includes BOM character at the beginning of the csv.
     -p, --pretty                         Use only when printing to console. Logs output <span class="pl-k">in</span> pretty tables.
-    -h, --help                           output usage information
+    -h, --<span class="pl-c1">help</span>                           output usage information
 </code></pre>
 <p>If no input <code>-i</code> is specified the result is expected from to the console standard input.
 If no output <code>-o</code> is specified the result is printed to the console standard output.
@@ -130,7 +130,7 @@ If no fields <code>-f</code> or <code>-c</code> are passed the fields of the fir
 Use <code>-p</code> to show the result as a table in the console.</p>
 <h3 id="cli-examples">CLI examples</h3>
 <h4 id="input-file-and-specify-fields">Input file and specify fields</h4>
-<pre><code class="lang-bash">$ json2csv -i input.json <span class="hljs-_">-f</span> carModel,price,color
+<pre><code class="lang-bash">$ json2csv -i input.json -f carModel,price,color
 carModel,price,color
 <span class="pl-s">&quot;Audi&quot;</span>,10000,<span class="pl-s">&quot;blue&quot;</span>
 <span class="pl-s">&quot;BMW&quot;</span>,15000,<span class="pl-s">&quot;red&quot;</span>
@@ -138,11 +138,11 @@ carModel,price,color
 <span class="pl-s">&quot;Porsche&quot;</span>,30000,<span class="pl-s">&quot;green&quot;</span>
 </code></pre>
 <h4 id="input-file-specify-fields-and-use-pretty-logging">Input file, specify fields and use pretty logging</h4>
-<pre><code class="lang-bash">$ json2csv -i input.json <span class="hljs-_">-f</span> carModel,price,color -p
+<pre><code class="lang-bash">$ json2csv -i input.json -f carModel,price,color -p
 </code></pre>
 <p><img src="https://s3.amazonaws.com/zeMirco/github/json2csv/json2csv-pretty.png" alt="Screenshot"></p>
 <h4 id="generating-csv-containing-only-specific-fields">Generating CSV containing only specific fields</h4>
-<pre><code class="lang-bash">$ json2csv -i input.json <span class="hljs-_">-f</span> carModel,price,color -o out.csv
+<pre><code class="lang-bash">$ json2csv -i input.json -f carModel,price,color -o out.csv
 $ cat out.csv
 carModel,price,color
 <span class="pl-s">&quot;Audi&quot;</span>,10000,<span class="pl-s">&quot;blue&quot;</span>
@@ -161,7 +161,7 @@ carModel,price,color
 ]
 </code></pre>
 <h4 id="read-input-from-stdin">Read input from stdin</h4>
-<pre><code class="lang-bash">$ json2csv <span class="hljs-_">-f</span> price
+<pre><code class="lang-bash">$ json2csv -f price
 [{<span class="pl-s">&quot;price&quot;</span>:1000},{<span class="pl-s">&quot;price&quot;</span>:2000}]
 </code></pre>
 <p>Hit <kbd>Enter</kbd> and afterwards <kbd>CTRL</kbd> + <kbd>D</kbd> to end reading from stdin. The terminal should show</p>
@@ -173,9 +173,9 @@ carModel,price,color
 <p>Sometimes you want to add some additional rows with the same columns.
 This is how you can do that.</p>
 <pre><code class="lang-bash"><span class="pl-c"># Initial creation of csv with headings</span>
-$ json2csv -i test.json <span class="hljs-_">-f</span> name,version &gt; test.csv
+$ json2csv -i test.json -f name,version &gt; test.csv
 <span class="pl-c"># Append additional rows</span>
-$ json2csv -i test.json <span class="hljs-_">-f</span> name,version --no-header &gt;&gt; test.csv
+$ json2csv -i test.json -f name,version --no-header &gt;&gt; test.csv
 </code></pre>
 <h2 id="javascript-module">Javascript module</h2>
 <p><code>json2csv</code> can also be use programatically from you javascript codebase.</p>
