@@ -499,8 +499,8 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
 
   testRunner.add('should support multi-level unwind', (t) => {
     const opts = {
-      fields: ['carModel', 'price', 'items.name', 'items.color', 'items.items.position', 'items.items.color'],
-      unwind: ['items', 'items.items']
+      fields: ['carModel', 'price', 'extras.items.name', 'extras.items.color', 'extras.items.items.position', 'extras.items.items.color'],
+      unwind: ['extras.items', 'extras.items.items']
     };
 
     const transform = new Json2csvTransform(opts);
@@ -520,8 +520,8 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
 
   testRunner.add('should unwind and blank out repeated data', (t) => {
     const opts = {
-      fields: ['carModel', 'price', 'items.name', 'items.color', 'items.items.position', 'items.items.color'],
-      unwind: ['items', 'items.items'],
+      fields: ['carModel', 'price', 'extras.items.name', 'extras.items.color', 'extras.items.items.position', 'extras.items.items.color'],
+      unwind: ['extras.items', 'extras.items.items'],
       unwindBlank: true
     };
 

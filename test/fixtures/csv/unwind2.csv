@@ -1,4 +1,4 @@
-"carModel","price","items.name","items.color","items.items.position","items.items.color"
+"carModel","price","extras.items.name","extras.items.color","extras.items.items.position","extras.items.items.color"
 "BMW",15000,"airbag","white",,
 "BMW",15000,"dashboard","black",,
 "Porsche",30000,"airbag",,"left","white"

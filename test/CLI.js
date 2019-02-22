@@ -301,8 +301,8 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   });
 
   testRunner.add('should support multi-level unwind', (t) => {
-    const opts = ' --fields carModel,price,items.name,items.color,items.items.position,items.items.color'
-      + ' --unwind items,items.items';
+    const opts = ' --fields carModel,price,extras.items.name,extras.items.color,extras.items.items.position,extras.items.items.color'
+      + ' --unwind extras.items,extras.items.items';
 
     child_process.exec(cli + '-i ' + getFixturePath('/json/unwind2.json') + opts, (err, stdout, stderr) => {
       t.notOk(stderr);
@@ -313,8 +313,8 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   });
 
   testRunner.add('hould unwind and blank out repeated data', (t) => {
-    const opts = ' --fields carModel,price,items.name,items.color,items.items.position,items.items.color'
-      + ' --unwind items,items.items --unwind-blank';
+    const opts = ' --fields carModel,price,extras.items.name,extras.items.color,extras.items.items.position,extras.items.items.color'
+      + ' --unwind extras.items,extras.items.items --unwind-blank';
 
     child_process.exec(cli + '-i ' + getFixturePath('/json/unwind2.json') + opts, (err, stdout, stderr) => {
       t.notOk(stderr);
