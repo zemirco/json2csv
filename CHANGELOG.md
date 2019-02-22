@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="4.3.5"></a>
+## [4.3.5](https://github.com/zemirco/json2csv/compare/v4.3.4...v4.3.5) (2019-02-22)
+
+
+### Bug Fixes
+
+* audit deps ([3182707](https://github.com/zemirco/json2csv/commit/3182707))
+* unwind of nested fields ([#357](https://github.com/zemirco/json2csv/issues/357)) ([2d69281](https://github.com/zemirco/json2csv/commit/2d69281))
+
+
+
 <a name="4.3.4"></a>
 ## [4.3.4](https://github.com/zemirco/json2csv/compare/v4.3.3...v4.3.4) (2019-02-11)
 
