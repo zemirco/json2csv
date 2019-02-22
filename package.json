@@ -47,7 +47,7 @@
     "babel-core": "^6.26.3",
     "babel-preset-es2015-rollup": "^3.0.0",
     "coveralls": "^3.0.1",
-    "docpress": "~0.7.5",
+    "docpress": "^0.7.6",
     "eslint": "^5.0.1",
     "gh-pages": "^2.0.1",
     "in-publish": "^2.0.0",
