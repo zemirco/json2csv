@@ -15,22 +15,6 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     t.end();
   });
 
-  testRunner.add('should parse json to csv, infer the fields automatically and not modify the opts passed using parseAsync method', (t) => {
-    const opts = {
-      fields: ['carModel', 'price', 'color', 'transmission']
-    };
-    const transformOpts = { objectMode: true };
-
-    json2csv.parseAsync(jsonFixtures.default, opts, transformOpts)
-      .then((csv) => {
-        t.ok(typeof csv === 'string');
-        t.equal(csv, csvFixtures.default);
-        t.deepEqual(opts, { fields: ['carModel', 'price', 'color', 'transmission'] });
-      })
-      .catch(err => t.notOk(true, err.message))
-      .then(() => t.end());
-  });
-
   testRunner.add('should not modify the opts passed', (t) => {
     const opts = {};
     const parser = new Json2csvParser(opts);
