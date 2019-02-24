@@ -61,7 +61,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       t.end();
     });
     processor.on('error', (err) => {
-      t.ok(err.message.indexOf('Invalid JSON') !== -1);
+      t.ok(err.message.includes('Invalid JSON'));
       t.end();
     });
   });
@@ -115,7 +115,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       t.end();
     });
     processor.on('error', (err) => {
-      t.ok(err.message.indexOf('Invalid JSON') !== -1);
+      t.ok(err.message.includes('Invalid JSON'));
       t.end();
     });
   });
