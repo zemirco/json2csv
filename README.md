@@ -192,12 +192,12 @@ The programatic APIs take a configuration object very equivalent to the CLI opti
 
 `json2csv` can also be use programatically as a synchronous converter using its `parse` method. 
 ```javascript
-const Json2csvParser = require('json2csv').Parser;
+const { Parser } = require('json2csv');
 const fields = ['field1', 'field2', 'field3'];
 const opts = { fields };
 
 try {
-  const parser = new Json2csvParser(opts);
+  const parser = new Parser(opts);
   const csv = parser.parse(myData);
   console.log(csv);
 } catch (err) {
@@ -220,13 +220,83 @@ try {
 }
 ```
 
+Both of the methods above load the entire JSON in memory and do the whole processing in-memory while blocking Javascript event loop. For that reason is rarely a good reason to use it until your data is very small or your application doesn't do anything else.
+
+### json2csv async parser (Streaming API)
+
+The synchronous API has the downside of loading the entire JSON array in memory and blocking javascript's event loop while processing the data. This means that you server won't be able to process more request or your UI will become irresponsive while data is being processed. For those reasons, is rarely a good reason to use it unless your data is very small or your application doesn't do anything else.
+
+The async parser process the data as a non-blocking stream. This approach ensures a consistent memory footprint and avoid blocking javascript's event loop. Thus, it's better suited for large datasets or system with high concurrency. 
+
+One very important difference between the asynchronous and the synchronous APIs is that using the asynchronous API json objects are processed one by one. In practice, this means that only the fields in the first object of the array are automatically detected and other fields are just ignored. To avoid this, it's advisable to ensure that all the objects contain exactly the same fields or provide the list of fields using the `fields` option.
+
+The async API uses takes a second options arguments that's directly passed to the underlying streams and accept the same options as the standard [Node.js streams](https://nodejs.org/api/stream.html#stream_new_stream_duplex_options).
+
+Instances of `AsyncParser` expose three objects:
+* *input:* Which allows to push more data
+* *processor:* A readable string representing the whole data processing. You can listen to all the standard events of Node.js streams.
+* *transform:* The json2csv transform. See bellow for more details.
+
+```javascript
+const { AsyncParser } = require('json2csv');
+const fields = ['field1', 'field2', 'field3'];
+const opts = { fields };
+const transformOpts = { highWaterMark: 8192 };
+
+const asyncParser = new JSON2CSVAsyncParser(opts, transformOpts);
+
+let csv = '';
+asyncParser.processor
+  .on('data', chunk => (csv += chunk.toString()))
+  .on('end', () => console.log(csv))
+  .on('error', err => console.error(err));
+  
+// You can also listen for events on the conversion and see how the header or the lines are coming out.
+asyncParser.transform
+  .on('header', header => console.log(header))
+  .on('line', line => console.log(line))
+  .on('error', err => console.log(err));
+
+asyncParser.input.push(data); // This data might come from an HTTP request, etc.
+asyncParser.input.push(null); // Sending `null` to a stream signal that no more data is expected and ends it.
+```
+
+`AsyncParser` also exposes some convenience methods:
+* `fromInput` allows you to set the input stream.
+* `throughTransform` allows you to add transforms to the stream.
+* `toOutput` allows you to set the output stream.
+* `promise` returns a promise that resolves when the stream ends or errors.
+
+```javascript
+const fs = require('fs');
+const { AsyncParser } = require('json2csv');
+const fields = ['field1', 'field2', 'field3'];
+const opts = { fields };
+const transformOpts = { highWaterMark: 8192 };
+
+const input = fs.createReadStream(inputPath, { encoding: 'utf8' });
+const output = fs.createWriteStream(outputPath, { encoding: 'utf8' });
+const asyncParser = new JSON2CSVAsyncParser(opts, transformOpts);
+asyncParser.fromInput(input).toOutput(output).promise()
+  .then(csv => console.log(csv))
+  .catch(err => console.error(err));;
+```
+
+you can also use the convenience method `parseAsync` which returns a promise.
+
+```javascript
+const { parseAsync } = require('json2csv');
+const fields = ['field1', 'field2', 'field3'];
+const opts = { fields };
+
+parseAsync(myData, opts)
+  .then(csv => console.log(csv))
+  .catch(err => console.error(err));
+```
+
 ### json2csv transform (Streaming API)
 
-The parse method is really good but has the downside of loading the entire JSON array in memory. This might not be optimal or even possible for large JSON files.
-
-For such cases json2csv offers a stream transform so pipe your json content into it and it will output it.
-
-One very important difference between the transform and the parser is that the json objects are processed one by one. In practice, this means that only the fields in the first object of the array are considered and fields in other other objects that were not present in the first one are just ignored. To avoid this. It's advisable to ensure that all the objects contain exactly the same fields or provide the list of fields using the `fields` option.
+json2csv also exposes the raw stream transform so you can pipe your json content into it. This is the same Transform that `AsyncParser` uses under the hood.
 
 ```javascript
 const fs = require('fs');
