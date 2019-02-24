@@ -25,7 +25,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.ndjson);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   testRunner.add('should handle ndjson', (t) => {
@@ -44,7 +47,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.ndjson);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   testRunner.add('should error on invalid ndjson input data', (t) => {
@@ -80,7 +86,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.deepEqual(opts, {});
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   testRunner.add('should error if input data is not an object', (t) => {
@@ -135,7 +144,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.emptyObject);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   testRunner.add('should handle empty array', (t) => {
@@ -153,7 +165,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.emptyObject);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   testRunner.add('should hanlde array with nulls', (t) => {
@@ -175,7 +190,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.emptyObject);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   testRunner.add('should handle deep JSON objects', (t) => {
@@ -189,7 +207,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.deepJSON);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   testRunner.add('should parse json to csv and infer the fields automatically ', (t) => {
@@ -204,7 +225,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.defaultStream);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   testRunner.add('should parse json to csv using custom fields', (t) => {
@@ -223,7 +247,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
   
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   testRunner.add('should output only selected fields', (t) => {
@@ -241,7 +268,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.selected);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   testRunner.add('should output fields in the order provided', (t) => {
@@ -259,7 +289,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.reversed);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   testRunner.add('should output empty value for non-existing fields', (t) => {
@@ -277,7 +310,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.withNotExistField);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   testRunner.add('should name columns as specified in \'fields\' property', (t) => {
@@ -301,7 +337,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.fieldNames);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
 
@@ -371,7 +410,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.nested);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   testRunner.add('field.value function should receive a valid field object', (t) => {
@@ -396,7 +438,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.functionStringifyByDefault);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   testRunner.add('field.value function should stringify results by default', (t) => {
@@ -417,7 +462,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.functionStringifyByDefault);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   testRunner.add('field.value function should not stringify if stringify is selected to false', (t) => {
@@ -439,7 +487,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.functionNoStringify);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   testRunner.add('should process different combinations in fields option', (t) => {
@@ -473,7 +524,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.fancyfields);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   // Preprocessing
@@ -494,7 +548,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.unwind);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   testRunner.add('should support multi-level unwind', (t) => {
@@ -513,7 +570,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.unwind2);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
 
@@ -535,7 +595,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.unwind2Blank);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   testRunner.add('should support flattening deep JSON', (t) => {
@@ -553,7 +616,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.flattenedDeepJSON);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   testRunner.add('should support custom flatten separator', (t) => {
@@ -572,7 +638,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.flattenedCustomSeparatorDeepJSON);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   testRunner.add('should unwind and flatten an object in the right order', (t) => {
@@ -591,7 +660,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.unwindAndFlatten);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   // Default value
@@ -612,7 +684,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.defaultValueEmpty);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   testRunner.add('should override \'options.defaultValue\' with \'field.defaultValue\'', (t) => {
@@ -635,7 +710,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.overriddenDefaultValue);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   testRunner.add('should use \'options.defaultValue\' when no \'field.defaultValue\'', (t) => {
@@ -667,7 +745,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.overriddenDefaultValue);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   // Quote
@@ -688,7 +769,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.withSimpleQuotes);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   testRunner.add('should be able to don\'t output quotes when setting \'quote\' to empty string', (t) => {
@@ -707,7 +791,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.withoutQuotes);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   testRunner.add('should escape quotes when setting \'quote\' property is present', (t) => {
@@ -726,7 +813,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.escapeCustomQuotes);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   // Double Quote
@@ -742,7 +832,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.quotes);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   testRunner.add('should not escape quotes with double quotes, when there is a backslah in the end', (t) => {
@@ -756,7 +849,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.backslashAtEnd);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   testRunner.add('should not escape quotes with double quotes, when there is a backslah in the end, and its not the last column', (t) => {
@@ -770,7 +866,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.backslashAtEndInMiddleColumn);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   testRunner.add('should escape quotes with value in \'doubleQuote\'', (t) => {
@@ -789,7 +888,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.doubleQuotes);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   testRunner.add('should escape quotes before new line with value in \'doubleQuote\'', (t) => {
@@ -807,7 +909,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.backslashBeforeNewLine);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   // Delimiter
@@ -828,7 +933,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.tsv);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   testRunner.add('should remove last delimiter |@|', (t) => {
@@ -844,7 +952,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.delimiter);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   // EOL
@@ -865,7 +976,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.eol);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   // Excell
@@ -886,7 +1000,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.excelStrings);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   // Escaping and preserving values
@@ -906,7 +1023,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.trailingBackslash);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   testRunner.add('should escape " when preceeded by \\', (t) => {
@@ -920,7 +1040,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.escapeDoubleBackslashedDoubleQuote);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   testRunner.add('should preserve new lines in values', (t) => {
@@ -942,7 +1065,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     ].join('\r\n'));
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   testRunner.add('should preserve tabs in values', (t) => {
@@ -956,7 +1082,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.escapeTab);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   // Header
@@ -977,7 +1106,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.withoutHeader);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   // Include empty rows
@@ -993,7 +1125,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.emptyRowNotIncluded);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   testRunner.add('should include empty rows when options.includeEmptyRows is true', (t) => {
@@ -1011,7 +1146,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.emptyRow);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   testRunner.add('should not include empty rows when options.includeEmptyRows is false', (t) => {
@@ -1029,7 +1167,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.emptyRowNotIncluded);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   testRunner.add('should include empty rows when options.includeEmptyRows is true, with default values', (t) => {
@@ -1060,7 +1201,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.emptyRowDefaultValues);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   testRunner.add('should parse data:[null] to csv with only column title, despite options.includeEmptyRows', (t) => {
@@ -1084,7 +1228,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv, csvFixtures.emptyObject);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 
   // BOM
@@ -1108,6 +1255,9 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv.length, csvFixtures.withBOM.length);
         t.end();
       })
-      .on('error', err => t.notOk(true, err.message));
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
   });
 };
