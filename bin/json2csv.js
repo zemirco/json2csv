@@ -226,11 +226,11 @@ Promise.resolve()
     });
   })
   .catch((err) => {
-    if (inputPath && err.message.indexOf(inputPath)  !== -1) {
+    if (inputPath && err.message.includes(inputPath)) {
       err = new Error('Invalid input file. (' + err.message + ')');
-    } else if (outputPath && err.message.indexOf(outputPath) !== -1) {
+    } else if (outputPath && err.message.includes(outputPath)) {
       err = new Error('Invalid output file. (' + err.message + ')');
-    } else if (fieldsConfigPath && err.message.indexOf(fieldsConfigPath) !== -1) {
+    } else if (fieldsConfigPath && err.message.includes(fieldsConfigPath)) {
       err = new Error('Invalid fields config file. (' + err.message + ')');
     }
     // eslint-disable-next-line no-console

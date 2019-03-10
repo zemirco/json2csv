@@ -22,7 +22,8 @@ export default [
       builtins(),
       babel({
         exclude: ['node_modules/**'],
-        presets: ['es2015-rollup']
+        babelrc: false,
+        presets: [['@babel/env', { modules: false }]],
       })
     ]
   },
@@ -38,7 +39,8 @@ export default [
       commonjs(),
       babel({
         exclude: ['node_modules/**'],
-        presets: ['es2015-rollup']
+        babelrc: false,
+        presets: [['@babel/env', { modules: false }]],
       })
     ]
   }
