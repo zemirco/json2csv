@@ -333,7 +333,7 @@ The stream API can also work on object mode. This is useful when you have an inp
     const transformOpts = { objectMode: true };
 
     const json2csv = new Json2csvTransform(opts, transformOpts);
-    const processor = input.pipe(transform).pipe(output);
+    const processor = input.pipe(json2csv).pipe(output);
 ```
 
 ### Javascript module examples
