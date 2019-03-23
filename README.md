@@ -50,33 +50,31 @@ By default, the above script will get the latest release of json2csv. You can al
 `json2csv` can be called from the command line if installed globally (using the `-g` flag).
 
 ```sh
-  Usage: json2csv [options]
+Usage: json2csv [options]
 
-
-  Options:
-
-    -V, --version                        output the version number
-    -i, --input <input>                  Path and name of the incoming json file. If not provided, will read from stdin.
-    -o, --output [output]                Path and name of the resulting csv file. Defaults to stdout.
-    -n, --ndjson                         Treat the input as NewLine-Delimited JSON.
-    -s, --no-streaming                   Process the whole JSON array in memory instead of doing it line by line.
-    -f, --fields <fields>                Specify the fields to convert.
-    -c, --fields-config <path>           Specify a file with a fields configuration as a JSON array.
-    -u, --unwind <paths>                 Creates multiple rows from a single JSON document similar to MongoDB unwind.
-    -B, --unwind-blank                   When unwinding, blank out instead of repeating data.
-    -F, --flatten                        Flatten nested objects.
-    -S, --flatten-separator <separator>  Flattened keys separator.
-    -v, --default-value [defaultValue]   Specify a default value other than empty string.
-    -q, --quote [value]                  Specify an alternate quote value.
-    -Q, --double-quote [value]           Specify a value to replace double quote in strings.
-    -d, --delimiter [delimiter]          Specify a delimiter other than the default comma to use.
-    -e, --eol [value]                    Specify an End-of-Line value for separating rows.
-    -E, --excel-strings                  Converts string data into normalized Excel style data.
-    -H, --no-header                      Disable the column name header.
-    -a, --include-empty-rows             Includes empty rows in the resulting CSV output.
-    -b, --with-bom                       Includes BOM character at the beginning of the csv.
-    -p, --pretty                         Use only when printing to console. Logs output in pretty tables.
-    -h, --help                           output usage information
+Options:
+  -V, --version                        output the version number
+  -i, --input <input>                  Path and name of the incoming json file. Defaults to stdin.
+  -o, --output [output]                Path and name of the resulting csv file. Defaults to stdout.
+  -n, --ndjson                         Treat the input as NewLine-Delimited JSON.
+  -s, --no-streaming                   Process the whole JSON array in memory instead of doing it line by line.
+  -f, --fields <fields>                List of fields to process. Defaults to field auto-detection.
+  -c, --fields-config <path>           File with a fields configuration as a JSON array.
+  -u, --unwind <paths>                 Creates multiple rows from a single JSON document similar to MongoDB unwind.
+  -B, --unwind-blank                   When unwinding, blank out instead of repeating data.
+  -F, --flatten                        Flatten nested objects.
+  -S, --flatten-separator <separator>  Flattened keys separator. Defaults to '.'.
+  -v, --default-value [defaultValue]   Default value to use for missing fields.
+  -q, --quote [value]                  Character(s) to use a quote mark. Defaults to '"'.
+  -Q, --double-quote [value]           Character(s) to use as a escaped quote. Defaults to a double `quote`, '""'.
+  -d, --delimiter [delimiter]          Character(s) to use as delimiter. Defaults to ','.
+  -e, --eol [value]                    Character(s) to use as End-of-Line for separating rows. Defaults to '\n'.
+  -E, --excel-strings                  Wraps string data to force Excel to interpret it as string even if it contains a number.
+  -H, --no-header                      Disable the column name header.
+  -a, --include-empty-rows             Includes empty rows in the resulting CSV output.
+  -b, --with-bom                       Includes BOM character at the beginning of the CSV.
+  -p, --pretty                         Print output as a pretty table. Use only when printing to console.
+  -h, --help                           output usage information
 ```
 
 If no input `-i` is specified the result is expected from to the console standard input.
