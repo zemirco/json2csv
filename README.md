@@ -12,25 +12,21 @@ See the [CHANGELOG] for details about the latest release.
 
 ## Features
 
-- Uses proper line endings on various operating systems
-- Handles double quotes
-- Allows custom column selection
-- Allows specifying nested properties
-- Reads column selection from file
-- Pretty writing to stdout
-- Supports optional custom delimiters
-- Supports optional custom eol value
-- Supports optional custom quotation marks
-- Optional header.
-- If field doesn't exist in object the field value in CSV will be empty.
-- Preserve new lines in values. Should be used with \r\n line endings for full compatibility with Excel.
-- Add a BOM character at the beginning of the csv to make Excel displaying special characters correctly.
+- Fast and lightweight
+- Scalable to infinitely large datasets (using stream processing)
+- Support for standard JSON as well as NDJSON
+- Advanced data selection (automatic field discovery, underscore-like selectors, custom data getters, default values for missing fields, flattening nested object, unwinding arrays, etc.)
+- Highly customizable (supportting custom quotation marks, delimiters, eol values, etc.)
+- Automatic escaping (preserving new lines, quotes, etc. in them)
+- Optional headers
+- Unicode encoding support
+- Pretty printing in table format to stdout
 
 ## How to install
 
 You can install json2csv as a dependency using NPM.
 
-```bash
+```sh
 # Global so it can be call from anywhere
 $ npm install -g json2csv
 # or as a dependency of a project
@@ -53,7 +49,7 @@ By default, the above script will get the latest release of json2csv. You can al
 
 `json2csv` can be called from the command line if installed globally (using the `-g` flag).
 
-```bash
+```sh
   Usage: json2csv [options]
 
 
@@ -92,7 +88,7 @@ Use `-p` to show the result as a table in the console.
 
 #### Input file and specify fields
 
-```bash
+```sh
 $ json2csv -i input.json -f carModel,price,color
 carModel,price,color
 "Audi",10000,"blue"
@@ -103,7 +99,7 @@ carModel,price,color
 
 #### Input file, specify fields and use pretty logging
 
-```bash
+```sh
 $ json2csv -i input.json -f carModel,price,color -p
 ```
 
@@ -111,7 +107,7 @@ $ json2csv -i input.json -f carModel,price,color -p
 
 #### Generating CSV containing only specific fields
 
-```bash
+```sh
 $ json2csv -i input.json -f carModel,price,color -o out.csv
 $ cat out.csv
 carModel,price,color
@@ -123,7 +119,7 @@ carModel,price,color
 
 Same result will be obtained passing the fields config as a file.
 
-```bash
+```sh
 $ json2csv -i input.json -c fieldsConfig.json -o out.csv
 ```
 
@@ -139,7 +135,7 @@ where the file `fieldsConfig.json` contains
 
 #### Read input from stdin
 
-```bash
+```sh
 $ json2csv -f price
 [{"price":1000},{"price":2000}]
 ```
@@ -157,7 +153,7 @@ price
 Sometimes you want to add some additional rows with the same columns.
 This is how you can do that.
 
-```bash
+```sh
 # Initial creation of csv with headings
 $ json2csv -i test.json -f name,version > test.csv
 # Append additional rows
@@ -191,8 +187,9 @@ The programatic APIs take a configuration object very equivalent to the CLI opti
 ### json2csv parser (Synchronous API)
 
 `json2csv` can also be use programatically as a synchronous converter using its `parse` method. 
-```javascript
+```js
 const { Parser } = require('json2csv');
+
 const fields = ['field1', 'field2', 'field3'];
 const opts = { fields };
 
@@ -207,13 +204,14 @@ try {
 
 you can also use the convenience method `parse`
 
-```javascript
-const json2csv = require('json2csv').parse;
+```js
+const { parse } = require('json2csv');
+
 const fields = ['field1', 'field2', 'field3'];
 const opts = { fields };
 
 try {
-  const csv = json2csv(myData, opts);
+  const csv = parse(myData, opts);
   console.log(csv);
 } catch (err) {
   console.error(err);
@@ -237,8 +235,9 @@ Instances of `AsyncParser` expose three objects:
 * *processor:* A readable string representing the whole data processing. You can listen to all the standard events of Node.js streams.
 * *transform:* The json2csv transform. See bellow for more details.
 
-```javascript
+```js
 const { AsyncParser } = require('json2csv');
+
 const fields = ['field1', 'field2', 'field3'];
 const opts = { fields };
 const transformOpts = { highWaterMark: 8192 };
@@ -267,15 +266,16 @@ asyncParser.input.push(null); // Sending `null` to a stream signal that no more 
 * `toOutput` allows you to set the output stream.
 * `promise` returns a promise that resolves when the stream ends or errors.
 
-```javascript
-const fs = require('fs');
+```js
+const { createReadStream, createWriteStream } = require('fs');
 const { AsyncParser } = require('json2csv');
+
 const fields = ['field1', 'field2', 'field3'];
 const opts = { fields };
 const transformOpts = { highWaterMark: 8192 };
 
-const input = fs.createReadStream(inputPath, { encoding: 'utf8' });
-const output = fs.createWriteStream(outputPath, { encoding: 'utf8' });
+const input = createReadStream(inputPath, { encoding: 'utf8' });
+const output = createWriteStream(outputPath, { encoding: 'utf8' });
 const asyncParser = new JSON2CSVAsyncParser(opts, transformOpts);
 asyncParser.fromInput(input).toOutput(output).promise()
   .then(csv => console.log(csv))
@@ -284,8 +284,9 @@ asyncParser.fromInput(input).toOutput(output).promise()
 
 you can also use the convenience method `parseAsync` which returns a promise.
 
-```javascript
+```js
 const { parseAsync } = require('json2csv');
+
 const fields = ['field1', 'field2', 'field3'];
 const opts = { fields };
 
@@ -298,17 +299,17 @@ parseAsync(myData, opts)
 
 json2csv also exposes the raw stream transform so you can pipe your json content into it. This is the same Transform that `AsyncParser` uses under the hood.
 
-```javascript
-const fs = require('fs');
-const Json2csvTransform = require('json2csv').Transform;
+```js
+const { createReadStream, createWriteStream } = require('fs');
+const { Transform } = require('json2csv');
 
 const fields = ['field1', 'field2', 'field3'];
 const opts = { fields };
 const transformOpts = { highWaterMark: 16384, encoding: 'utf-8' };
 
-const input = fs.createReadStream(inputPath, { encoding: 'utf8' });
-const output = fs.createWriteStream(outputPath, { encoding: 'utf8' });
-const json2csv = new Json2csvTransform(opts, transformOpts);
+const input = createReadStream(inputPath, { encoding: 'utf8' });
+const output = createWriteStream(outputPath, { encoding: 'utf8' });
+const json2csv = new Transform(opts, transformOpts);
 
 const processor = input.pipe(json2csv).pipe(output);
 
@@ -321,7 +322,10 @@ json2csv
 
 The stream API can also work on object mode. This is useful when you have an input stream in object mode or if you are getting JSON objects one by one and want to convert them to CSV as they come.
 
-```javascript
+```js
+    const { Transform } = require("json2csv");
+    const { Readable } = require('stream');
+
     const input = new Readable({ objectMode: true });
     input._read = () => {};
     // myObjectEmitter is just a fake example representing anything that emit objects.
@@ -329,17 +333,19 @@ The stream API can also work on object mode. This is useful when you have an inp
     // Pushing a null close the stream
     myObjectEmitter.end(()) => input.push(null));
 
+    const output = process.stdout;
+
     const opts = {};
     const transformOpts = { objectMode: true };
 
-    const json2csv = new Json2csvTransform(opts, transformOpts);
+    const json2csv = new Transform(opts, transformOpts);
     const processor = input.pipe(json2csv).pipe(output);
 ```
 
 ### Javascript module examples
 
 #### Example `fields` option
-``` javascript
+```js
 {
   fields: [
     // Supports label -> simple path
@@ -366,8 +372,9 @@ The stream API can also work on object mode. This is useful when you have an inp
 
 #### Example 1
 
-```javascript
-const Json2csvParser = require('json2csv').Parser;
+```js
+const { Parser } = require('json2csv');
+
 const fields = ['car', 'price', 'color'];
 const myCars = [
   {
@@ -385,7 +392,7 @@ const myCars = [
   }
 ];
 
-const json2csvParser = new Json2csvParser({ fields });
+const json2csvParser = new Parser({ fields });
 const csv = json2csvParser.parse(myCars);
 
 console.log(csv);
@@ -404,11 +411,11 @@ car, price, color
 
 Similarly to [mongoexport](http://www.mongodb.org/display/DOCS/mongoexport) you can choose which fields to export.
 
-```javascript
-const Json2csvParser = require('json2csv').Parser;
+```js
+const { Parser } = require('json2csv');
 const fields = ['car', 'color'];
 
-const json2csvParser = new Json2csvParser({ fields });
+const json2csvParser = new Parser({ fields });
 const csv = json2csvParser.parse(myCars);
 
 console.log(csv);
@@ -427,8 +434,9 @@ car, color
 
 You can choose custom column names for the exported file.
 
-```javascript
-const Json2csvParser = require('json2csv').Parser;
+```js
+const { Parser } = require('json2csv');
+
 const fields = [{
   label: 'Car Name',
   value: 'car'
@@ -437,7 +445,7 @@ const fields = [{
   value: 'price'
 }];
 
-const json2csvParser = new Json2csvParser({ fields });
+const json2csvParser = new Parser({ fields });
 const csv = json2csvParser.parse(myCars);
 
 console.log(csv);
@@ -447,8 +455,9 @@ console.log(csv);
 
 You can also specify nested properties using dot notation.
 
-```javascript
-const Json2csvParser = require('json2csv').Parser;
+```js
+const { Parser } = require('json2csv');
+
 const fields = ['car.make', 'car.model', 'price', 'color'];
 const myCars = [
   {
@@ -466,7 +475,7 @@ const myCars = [
   }
 ];
 
-const json2csvParser = new Json2csvParser({ fields });
+const json2csvParser = new Parser({ fields });
 const csv = json2csvParser.parse(myCars);
 
 console.log(csv);
@@ -485,11 +494,12 @@ car.make, car.model, price, color
 
 Use a custom delimiter to create tsv files using the delimiter option:
 
-```javascript
-const Json2csvParser = require('json2csv').Parser;
+```js
+const { Parser } = require('json2csv');
+
 const fields = ['car', 'price', 'color'];
 
-const json2csvParser = new Json2csvParser({ fields, delimiter: '\t' });
+const json2csvParser = new Parser({ fields, delimiter: '\t' });
 const tsv = json2csvParser.parse(myCars);
 
 console.log(tsv);
@@ -511,8 +521,9 @@ If no delimiter is specified, the default `,` is used
 
 You can choose custom quotation marks.
 
-```javascript
-const Json2csvParser = require('json2csv').Parser;
+```js
+const { Parser } = require('json2csv');
+
 const fields = [{
   label: 'Car Name',
   value: 'car'
@@ -521,7 +532,7 @@ const fields = [{
   value: 'price'
 }];
 
-const json2csvParser = new Json2csvParser({ fields, quote: '' });
+const json2csvParser = new Parser({ fields, quote: '' });
 const csv = json2csvParser.parse(myCars);
 
 console.log(csv);
@@ -540,8 +551,9 @@ Porsche, 30000
 
 You can unwind arrays similar to MongoDB's $unwind operation using the `unwind` option.
 
-```javascript
-const Json2csvParser = require('json2csv').Parser;
+```js
+const { Parser } = require('json2csv');
+
 const fields = ['carModel', 'price', 'colors'];
 const myCars = [
   {
@@ -563,7 +575,7 @@ const myCars = [
   }
 ];
 
-const json2csvParser = new Json2csvParser({ fields, unwind: 'colors' });
+const json2csvParser = new Parser({ fields, unwind: 'colors' });
 const csv = json2csvParser.parse(myCars);
 
 console.log(csv);
@@ -588,8 +600,9 @@ will output to console
 
 You can also unwind arrays multiple times or with nested objects.
 
-```javascript
-const Json2csvParser = require('json2csv').Parser;
+```js
+const { Parser } = require('json2csv');
+
 const fields = ['carModel', 'price', 'items.name', 'items.color', 'items.items.position', 'items.items.color'];
 const myCars = [
   {
@@ -635,7 +648,7 @@ const myCars = [
   }
 ];
 
-const json2csvParser = new Json2csvParser({ fields, unwind: ['items', 'items.items'] });
+const json2csvParser = new Parser({ fields, unwind: ['items', 'items.items'] });
 const csv = json2csvParser.parse(myCars);
 
 console.log(csv);
@@ -657,8 +670,9 @@ will output to console
 
 You can also unwind arrays blanking the repeated fields.
 
-```javascript
-const Json2csvParser = require('json2csv').Parser;
+```js
+const { Parser } = require('json2csv');
+
 const fields = ['carModel', 'price', 'items.name', 'items.color', 'items.items.position', 'items.items.color'];
 const myCars = [
   {
@@ -704,7 +718,7 @@ const myCars = [
   }
 ];
 
-const json2csvParser = new Json2csvParser({ fields, unwind: ['items', 'items.items'], unwindBlank: true });
+const json2csvParser = new Parser({ fields, unwind: ['items', 'items.items'], unwindBlank: true });
 const csv = json2csvParser.parse(myCars);
 
 console.log(csv);
@@ -725,20 +739,20 @@ will output to console
 ### Migrating from 3.X to 4.X
 
 What in 3.X used to be
-```
+```js
 const json2csv = require('json2csv');
 const csv = json2csv({ data: myData, fields: myFields, unwindPath: paths, ... });
 ```
 
 can be replaced by
-```
+```js
 const Json2csvParser = require('json2csv').Parser;
 const json2csvParser = new Json2csvParser({ fields: myFields, unwind: paths, ... });
 const csv = json2csvParser.parse(myData);
 ```
 
 or the convenience method
-```
+```js
 const json2csv = require('json2csv');
 const csv = json2csv.parse(myData, { fields: myFields, unwind: paths, ... });
 ```
@@ -746,23 +760,59 @@ const csv = json2csv.parse(myData, { fields: myFields, unwind: paths, ... });
 Please note that many of the configuration parameters have been slightly renamed. Please check one by one that all your parameters are correct.
 You can se the documentation for json2csv 3.11.5 [here](https://github.com/zemirco/json2csv/blob/v3.11.5/README.md).
 
+## Known Gotchas
+
+### Excel support
+
+#### Avoiding excel autoformatting
+
+Excel tries to automatically detect the format of every field (number, date, string, etc.) regardless of whether the field is quoted or not.
+
+This might produce few undesired effects with, for example, serial numbers:
+- Large numbers are displayed using scientific notation
+- Leading zeros are stripped.
+
+The `excelString` option produces a Excel-specific CSV file that forces Excel to interpret string fields as strings. Please note that the CSV will look incorrect if viewing it somewhere else than Excel.
+
+#### Preserving new lines
+
+Excel only recognize `\r\n` as valid new line inside a cell.
+
+#### Unicode Support
+
+Excel can display Unicode correctly (just setting the `withBOM` option to true). However, Excel can't save unicode so, if you do changes to the CSV and save it from Excel, the Unicode character will not be displayed correctly.
+
+
+### PowerShell escaping
+
+PowerShell do some estrange double quote escaping escaping which results on each line of the CSV missing the first and last quote if outputting the result directly to stdout. Instead of that, it's advisable that you write the result directly to a file.
+
 ## Building
 
-When developing, it's necessary to run `webpack` to prepare the built script. This can be done easily with `npm run build`.
+json2csv is packaged using `rollup`. You can generate the packages running:
 
-If `webpack` is not already available from the command line, use `npm install -g webpack`.
+```sh
+npm run build
+```
+which generates 3 files under the `dist folder`:
+
+* `json2csv.umd.js` UMD module transpiled to ES5
+* `json2csv.esm.js` ES5 module (import/export)
+* `json2csv.cjs.js` CommonJS module
+
+When you use packaging tools like webpack and such, they know which version to use depending on your configuration.
 
 ## Testing
 
 Run the folowing command to check the code style.
 
-```bash
+```sh
 $ npm run lint
 ```
 
 Run the following command to run the tests and return coverage
 
-```bash
+```sh
 $ npm run test-with-coverage
 ```
 
@@ -770,15 +820,11 @@ $ npm run test-with-coverage
 
 After you clone the repository you just need to install the required packages for development by runnning following command under json2csv dir.
 
-```bash
+```sh
 $ npm install
 ```
 
 Before making any pull request please ensure sure that your code is formatted, test are passing and test coverage haven't decreased. (See [Testing](#testing))
-
-## Similar Projects
-
-* [Papa Parse](http://papaparse.com/)
 
 ## License
 
