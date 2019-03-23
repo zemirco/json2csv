@@ -429,6 +429,17 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
       });
   });
 
+  testRunner.add('should not escape \'"\' when setting \'quote\' set to something else', (t) => {
+    const opts = ' --quote "\'"';
+
+    child_process.exec(cli + '-i ' + getFixturePath('/json/doubleQuotes.json') + opts, (err, stdout, stderr) => {
+      t.notOk(stderr); 
+      const csv = stdout;
+        t.equal(csv, csvFixtures.doubleQuotesUnescaped);
+        t.end();
+      });
+  });
+
   // Double Quote
 
   testRunner.add('should escape quotes with double quotes', (t) => {

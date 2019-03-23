@@ -819,6 +819,27 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       });
   });
 
+  testRunner.add('should not escape \'"\' when setting \'quote\' set to something else', (t) => {
+    const opts = {
+      quote: '\''
+    };
+
+    const transform = new Json2csvTransform(opts);
+    const processor = jsonFixtures.doubleQuotes().pipe(transform);
+
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.equal(csv, csvFixtures.doubleQuotesUnescaped);
+        t.end();
+      })
+      .on('error', err => {
+        t.notOk(true, err.message)
+        t.end();  
+      });
+  });
+
   // Double Quote
 
   testRunner.add('should escape quotes with double quotes', (t) => {
