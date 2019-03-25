@@ -46,6 +46,11 @@
                 "id": "json2csv-parser-(synchronous-api)"
               },
               {
+                "title": "json2csv async parser (Streaming API)",
+                "depth": 3,
+                "id": "json2csv-async-parser-(streaming-api)"
+              },
+              {
                 "title": "json2csv transform (Streaming API)",
                 "depth": 3,
                 "id": "json2csv-transform-(streaming-api)"
@@ -63,6 +68,23 @@
             ]
           },
           {
+            "title": "Known Gotchas",
+            "depth": 2,
+            "id": "known-gotchas",
+            "headings": [
+              {
+                "title": "Excel support",
+                "depth": 3,
+                "id": "excel-support"
+              },
+              {
+                "title": "PowerShell escaping",
+                "depth": 3,
+                "id": "powershell-escaping"
+              }
+            ]
+          },
+          {
             "title": "Building",
             "depth": 2,
             "id": "building"
@@ -76,11 +98,6 @@
             "title": "Contributors",
             "depth": 2,
             "id": "contributors"
-          },
-          {
-            "title": "Similar Projects",
-            "depth": 2,
-            "id": "similar-projects"
           },
           {
             "title": "License",
@@ -136,6 +153,11 @@
               "id": "json2csv-parser-(synchronous-api)"
             },
             {
+              "title": "json2csv async parser (Streaming API)",
+              "depth": 3,
+              "id": "json2csv-async-parser-(streaming-api)"
+            },
+            {
               "title": "json2csv transform (Streaming API)",
               "depth": 3,
               "id": "json2csv-transform-(streaming-api)"
@@ -153,6 +175,23 @@
           ]
         },
         {
+          "title": "Known Gotchas",
+          "depth": 2,
+          "id": "known-gotchas",
+          "headings": [
+            {
+              "title": "Excel support",
+              "depth": 3,
+              "id": "excel-support"
+            },
+            {
+              "title": "PowerShell escaping",
+              "depth": 3,
+              "id": "powershell-escaping"
+            }
+          ]
+        },
+        {
           "title": "Building",
           "depth": 2,
           "id": "building"
@@ -166,11 +205,6 @@
           "title": "Contributors",
           "depth": 2,
           "id": "contributors"
-        },
-        {
-          "title": "Similar Projects",
-          "depth": 2,
-          "id": "similar-projects"
         },
         {
           "title": "License",
