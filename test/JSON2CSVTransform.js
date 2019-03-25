@@ -13,7 +13,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const opts = {
       fields: ['carModel', 'price', 'color', 'transmission']
     };
-    const transformOpts = { readableObjectMode: true, writableObjectMode: true };
+    const transformOpts = { objectMode: true };
 
     const transform = new Json2csvTransform(opts, transformOpts);
     const processor = input.pipe(transform);
