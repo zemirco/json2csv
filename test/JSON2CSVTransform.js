@@ -838,7 +838,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       });
   });
 
-  testRunner.add('should not escape quotes with double quotes, when there is a backslah in the end', (t) => {
+  testRunner.add('should not escape quotes with double quotes, when there is a backslash in the end', (t) => {
     const transform = new Json2csvTransform();
     const processor = jsonFixtures.backslashAtEnd().pipe(transform);
 
@@ -855,7 +855,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       });
   });
 
-  testRunner.add('should not escape quotes with double quotes, when there is a backslah in the end, and its not the last column', (t) => {
+  testRunner.add('should not escape quotes with double quotes, when there is a backslash in the end, and its not the last column', (t) => {
     const transform = new Json2csvTransform();
     const processor = jsonFixtures.backslashAtEndInMiddleColumn().pipe(transform);
 

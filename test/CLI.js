@@ -440,7 +440,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     });
   });
 
-  testRunner.add('should not escape quotes with double quotes, when there is a backslah in the end', (t) => {
+  testRunner.add('should not escape quotes with double quotes, when there is a backslash in the end', (t) => {
     child_process.exec(cli + '-i ' + getFixturePath('/json/backslashAtEnd.json'), (err, stdout, stderr) => {
       t.notOk(stderr); 
       const csv = stdout;
@@ -449,7 +449,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     });
   });
 
-  testRunner.add('should not escape quotes with double quotes, when there is a backslah in the end, and its not the last column', (t) => {
+  testRunner.add('should not escape quotes with double quotes, when there is a backslash in the end, and its not the last column', (t) => {
     child_process.exec(cli + '-i ' + getFixturePath('/json/backslashAtEndInMiddleColumn.json'), (err, stdout, stderr) => {
       t.notOk(stderr); 
       const csv = stdout;
