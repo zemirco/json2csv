@@ -2,21 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-# [4.4.0](https://github.com/zemirco/json2csv/compare/v4.3.5...v4.4.0) (2019-03-25)
+## [4.4.1](https://github.com/zemirco/json2csv/compare/v4.4.0...v4.4.1) (2019-03-26)
 
 
 ### Bug Fixes
 
-* audit deps ([3b1ba07](https://github.com/zemirco/json2csv/commit/3b1ba07))
-* backslash type ([#369](https://github.com/zemirco/json2csv/issues/369)) ([389891a](https://github.com/zemirco/json2csv/commit/389891a))
-* objectMode example typo in README.md ([#364](https://github.com/zemirco/json2csv/issues/364)) ([28f8f5d](https://github.com/zemirco/json2csv/commit/28f8f5d))
-* Simplify object mode test ([#370](https://github.com/zemirco/json2csv/issues/370)) ([29bbad1](https://github.com/zemirco/json2csv/commit/29bbad1))
-* typo in fixture name ([#371](https://github.com/zemirco/json2csv/issues/371)) ([9eebf40](https://github.com/zemirco/json2csv/commit/9eebf40))
-
-
-### Features
-
-* Performance improvements and new async api ([#360](https://github.com/zemirco/json2csv/issues/360)) ([d59dea1](https://github.com/zemirco/json2csv/commit/d59dea1))
+* quote escaping so double quotes are only escape when they are the actual quote mark ([#372](https://github.com/zemirco/json2csv/issues/372)) ([0168790](https://github.com/zemirco/json2csv/commit/0168790))
 
 
 
