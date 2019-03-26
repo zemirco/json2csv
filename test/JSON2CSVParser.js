@@ -507,6 +507,18 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     t.end();
   });
 
+  testRunner.add('should not escape \'"\' when setting \'quote\' set to something else', (t) => {
+    const opts = {
+      quote: '\''
+    };
+
+    const parser = new Json2csvParser(opts);
+    const csv = parser.parse(jsonFixtures.doubleQuotes);
+
+    t.equal(csv, csvFixtures.doubleQuotesUnescaped);
+    t.end();
+  });
+
   // Double Quote
 
   testRunner.add('should escape quotes with double quotes', (t) => {
