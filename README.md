@@ -280,7 +280,7 @@ asyncParser.fromInput(input).toOutput(output).promise()
   .catch(err => console.error(err));;
 ```
 
-you can also use the convenience method `parseAsync` which returns a promise.
+you can also use the convenience method `parseAsync` which accept both JSON arrays/objects and readable streams and returns a promise.
 
 ```js
 const { parseAsync } = require('json2csv');
