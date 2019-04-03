@@ -745,8 +745,8 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     parser.fromInput(jsonFixtures.escapeEOL()).promise()
       .then(csv => t.equal(csv, [
       '"a string"',
-      '"with a \ndescription\\n and\na new line"',
-      '"with a \r\ndescription and\r\nanother new line"'
+      '"with a \u2028description\\n and\na new line"',
+      '"with a \u2029\u2028description and\r\nanother new line"'
     ].join('\r\n')))
       .catch(err => t.notOk(true, err.message))
       .then(() => t.end());
