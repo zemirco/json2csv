@@ -240,7 +240,7 @@ const fields = ['field1', 'field2', 'field3'];
 const opts = { fields };
 const transformOpts = { highWaterMark: 8192 };
 
-const asyncParser = new JSON2CSVAsyncParser(opts, transformOpts);
+const asyncParser = new AsyncParser(opts, transformOpts);
 
 let csv = '';
 asyncParser.processor
