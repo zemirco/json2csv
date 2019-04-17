@@ -2,12 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## [4.4.1](https://github.com/zemirco/json2csv/compare/v4.4.0...v4.4.1) (2019-03-26)
+# [4.5.0](https://github.com/zemirco/json2csv/compare/v4.4.1...v4.5.0) (2019-04-17)
 
 
 ### Bug Fixes
 
-* quote escaping so double quotes are only escape when they are the actual quote mark ([#372](https://github.com/zemirco/json2csv/issues/372)) ([0168790](https://github.com/zemirco/json2csv/commit/0168790))
+* Performance improvements. ([#378](https://github.com/zemirco/json2csv/issues/378)) ([1f91351](https://github.com/zemirco/json2csv/commit/1f91351))
+
+
+### Features
+
+* Add support for JSON and Streams on the parseAsync method ([#377](https://github.com/zemirco/json2csv/issues/377)) ([de296d3](https://github.com/zemirco/json2csv/commit/de296d3))
 
 
 
