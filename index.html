@@ -248,7 +248,7 @@ $ json2csv -i test.json -f name,version --no-header &gt;&gt; test.csv
 <span class="pl-k">const</span> opts = { fields };
 <span class="pl-k">const</span> transformOpts = { <span class="hljs-attr">highWaterMark</span>: <span class="hljs-number">8192</span> };
 
-<span class="pl-k">const</span> asyncParser = <span class="pl-k">new</span> JSON2CSVAsyncParser(opts, transformOpts);
+<span class="pl-k">const</span> asyncParser = <span class="pl-k">new</span> AsyncParser(opts, transformOpts);
 
 <span class="pl-k">let</span> csv = <span class="pl-s">&apos;&apos;</span>;
 asyncParser.processor
@@ -286,7 +286,7 @@ asyncParser.fromInput(input).toOutput(output).promise()
   .then(<span class="hljs-function"><span class="hljs-params">csv</span> =&gt;</span> <span class="pl-c1">console</span>.log(csv))
   .catch(<span class="hljs-function"><span class="hljs-params">err</span> =&gt;</span> <span class="pl-c1">console</span>.error(err));;
 </code></pre>
-<p>you can also use the convenience method <code>parseAsync</code> which returns a promise.</p>
+<p>you can also use the convenience method <code>parseAsync</code> which accept both JSON arrays/objects and readable streams and returns a promise.</p>
 <pre><code class="lang-js"><span class="pl-k">const</span> { parseAsync } = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>);
 
 <span class="pl-k">const</span> fields = [<span class="pl-s">&apos;field1&apos;</span>, <span class="pl-s">&apos;field2&apos;</span>, <span class="pl-s">&apos;field3&apos;</span>];
