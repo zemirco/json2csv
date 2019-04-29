@@ -826,5 +826,15 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
       t.end();
     });
   });
-};
 
+  testRunner.add('should print pretty table without rows', (t) => {
+    const opts = ' --fields fieldA,fieldB,fieldC --pretty';
+
+    child_process.exec(cli + '-i ' + getFixturePath('/json/default.json') + opts, (err, stdout, stderr) => {
+      t.notOk(stderr);
+      const csv = stdout;
+      t.equal(csv, csvFixtures.prettyprintWithoutRows);
+      t.end();
+    });
+  });
+};

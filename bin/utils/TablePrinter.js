@@ -13,9 +13,7 @@ class TablePrinter {
 
     if (!lines.length) return;
 
-    if (!this._hasWritten) {
-      this.setColumnWidths(lines[0]);
-    }
+    if (!this._hasWritten) this.setColumnWidths(lines[0]);
 
     const top = this._hasWritten ? this.middleLine : this.topLine;
     this.print(top, lines);
@@ -23,16 +21,14 @@ class TablePrinter {
   }
 
   end(csv) {
-    const lines = csv.split(this.opts.eol);
-    this.print(this.middleLine, lines, this.bottomLine);
+    let lines = csv.split(this.opts.eol);
+    if (!this._hasWritten) this.setColumnWidths(lines[0]);
+    const top = this._hasWritten ? this.middleLine : this.topLine;
+    this.print(top, lines, this.bottomLine);
   }
 
   printCSV(csv) {
-    let lines = csv.split(this.opts.eol);
-
-    this.setColumnWidths(lines[0]);
-
-    this.print(this.topLine, lines, this.bottomLine);
+    this.end(csv);
   }
 
   setColumnWidths(line) {
