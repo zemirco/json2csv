@@ -2,17 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-# [4.5.0](https://github.com/zemirco/json2csv/compare/v4.4.1...v4.5.0) (2019-04-17)
+## [4.5.1](https://github.com/zemirco/json2csv/compare/v4.5.0...v4.5.1) (2019-04-30)
 
 
 ### Bug Fixes
 
-* Performance improvements. ([#378](https://github.com/zemirco/json2csv/issues/378)) ([1f91351](https://github.com/zemirco/json2csv/commit/1f91351))
-
-
-### Features
-
-* Add support for JSON and Streams on the parseAsync method ([#377](https://github.com/zemirco/json2csv/issues/377)) ([de296d3](https://github.com/zemirco/json2csv/commit/de296d3))
+* pretty print when there is no rows ([#390](https://github.com/zemirco/json2csv/issues/390)) ([a20ddfc](https://github.com/zemirco/json2csv/commit/a20ddfc))
 
 
 
