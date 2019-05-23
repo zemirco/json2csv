@@ -9,6 +9,13 @@ All notable changes to this project will be documented in this file. See [standa
 
 * pretty print when there is no rows ([#390](https://github.com/zemirco/json2csv/issues/390)) ([a20ddfc](https://github.com/zemirco/json2csv/commit/a20ddfc))
 
+<a name="4.4.0"></a>
+## [4.4.0](https://github.com/zemirco/json2csv/compare/v4.3.5...v4.4.0) (2019-03-25)
+
+
+### Features
+
+* Performance improvements and new async api ([#360](https://github.com/zemirco/json2csv/issues/360)) ([d59dea1](https://github.com/zemirco/json2csv/commit/d59dea1))
 
 
 <a name="4.3.5"></a>
