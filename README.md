@@ -84,6 +84,8 @@ Use `-p` to show the result as a table in the console.
 
 ### CLI examples
 
+All examples use this example [input file](./test/fixtures/json/default.json).
+
 #### Input file and specify fields
 
 ```sh
