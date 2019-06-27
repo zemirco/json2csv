@@ -222,7 +222,7 @@ Both of the methods above load the entire JSON in memory and do the whole proces
 
 ### json2csv async parser (Streaming API)
 
-The synchronous API has the downside of loading the entire JSON array in memory and blocking javascript's event loop while processing the data. This means that you server won't be able to process more request or your UI will become irresponsive while data is being processed. For those reasons, is rarely a good reason to use it unless your data is very small or your application doesn't do anything else.
+The synchronous API has the downside of loading the entire JSON array in memory and blocking javascript's event loop while processing the data. This means that your server won't be able to process more request or your UI will become irresponsive while data is being processed. For those reasons, is rarely a good reason to use it unless your data is very small or your application doesn't do anything else.
 
 The async parser process the data as a non-blocking stream. This approach ensures a consistent memory footprint and avoid blocking javascript's event loop. Thus, it's better suited for large datasets or system with high concurrency. 
 
