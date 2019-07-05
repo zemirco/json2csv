@@ -133,6 +133,7 @@ If no output <code>-o</code> is specified the result is printed to the console s
 If no fields <code>-f</code> or <code>-c</code> are passed the fields of the first element are used since json2csv CLI process the items one at a time. You can use the <code>--no-streaming</code> flag to load the entire JSON in memory and get all the headers. However, keep in mind that this is slower and requires much more memory.
 Use <code>-p</code> to show the result as a table in the console.</p>
 <h3 id="cli-examples">CLI examples</h3>
+<p>All examples use this example <a href="https://github.com/zemirco/json2csv/blob/master/test/fixtures/json/default.json">input file</a>.</p>
 <h4 id="input-file-and-specify-fields">Input file and specify fields</h4>
 <pre><code class="lang-sh">$ json2csv -i input.json -f carModel,price,color
 carModel,price,color
@@ -232,7 +233,7 @@ $ json2csv -i test.json -f name,version --no-header &gt;&gt; test.csv
 </code></pre>
 <p>Both of the methods above load the entire JSON in memory and do the whole processing in-memory while blocking Javascript event loop. For that reason is rarely a good reason to use it until your data is very small or your application doesn&apos;t do anything else.</p>
 <h3 id="json2csv-async-parser-(streaming-api)">json2csv async parser (Streaming API)</h3>
-<p>The synchronous API has the downside of loading the entire JSON array in memory and blocking javascript&apos;s event loop while processing the data. This means that you server won&apos;t be able to process more request or your UI will become irresponsive while data is being processed. For those reasons, is rarely a good reason to use it unless your data is very small or your application doesn&apos;t do anything else.</p>
+<p>The synchronous API has the downside of loading the entire JSON array in memory and blocking javascript&apos;s event loop while processing the data. This means that your server won&apos;t be able to process more request or your UI will become irresponsive while data is being processed. For those reasons, is rarely a good reason to use it unless your data is very small or your application doesn&apos;t do anything else.</p>
 <p>The async parser process the data as a non-blocking stream. This approach ensures a consistent memory footprint and avoid blocking javascript&apos;s event loop. Thus, it&apos;s better suited for large datasets or system with high concurrency.</p>
 <p>One very important difference between the asynchronous and the synchronous APIs is that using the asynchronous API json objects are processed one by one. In practice, this means that only the fields in the first object of the array are automatically detected and other fields are just ignored. To avoid this, it&apos;s advisable to ensure that all the objects contain exactly the same fields or provide the list of fields using the <code>fields</code> option.</p>
 <p>The async API uses takes a second options arguments that&apos;s directly passed to the underlying streams and accept the same options as the standard <a href="https://nodejs.org/api/stream.html#stream_new_stream_duplex_options">Node.js streams</a>.</p>
@@ -340,24 +341,34 @@ json2csv
 <h4 id="example-fields-option">Example <code>fields</code> option</h4>
 <pre><code class="lang-js">{
   <span class="hljs-attr">fields</span>: [
+    <span class="pl-c">// Supports pathname -&gt; pathvalue</span>
+    <span class="pl-s">&apos;simplepath&apos;</span>, <span class="pl-c">// equivalent to {value:&apos;simplepath&apos;}</span>
+    <span class="pl-s">&apos;path.to.value&apos;</span> <span class="pl-c">// also equivalent to {value:&apos;path.to.value&apos;}</span>
+
     <span class="pl-c">// Supports label -&gt; simple path</span>
     {
-      <span class="hljs-attr">label</span>: <span class="pl-s">&apos;some label&apos;</span>, <span class="pl-c">// (optional, column will be labeled &apos;path.to.something&apos; if not defined)</span>
+      <span class="hljs-attr">label</span>: <span class="pl-s">&apos;some label&apos;</span>, <span class="pl-c">// Optional, column will be labeled &apos;path.to.something&apos; if not defined)</span>
       value: <span class="pl-s">&apos;path.to.something&apos;</span>, <span class="pl-c">// data.path.to.something</span>
-      <span class="pl-k">default</span>: <span class="pl-s">&apos;NULL&apos;</span> <span class="pl-c">// default if value is not found (optional, overrides `defaultValue` for column)</span>
+      <span class="pl-k">default</span>: <span class="pl-s">&apos;NULL&apos;</span> <span class="pl-c">// default if value is not found (Optional, overrides `defaultValue` for column)</span>
     },
 
     <span class="pl-c">// Supports label -&gt; derived value</span>
     {
-      <span class="hljs-attr">label</span>: <span class="pl-s">&apos;some label&apos;</span>, <span class="pl-c">// Supports duplicate labels (required, else your column will be labeled [function])</span>
-      value: <span class="hljs-function">(<span class="hljs-params">row, field</span>) =&gt;</span> row.path1 + row.path2, <span class="pl-c">// field = { label, default }</span>
-      <span class="pl-k">default</span>: <span class="pl-s">&apos;NULL&apos;</span>, <span class="pl-c">// default if value function returns null or undefined</span>
-      stringify: <span class="pl-c1">true</span> <span class="pl-c">// If value is function use this flag to signal if resulting string will be quoted (stringified) or not (optional, default: true)</span>
+      <span class="hljs-attr">label</span>: <span class="pl-s">&apos;some label&apos;</span>, <span class="pl-c">// Optional, column will be labeled with the function name or empty if the function is anonymous</span>
+      value: <span class="hljs-function">(<span class="hljs-params">row, field</span>) =&gt;</span> row[field.label].toLowerCase() ||field.default,
+      <span class="hljs-attr">default</span>: <span class="pl-s">&apos;NULL&apos;</span>, <span class="pl-c">// default if value function returns null or undefined</span>
     },
 
-    <span class="pl-c">// Support pathname -&gt; pathvalue</span>
-    <span class="pl-s">&apos;simplepath&apos;</span>, <span class="pl-c">// equivalent to {value:&apos;simplepath&apos;}</span>
-    <span class="pl-s">&apos;path.to.value&apos;</span> <span class="pl-c">// also equivalent to {value:&apos;path.to.value&apos;}</span>
+    <span class="pl-c">// Supports label -&gt; derived value</span>
+    {
+      <span class="hljs-attr">value</span>: <span class="hljs-function">(<span class="hljs-params">row</span>) =&gt;</span> row.arrayField.join(<span class="pl-s">&apos;,&apos;</span>)
+    },
+
+    <span class="pl-c">// Supports label -&gt; derived value</span>
+    {
+      <span class="hljs-attr">value</span>: <span class="hljs-function">(<span class="hljs-params">row</span>) =&gt;</span> <span class="pl-s">`&quot;<span class="hljs-subst">${row.arrayField.join(<span class="pl-s">&apos;,&apos;</span>)}</span>&quot;`</span>,
+      <span class="hljs-attr">stringify</span>: <span class="pl-c1">false</span> <span class="pl-c">// This flag signals if the resulting string should be quoted (stringified) or not (optional, default: true)</span>
+    },
   ]
 }
 </code></pre>
