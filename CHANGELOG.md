@@ -2,12 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## [4.5.1](https://github.com/zemirco/json2csv/compare/v4.5.0...v4.5.1) (2019-04-30)
+## [4.5.2](https://github.com/zemirco/json2csv/compare/v4.5.1...v4.5.2) (2019-07-05)
 
 
 ### Bug Fixes
 
-* pretty print when there is no rows ([#390](https://github.com/zemirco/json2csv/issues/390)) ([a20ddfc](https://github.com/zemirco/json2csv/commit/a20ddfc))
+* Improve the inference of the header name when using function as value ([#395](https://github.com/zemirco/json2csv/issues/395)) ([590d19a](https://github.com/zemirco/json2csv/commit/590d19a))
+
+
 
 <a name="4.4.0"></a>
 ## [4.4.0](https://github.com/zemirco/json2csv/compare/v4.3.5...v4.4.0) (2019-03-25)
