@@ -1,7 +1,9 @@
-[{
-  "label": "Car Model",
-  "value": "carModel"
-},{
-  "label": "Price USD",
-  "value": "price"
-}]
+{
+  "fields": [{
+    "label": "Car Model",
+    "value": "carModel"
+  },{
+    "label": "Price USD",
+    "value": "price"
+  }]
+}

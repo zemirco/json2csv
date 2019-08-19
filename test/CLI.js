@@ -168,10 +168,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   // });
 
   testRunner.add('should error on invalid fields config file path', (t) => {
-    const opts = ' --fields-config ' + getFixturePath('/fields2/fieldNames.json');
+    const opts = ' --config ' + getFixturePath('/fields2/fieldNames.json');
 
     child_process.exec(cli + '-i ' + getFixturePath('/json/default.json') + opts, (err, stdout, stderr) => {
-      t.ok(stderr.includes('Invalid fields config file.'));
+      t.ok(stderr.indexOf('Invalid config file.') !== -1);
       t.end();
     });
   });
@@ -221,7 +221,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   });
 
   testRunner.add('should name columns as specified in \'fields\' property', (t) => {
-    const opts = ' --fields-config ' + getFixturePath('/fields/fieldNames.json');
+    const opts = ' --config ' + getFixturePath('/fields/fieldNames.json');
 
     child_process.exec(cli + '-i ' + getFixturePath('/json/default.json') + opts, (err, stdout, stderr) => {
       t.notOk(stderr);
@@ -232,7 +232,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   });
 
   testRunner.add('should support nested properties selectors', (t) => {
-    const opts = ' --fields-config ' + getFixturePath('/fields/nested.json');
+    const opts = ' --config ' + getFixturePath('/fields/nested.json');
 
     child_process.exec(cli + '-i ' + getFixturePath('/json/nested.json') + opts, (err, stdout, stderr) => {
       t.notOk(stderr);
@@ -254,7 +254,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   });
 
   testRunner.add('field.value function should stringify results by default', (t) => {
-    const opts = ' --fields-config ' + getFixturePath('/fields/functionStringifyByDefault.js');
+    const opts = ' --config ' + getFixturePath('/fields/functionStringifyByDefault.js');
 
     child_process.exec(cli + '-i ' + getFixturePath('/json/functionStringifyByDefault.json') + opts, (err, stdout, stderr) => {
       t.notOk(stderr);
@@ -265,7 +265,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   });
 
   testRunner.add('field.value function should not stringify if stringify is selected to false', (t) => {
-    const opts = ' --fields-config ' + getFixturePath('/fields/functionNoStringify.js');
+    const opts = ' --config ' + getFixturePath('/fields/functionNoStringify.js');
 
     child_process.exec(cli + '-i ' + getFixturePath('/json/functionNoStringify.json') + opts, (err, stdout, stderr) => {
       t.notOk(stderr);
@@ -276,7 +276,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   });
 
   testRunner.add('should process different combinations in fields option', (t) => {
-    const opts = ' --fields-config ' + getFixturePath('/fields/fancyfields.js')
+    const opts = ' --config ' + getFixturePath('/fields/fancyfields.js')
       + ' --default-value NULL';
 
     child_process.exec(cli + '-i ' + getFixturePath('/json/fancyfields.json') + opts, (err, stdout, stderr) => {
@@ -371,7 +371,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   });
 
   testRunner.add('should override \'options.defaultValue\' with \'field.defaultValue\'', (t) => {
-    const opts = ' --fields-config ' + getFixturePath('/fields/overriddenDefaultValue.json')
+    const opts = ' --config ' + getFixturePath('/fields/overriddenDefaultValue.json')
       + ' --default-value ""';
 
     child_process.exec(cli + '-i ' + getFixturePath('/json/overriddenDefaultValue.json') + opts, (err, stdout, stderr) => {
@@ -383,7 +383,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   });
 
   testRunner.add('should use \'options.defaultValue\' when no \'field.defaultValue\'', (t) => {
-    const opts = ' --fields-config ' + getFixturePath('/fields/overriddenDefaultValue2.js')
+    const opts = ' --config ' + getFixturePath('/fields/overriddenDefaultValue2.js')
       + ' --default-value ""';
 
     child_process.exec(cli + '-i ' + getFixturePath('/json/overriddenDefaultValue.json') + opts, (err, stdout, stderr) => {
@@ -612,7 +612,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   });
 
   testRunner.add('should include empty rows when options.includeEmptyRows is true, with default values', (t) => {
-    const opts = ' --fields-config ' + getFixturePath('/fields/emptyRowDefaultValues.json')
+    const opts = ' --config ' + getFixturePath('/fields/emptyRowDefaultValues.json')
       + ' --default-value NULL'
       + ' --include-empty-rows';
 

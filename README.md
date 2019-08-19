@@ -50,17 +50,19 @@ By default, the above script will get the latest release of json2csv. You can al
 
 `json2csv` can be called from the command line if installed globally (using the `-g` flag).
 
-```sh
+```bash
 Usage: json2csv [options]
 
+
 Options:
+
   -V, --version                        output the version number
+  -c, --config <path>                  Specify a file with a valid JSON configuration.
   -i, --input <input>                  Path and name of the incoming json file. Defaults to stdin.
   -o, --output [output]                Path and name of the resulting csv file. Defaults to stdout.
   -n, --ndjson                         Treat the input as NewLine-Delimited JSON.
   -s, --no-streaming                   Process the whole JSON array in memory instead of doing it line by line.
   -f, --fields <fields>                List of fields to process. Defaults to field auto-detection.
-  -c, --fields-config <path>           File with a fields configuration as a JSON array.
   -u, --unwind <paths>                 Creates multiple rows from a single JSON document similar to MongoDB unwind.
   -B, --unwind-blank                   When unwinding, blank out instead of repeating data.
   -F, --flatten                        Flatten nested objects.
@@ -82,6 +84,8 @@ If no input `-i` is specified the result is expected from to the console standar
 If no output `-o` is specified the result is printed to the console standard output.
 If no fields `-f` or `-c` are passed the fields of the first element are used since json2csv CLI process the items one at a time. You can use the `--no-streaming` flag to load the entire JSON in memory and get all the headers. However, keep in mind that this is slower and requires much more memory.
 Use `-p` to show the result as a table in the console.
+
+Any option pass through a config file `-c` will be overriden if a specific flag is passed as well. For example, the fields option of the config will be overriden if the fields flag `-f` is used.
 
 ### CLI examples
 

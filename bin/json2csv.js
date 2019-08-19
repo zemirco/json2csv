@@ -18,10 +18,10 @@ program
   .version(pkg.version)
   .option('-i, --input <input>', 'Path and name of the incoming json file. Defaults to stdin.')
   .option('-o, --output [output]', 'Path and name of the resulting csv file. Defaults to stdout.')
+  .option('-c, --config <path>', 'Specify a file with a valid JSON configuration.')
   .option('-n, --ndjson', 'Treat the input as NewLine-Delimited JSON.')
   .option('-s, --no-streaming', 'Process the whole JSON array in memory instead of doing it line by line.')
   .option('-f, --fields <fields>', 'List of fields to process. Defaults to field auto-detection.')
-  .option('-c, --fields-config <path>', 'File with a fields configuration as a JSON array.')
   .option('-u, --unwind <paths>', 'Creates multiple rows from a single JSON document similar to MongoDB unwind.')
   .option('-B, --unwind-blank', 'When unwinding, blank out instead of repeating data.')
   .option('-F, --flatten', 'Flatten nested objects.')
@@ -46,8 +46,10 @@ function makePathAbsolute(filePath) {
 
 const inputPath = makePathAbsolute(program.input);
 const outputPath = makePathAbsolute(program.output);
-const fieldsConfigPath = makePathAbsolute(program.fieldsConfig);
+const configPath = makePathAbsolute(program.config);
 
+if (program.fields) program.fields = program.fields.split(',');
+if (program.unwind) program.unwind = program.unwind.split(',');
 program.delimiter = program.delimiter || ',';
 program.eol = program.eol || os.EOL;
 
@@ -59,14 +61,10 @@ process.stdout.on('error', (error) => {
   }
 });
 
-function getFields() {
-  if (fieldsConfigPath) {
-    return require(fieldsConfigPath);
-  }
-
-  return program.fields
-      ? program.fields.split(',')
-      : undefined;
+function getConfigFromFile() {
+  return configPath
+    ? require(configPath)
+    : {};
 }
 
 function getInputStream() {
@@ -152,25 +150,27 @@ function processOutput(csv) {
 
 Promise.resolve()
   .then(() => {
+    const config = Object.assign({}, getConfigFromFile(), program);
+    
     const opts = {
-      fields: getFields(),
-      unwind: program.unwind ? program.unwind.split(',') : [],
-      unwindBlank: program.unwindBlank,
-      flatten: program.flatten,
-      flattenSeparator: program.flattenSeparator,
-      defaultValue: program.defaultValue,
-      quote: program.quote,
-      doubleQuote: program.doubleQuote,
-      delimiter: program.delimiter,
-      eol: program.eol,
-      excelStrings: program.excelStrings,
-      header: program.header,
-      includeEmptyRows: program.includeEmptyRows,
-      withBOM: program.withBom
+      fields: config.fields,
+      unwind: config.unwind,
+      unwindBlank: config.unwindBlank,
+      flatten: config.flatten,
+      flattenSeparator: config.flattenSeparator,
+      defaultValue: config.defaultValue,
+      quote: config.quote,
+      doubleQuote: config.doubleQuote,
+      delimiter: config.delimiter,
+      eol: config.eol,
+      excelStrings: config.excelStrings,
+      header: config.header,
+      includeEmptyRows: config.includeEmptyRows,
+      withBOM: config.withBom
     };
 
-    if (!program.streaming) {
-      return getInput()
+    if (!config.streaming) {
+      return getInput(config.ndjson)
         .then(input => new JSON2CSVParser(opts).parse(input))
         .then(processOutput);
     }
@@ -179,7 +179,7 @@ Promise.resolve()
     const input = getInputStream();
     const stream = input.pipe(transform);
     
-    if (program.output) {
+    if (config.output) {
       const outputStream = fs.createWriteStream(outputPath, { encoding: 'utf8' });
       const output = stream.pipe(outputStream);
       return new Promise((resolve, reject) => {
@@ -190,7 +190,7 @@ Promise.resolve()
       });
     }
 
-    if (!program.pretty) {
+    if (!config.pretty) {
       const output = stream.pipe(process.stdout);
       return new Promise((resolve, reject) => {
         input.on('error', reject);
@@ -205,18 +205,17 @@ Promise.resolve()
       input.on('error', reject);
       stream.on('error', reject);
       let csv = '';
-      const table = new TablePrinter(program);
+      const table = new TablePrinter(config);
       stream
         .on('data', chunk => {
           csv += chunk.toString();
-          const index = csv.lastIndexOf(program.eol);
+          const index = csv.lastIndexOf(config.eol);
           let lines = csv.substring(0, index);
           csv = csv.substring(index + 1);
 
           if (lines) {
             table.push(lines);
           }
-
         })
         .on('end', () => {
           table.end(csv);
@@ -230,8 +229,8 @@ Promise.resolve()
       err = new Error('Invalid input file. (' + err.message + ')');
     } else if (outputPath && err.message.includes(outputPath)) {
       err = new Error('Invalid output file. (' + err.message + ')');
-    } else if (fieldsConfigPath && err.message.includes(fieldsConfigPath)) {
-      err = new Error('Invalid fields config file. (' + err.message + ')');
+    } else if (configPath && err.message.indexOf(configPath) !== -1) {
+      err = new Error('Invalid config file. (' + err.message + ')');
     }
     // eslint-disable-next-line no-console
     console.error(err);
