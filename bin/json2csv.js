@@ -6,36 +6,36 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const program = require('commander');
+const pkg = require('../package');
 const json2csv = require('../lib/json2csv');
 const parseNdJson = require('./utils/parseNdjson');
 const TablePrinter = require('./utils/TablePrinter');
-const pkg = require('../package');
 
 const JSON2CSVParser = json2csv.Parser;
 const Json2csvTransform = json2csv.Transform;
 
 program
   .version(pkg.version)
-  .option('-i, --input <input>', 'Path and name of the incoming json file. If not provided, will read from stdin.')
+  .option('-i, --input <input>', 'Path and name of the incoming json file. Defaults to stdin.')
   .option('-o, --output [output]', 'Path and name of the resulting csv file. Defaults to stdout.')
   .option('-c, --config <path>', 'Specify a file with a valid JSON configuration.')
   .option('-n, --ndjson', 'Treat the input as NewLine-Delimited JSON.')
   .option('-s, --no-streaming', 'Process the whole JSON array in memory instead of doing it line by line.')
-  .option('-f, --fields <fields>', 'Specify the fields to convert.')
+  .option('-f, --fields <fields>', 'List of fields to process. Defaults to field auto-detection.')
   .option('-u, --unwind <paths>', 'Creates multiple rows from a single JSON document similar to MongoDB unwind.')
   .option('-B, --unwind-blank', 'When unwinding, blank out instead of repeating data.')
   .option('-F, --flatten', 'Flatten nested objects.')
-  .option('-S, --flatten-separator <separator>', 'Flattened keys separator.')
-  .option('-v, --default-value [defaultValue]', 'Specify a default value other than empty string.')
-  .option('-q, --quote [value]', 'Specify an alternate quote value.')
-  .option('-Q, --double-quote [value]', 'Specify a value to replace double quote in strings.')
-  .option('-d, --delimiter [delimiter]', 'Specify a delimiter other than the default comma to use.')
-  .option('-e, --eol [value]', 'Specify an End-of-Line value for separating rows.')
-  .option('-E, --excel-strings','Converts string data into normalized Excel style data.')
+  .option('-S, --flatten-separator <separator>', 'Flattened keys separator. Defaults to \'.\'.')
+  .option('-v, --default-value [defaultValue]', 'Default value to use for missing fields.')
+  .option('-q, --quote [quote]', 'Character(s) to use as quote mark. Defaults to \'"\'.')
+  .option('-Q, --double-quote [doubleQuote]', 'Character(s) to use as a escaped quote. Defaults to a double `quote`, \'""\'.')
+  .option('-d, --delimiter [delimiter]', 'Character(s) to use as delimiter. Defaults to \',\'.')
+  .option('-e, --eol [eol]', 'Character(s) to use as End-of-Line for separating rows. Defaults to \'\\n\'.')
+  .option('-E, --excel-strings','Wraps string data to force Excel to interpret it as string even if it contains a number.')
   .option('-H, --no-header', 'Disable the column name header.')
   .option('-a, --include-empty-rows', 'Includes empty rows in the resulting CSV output.')
-  .option('-b, --with-bom', 'Includes BOM character at the beginning of the csv.')
-  .option('-p, --pretty', 'Use only when printing to console. Logs output in pretty tables.')
+  .option('-b, --with-bom', 'Includes BOM character at the beginning of the CSV.')
+  .option('-p, --pretty', 'Print output as a pretty table. Use only when printing to console.')
   .parse(process.argv);
 
 function makePathAbsolute(filePath) {
@@ -57,7 +57,7 @@ program.eol = program.eol || os.EOL;
 /* istanbul ignore next */
 process.stdout.on('error', (error) => {
   if (error.code === 'EPIPE') {
-    process.exit();
+    process.exit(1);
   }
 });
 
@@ -225,13 +225,14 @@ Promise.resolve()
     });
   })
   .catch((err) => {
-    if (inputPath && err.message.indexOf(inputPath)  !== -1) {
+    if (inputPath && err.message.includes(inputPath)) {
       err = new Error('Invalid input file. (' + err.message + ')');
-    } else if (outputPath && err.message.indexOf(outputPath) !== -1) {
+    } else if (outputPath && err.message.includes(outputPath)) {
       err = new Error('Invalid output file. (' + err.message + ')');
     } else if (configPath && err.message.indexOf(configPath) !== -1) {
       err = new Error('Invalid config file. (' + err.message + ')');
     }
     // eslint-disable-next-line no-console
     console.error(err);
+    process.exit(1);
   });

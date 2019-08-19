@@ -4,21 +4,14 @@ const json2csv = require('../lib/json2csv');
 const Json2csvParser = json2csv.Parser;
 
 module.exports = (testRunner, jsonFixtures, csvFixtures) => {
-  testRunner.add('should not modify the opts passed using parse method', (t) => {
+  testRunner.add('should parse json to csv, infer the fields automatically and not modify the opts passed using parse method', (t) => {
     const opts = {};
+
     const csv = json2csv.parse(jsonFixtures.default);
 
     t.ok(typeof csv === 'string');
     t.equal(csv, csvFixtures.default);
     t.deepEqual(opts, {});
-    t.end();
-  });
-
-  testRunner.add('should parse json to csv and infer the fields automatically using parse method', (t) => {
-    const csv = json2csv.parse(jsonFixtures.default);
-
-    t.ok(typeof csv === 'string');
-    t.equal(csv, csvFixtures.default);
     t.end();
   });
 
@@ -244,6 +237,25 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     t.end();
   });
 
+  testRunner.add('field.value function should receive a valid field object', (t) => {
+    const opts = {
+      fields: [{
+        label: 'Value1',
+        default: 'default value',
+        value: (row, field) => {
+          t.deepEqual(field, { label: 'Value1', default: 'default value' });
+          return row.value1.toLocaleString();
+        }
+      }]
+    };
+
+    const parser = new Json2csvParser(opts);
+    const csv = parser.parse(jsonFixtures.functionStringifyByDefault);
+    
+    t.equal(csv, csvFixtures.functionStringifyByDefault);
+    t.end();
+  });
+
   testRunner.add('field.value function should stringify results by default', (t) => {
     const opts = {
       fields: [{
@@ -320,8 +332,8 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
 
   testRunner.add('should support multi-level unwind', (t) => {
     const opts = {
-      fields: ['carModel', 'price', 'items.name', 'items.color', 'items.items.position', 'items.items.color'],
-      unwind: ['items', 'items.items']
+      fields: ['carModel', 'price', 'extras.items.name', 'extras.items.color', 'extras.items.items.position', 'extras.items.items.color'],
+      unwind: ['extras.items', 'extras.items.items']
     };
 
     const parser = new Json2csvParser(opts);
@@ -333,8 +345,8 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
 
   testRunner.add('should unwind and blank out repeated data', (t) => {
     const opts = {
-      fields: ['carModel', 'price', 'items.name', 'items.color', 'items.items.position', 'items.items.color'],
-      unwind: ['items', 'items.items'],
+      fields: ['carModel', 'price', 'extras.items.name', 'extras.items.color', 'extras.items.items.position', 'extras.items.items.color'],
+      unwind: ['extras.items', 'extras.items.items'],
       unwindBlank: true
     };
 
@@ -495,6 +507,18 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     t.end();
   });
 
+  testRunner.add('should not escape \'"\' when setting \'quote\' set to something else', (t) => {
+    const opts = {
+      quote: '\''
+    };
+
+    const parser = new Json2csvParser(opts);
+    const csv = parser.parse(jsonFixtures.doubleQuotes);
+
+    t.equal(csv, csvFixtures.doubleQuotesUnescaped);
+    t.end();
+  });
+
   // Double Quote
 
   testRunner.add('should escape quotes with double quotes', (t) => {
@@ -505,7 +529,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     t.end();
   });
 
-  testRunner.add('should not escape quotes with double quotes, when there is a backslah in the end', (t) => {
+  testRunner.add('should not escape quotes with double quotes, when there is a backslash in the end', (t) => {
     const parser = new Json2csvParser();
     const csv = parser.parse(jsonFixtures.backslashAtEnd);
 
@@ -513,7 +537,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     t.end();
   });
 
-  testRunner.add('should not escape quotes with double quotes, when there is a backslah in the end, and its not the last column', (t) => {
+  testRunner.add('should not escape quotes with double quotes, when there is a backslash in the end, and its not the last column', (t) => {
     const parser = new Json2csvParser();
     const csv = parser.parse(jsonFixtures.backslashAtEndInMiddleColumn);
 
@@ -633,8 +657,8 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
 
     t.equal(csv, [
       '"a string"',
-      '"with a \ndescription\\n and\na new line"',
-      '"with a \r\ndescription and\r\nanother new line"'
+      '"with a \u2028description\\n and\na new line"',
+      '"with a \u2029\u2028description and\r\nanother new line"'
     ].join('\r\n'));
     t.end();
   });

@@ -2,6 +2,77 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.5.2](https://github.com/zemirco/json2csv/compare/v4.5.1...v4.5.2) (2019-07-05)
+
+
+### Bug Fixes
+
+* Improve the inference of the header name when using function as value ([#395](https://github.com/zemirco/json2csv/issues/395)) ([590d19a](https://github.com/zemirco/json2csv/commit/590d19a))
+
+
+
+<a name="4.4.0"></a>
+## [4.4.0](https://github.com/zemirco/json2csv/compare/v4.3.5...v4.4.0) (2019-03-25)
+
+
+### Features
+
+* Performance improvements and new async api ([#360](https://github.com/zemirco/json2csv/issues/360)) ([d59dea1](https://github.com/zemirco/json2csv/commit/d59dea1))
+
+
+<a name="4.3.5"></a>
+## [4.3.5](https://github.com/zemirco/json2csv/compare/v4.3.4...v4.3.5) (2019-02-22)
+
+
+### Bug Fixes
+
+* audit deps ([3182707](https://github.com/zemirco/json2csv/commit/3182707))
+* unwind of nested fields ([#357](https://github.com/zemirco/json2csv/issues/357)) ([2d69281](https://github.com/zemirco/json2csv/commit/2d69281))
+
+
+
+<a name="4.3.4"></a>
+## [4.3.4](https://github.com/zemirco/json2csv/compare/v4.3.3...v4.3.4) (2019-02-11)
+
+
+### Bug Fixes
+
+* issue with fields.value function not receiving correct fields ([#353](https://github.com/zemirco/json2csv/issues/353)) ([851c02f](https://github.com/zemirco/json2csv/commit/851c02f))
+
+
+
+<a name="4.3.3"></a>
+## [4.3.3](https://github.com/zemirco/json2csv/compare/v4.3.2...v4.3.3) (2019-01-11)
+
+
+### Bug Fixes
+
+* audit dep fix ([1ef4bcd](https://github.com/zemirco/json2csv/commit/1ef4bcd))
+* Remove invalid reference to flat ([#347](https://github.com/zemirco/json2csv/issues/347)) ([130ef7d](https://github.com/zemirco/json2csv/commit/130ef7d))
+* Remove preferGlobal from package.json ([#346](https://github.com/zemirco/json2csv/issues/346)) ([2b6ad3a](https://github.com/zemirco/json2csv/commit/2b6ad3a))
+
+
+
+<a name="4.3.2"></a>
+## [4.3.2](https://github.com/zemirco/json2csv/compare/v4.3.1...v4.3.2) (2018-12-08)
+
+
+### Bug Fixes
+
+* Remove lodash.clonedeep dependency ([#339](https://github.com/zemirco/json2csv/issues/339)) ([d28955a](https://github.com/zemirco/json2csv/commit/d28955a)), closes [#333](https://github.com/zemirco/json2csv/issues/333)
+
+
+
+<a name="4.3.1"></a>
+## [4.3.1](https://github.com/zemirco/json2csv/compare/v4.3.0...v4.3.1) (2018-11-17)
+
+
+### Bug Fixes
+
+* Return correct exit code on error ([#337](https://github.com/zemirco/json2csv/issues/337)) ([a793de5](https://github.com/zemirco/json2csv/commit/a793de5))
+
+
+
 <a name="4.3.0"></a>
 # [4.3.0](https://github.com/zemirco/json2csv/compare/v4.2.1...v4.3.0) (2018-11-05)
 
