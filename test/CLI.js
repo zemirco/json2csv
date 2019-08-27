@@ -243,7 +243,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   });
 
   testRunner.add('field.value function should receive a valid field object', (t) => {
-    const opts = ' --fields-config ' + getFixturePath('/fields/functionWithCheck.js');
+    const opts = ' --config ' + getFixturePath('/fields/functionWithCheck.js');
 
     child_process.exec(cli + '-i ' + getFixturePath('/json/functionStringifyByDefault.json') + opts, (err, stdout, stderr) => {
       t.notOk(stderr);
