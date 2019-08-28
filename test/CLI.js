@@ -264,17 +264,6 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     });
   });
 
-  testRunner.add('field.value function should not stringify if stringify is selected to false', (t) => {
-    const opts = ' --config ' + getFixturePath('/fields/functionNoStringify.js');
-
-    child_process.exec(cli + '-i ' + getFixturePath('/json/functionNoStringify.json') + opts, (err, stdout, stderr) => {
-      t.notOk(stderr);
-      const csv = stdout;
-      t.equal(csv, csvFixtures.functionNoStringify);
-      t.end();
-    });
-  });
-
   testRunner.add('should process different combinations in fields option', (t) => {
     const opts = ' --config ' + getFixturePath('/fields/fancyfields.js')
       + ' --default-value NULL';
