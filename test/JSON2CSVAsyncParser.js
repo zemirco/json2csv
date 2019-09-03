@@ -273,7 +273,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
 
   testRunner.add('should error on invalid \'fields\' property', (t) => {
     const opts = {
-      fields: [ { value: 'price', stringify: true }, () => {} ]
+      fields: [ { value: 'price' }, () => {} ]
     };
 
     try {
@@ -293,7 +293,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
   testRunner.add('should error on invalid \'fields.value\' property', (t) => {
     const opts = {
       fields: [
-        { value: row => row.price, stringify: true }, 
+        { value: row => row.price }, 
         { label: 'Price USD', value: [] }
       ]
     };
@@ -369,22 +369,6 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
     parser.fromInput(jsonFixtures.functionStringifyByDefault()).promise()
       .then(csv => t.equal(csv, csvFixtures.functionStringifyByDefault))
-      .catch(err => t.notOk(true, err.message))
-      .then(() => t.end());
-  });
-
-  testRunner.add('field.value function should not stringify if stringify is selected to false', (t) => {
-    const opts = {
-      fields: [{
-        label: 'Value1',
-        value: row => row.value1.toLocaleString(),
-        stringify: false
-      }]
-    };
-
-    const parser = new AsyncParser(opts);
-    parser.fromInput(jsonFixtures.functionNoStringify()).promise()
-      .then(csv => t.equal(csv, csvFixtures.functionNoStringify))
       .catch(err => t.notOk(true, err.message))
       .then(() => t.end());
   });

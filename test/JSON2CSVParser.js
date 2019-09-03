@@ -177,7 +177,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
 
   testRunner.add('should error on invalid \'fields\' property', (t) => {
     const opts = {
-      fields: [ { value: 'price', stringify: true }, () => {} ]
+      fields: [ { value: 'price' }, () => {} ]
     };
 
     try {
@@ -194,7 +194,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   testRunner.add('should error on invalid \'fields.value\' property', (t) => {
     const opts = {
       fields: [
-        { value: row => row.price, stringify: true }, 
+        { value: row => row.price }, 
         { label: 'Price USD', value: [] }
       ]
     };
@@ -268,22 +268,6 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     const csv = parser.parse(jsonFixtures.functionStringifyByDefault);
     
     t.equal(csv, csvFixtures.functionStringifyByDefault);
-    t.end();
-  });
-
-  testRunner.add('field.value function should not stringify if stringify is selected to false', (t) => {
-    const opts = {
-      fields: [{
-        label: 'Value1',
-        value: row => row.value1.toLocaleString(),
-        stringify: false
-      }]
-    };
-
-    const parser = new Json2csvParser(opts);
-    const csv = parser.parse(jsonFixtures.functionNoStringify);
-
-    t.equal(csv, csvFixtures.functionNoStringify);
     t.end();
   });
 
