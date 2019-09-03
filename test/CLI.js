@@ -421,15 +421,15 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   testRunner.add('should not escape \'"\' when setting \'quote\' set to something else', (t) => {
     const opts = ' --quote "\'"';
 
-    child_process.exec(cli + '-i ' + getFixturePath('/json/doubleQuotes.json') + opts, (err, stdout, stderr) => {
+    child_process.exec(cli + '-i ' + getFixturePath('/json/escapedQuotes.json') + opts, (err, stdout, stderr) => {
       t.notOk(stderr); 
       const csv = stdout;
-        t.equal(csv, csvFixtures.doubleQuotesUnescaped);
+        t.equal(csv, csvFixtures.escapedQuotesUnescaped);
         t.end();
       });
   });
 
-  // Double Quote
+  // Escaped Quote
 
   testRunner.add('should escape quotes with double quotes', (t) => {
     child_process.exec(cli + '-i ' + getFixturePath('/json/quotes.json'), (err, stdout, stderr) => {
@@ -458,13 +458,13 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     });
   });
 
-  testRunner.add('should escape quotes with value in \'doubleQuote\'', (t) => {
-    const opts = ' --fields "a string" --double-quote "*"';
+  testRunner.add('should escape quotes with value in \'escapedQuote\'', (t) => {
+    const opts = ' --fields "a string" --escaped-quote "*"';
 
-    child_process.exec(cli + '-i ' + getFixturePath('/json/doubleQuotes.json') + opts, (err, stdout, stderr) => {
+    child_process.exec(cli + '-i ' + getFixturePath('/json/escapedQuotes.json') + opts, (err, stdout, stderr) => {
       t.notOk(stderr); 
       const csv = stdout;
-      t.equal(csv, csvFixtures.doubleQuotes);
+      t.equal(csv, csvFixtures.escapedQuotes);
       t.end();
     });
   });
@@ -533,10 +533,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   });
 
   testRunner.add('should escape " when preceeded by \\', (t) => {
-    child_process.exec(cli + '-i ' + getFixturePath('/json/escapeDoubleBackslashedDoubleQuote.json'), (err, stdout, stderr) => {
+    child_process.exec(cli + '-i ' + getFixturePath('/json/escapeDoubleBackslashedEscapedQuote.json'), (err, stdout, stderr) => {
       t.notOk(stderr); 
       const csv = stdout;
-      t.equal(csv, csvFixtures.escapeDoubleBackslashedDoubleQuote);
+      t.equal(csv, csvFixtures.escapeDoubleBackslashedEscapedQuote);
       t.end();
     });
   });

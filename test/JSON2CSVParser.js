@@ -497,13 +497,13 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     };
 
     const parser = new Json2csvParser(opts);
-    const csv = parser.parse(jsonFixtures.doubleQuotes);
+    const csv = parser.parse(jsonFixtures.escapedQuotes);
 
-    t.equal(csv, csvFixtures.doubleQuotesUnescaped);
+    t.equal(csv, csvFixtures.escapedQuotesUnescaped);
     t.end();
   });
 
-  // Double Quote
+  // Escaped Quote
 
   testRunner.add('should escape quotes with double quotes', (t) => {
     const parser = new Json2csvParser();
@@ -529,20 +529,20 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     t.end();
   });
 
-  testRunner.add('should escape quotes with value in \'doubleQuote\'', (t) => {
+  testRunner.add('should escape quotes with value in \'escapedQuote\'', (t) => {
     const opts = {
       fields: ['a string'],
-      doubleQuote: '*'
+      escapedQuote: '*'
     };
 
     const parser = new Json2csvParser(opts);
-    const csv = parser.parse(jsonFixtures.doubleQuotes);
+    const csv = parser.parse(jsonFixtures.escapedQuotes);
 
-    t.equal(csv, csvFixtures.doubleQuotes);
+    t.equal(csv, csvFixtures.escapedQuotes);
     t.end();
   });
 
-  testRunner.add('should escape quotes before new line with value in \'doubleQuote\'', (t) => {
+  testRunner.add('should escape quotes before new line with value in \'escapedQuote\'', (t) => {
     const opts = {
       fields: ['a string']
     };
@@ -625,9 +625,9 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
 
   testRunner.add('should escape " when preceeded by \\', (t) => {
     const parser = new Json2csvParser();
-    const csv = parser.parse(jsonFixtures.escapeDoubleBackslashedDoubleQuote);
+    const csv = parser.parse(jsonFixtures.escapeDoubleBackslashedEscapedQuote);
 
-    t.equal(csv, csvFixtures.escapeDoubleBackslashedDoubleQuote);
+    t.equal(csv, csvFixtures.escapeDoubleBackslashedEscapedQuote);
     t.end();
   });
 
