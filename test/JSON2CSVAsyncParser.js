@@ -955,4 +955,34 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     t.end();
   });
 
+  testRunner.add('should not return if ret option is set to false', (t) => {
+    const parser = new AsyncParser();
+    const configuredParser = parser.fromInput(jsonFixtures.default())
+    let csv = '';
+    
+    configuredParser.processor.on('data', chunk => (csv += chunk.toString()));
+
+    configuredParser.promise(false)
+      .then(res => {
+        t.equal(res, undefined);
+        t.equal(csv, csvFixtures.defaultStream);
+      })
+      .catch(err => t.notOk(true, err.message))
+      .then(() => t.end());
+  });
+
+  testRunner.add('should catch errors even if ret option is set to false', (t) => {
+    const opts = {
+      fields: ['carModel', 'price', 'color', 'transmission']
+    };
+
+    const parser = new AsyncParser(opts);
+
+    parser.fromInput(jsonFixtures.defaultInvalid()).promise(false)
+      .then(() => t.notOk(true))
+      .catch(err => t.ok(err.message.includes('Invalid JSON')))
+      .then(() => t.end());
+  });
+
+
 };
