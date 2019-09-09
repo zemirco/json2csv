@@ -269,7 +269,7 @@ asyncParser.input.push(null); // Sending `null` to a stream signal that no more 
 * `fromInput` allows you to set the input stream.
 * `throughTransform` allows you to add transforms to the stream.
 * `toOutput` allows you to set the output stream.
-* `promise` returns a promise that resolves when the stream ends or errors.
+* `promise` returns a promise that resolves when the stream ends or errors. Takes a boolean parameter to indicate if the resulting CSV should be kept in-memory and be resolved by the promise.
 
 ```js
 const { createReadStream, createWriteStream } = require('fs');
@@ -279,12 +279,23 @@ const fields = ['field1', 'field2', 'field3'];
 const opts = { fields };
 const transformOpts = { highWaterMark: 8192 };
 
+// Using the promise API
+const input = createReadStream(inputPath, { encoding: 'utf8' });
+const asyncParser = new JSON2CSVAsyncParser(opts, transformOpts);
+const parsingProcessor = asyncParser.fromInput(input);
+
+parsingProcessor.promise()
+  .then(csv => console.log(csv))
+  .catch(err => console.error(err));
+
+// Using the promise API just to know when the process finnish
+// but not actually load the CSV in memory
 const input = createReadStream(inputPath, { encoding: 'utf8' });
 const output = createWriteStream(outputPath, { encoding: 'utf8' });
 const asyncParser = new JSON2CSVAsyncParser(opts, transformOpts);
-asyncParser.fromInput(input).toOutput(output).promise()
-  .then(csv => console.log(csv))
-  .catch(err => console.error(err));;
+const parsingProcessor = asyncParser.fromInput(input).toOutput(output);
+
+parsingProcessor.promise(false).catch(err => console.error(err));
 ```
 
 you can also use the convenience method `parseAsync` which accept both JSON arrays/objects and readable streams and returns a promise.
