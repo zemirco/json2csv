@@ -19,7 +19,7 @@
   "bin": {
     "json2csv": "./bin/json2csv.js"
   },
-  "main": "dist/json2csv.cjs.js",
+  "main": "lib/json2csv.js",
   "module": "dist/json2csv.esm.js",
   "browser": "dist/json2csv.umd.js",
   "repository": {

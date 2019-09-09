@@ -30,7 +30,6 @@ export default [
   {
     input: 'lib/json2csv.js',
     output: [
-      { file: pkg.main, format: 'cjs' },
       { file: pkg.module, format: 'es' }
     ],
     external: [ 'os', 'stream' ],
