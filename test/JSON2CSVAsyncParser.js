@@ -586,13 +586,13 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     };
 
     const parser = new AsyncParser(opts);
-    parser.fromInput(jsonFixtures.doubleQuotes()).promise()
-      .then(csv => t.equal(csv, csvFixtures.doubleQuotesUnescaped))
+    parser.fromInput(jsonFixtures.escapedQuotes()).promise()
+      .then(csv => t.equal(csv, csvFixtures.escapedQuotesUnescaped))
       .catch(err => t.notOk(true, err.message))
       .then(() => t.end());
   });
 
-  // Double Quote
+  // Escaped Quote
 
   testRunner.add('should escape quotes with double quotes', (t) => {
     const parser = new AsyncParser();
@@ -618,20 +618,20 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       .then(() => t.end());
   });
 
-  testRunner.add('should escape quotes with value in \'doubleQuote\'', (t) => {
+  testRunner.add('should escape quotes with value in \'escapedQuote\'', (t) => {
     const opts = {
       fields: ['a string'],
-      doubleQuote: '*'
+      escapedQuote: '*'
     };
 
     const parser = new AsyncParser(opts);
-    parser.fromInput(jsonFixtures.doubleQuotes()).promise()
-      .then(csv => t.equal(csv, csvFixtures.doubleQuotes))
+    parser.fromInput(jsonFixtures.escapedQuotes()).promise()
+      .then(csv => t.equal(csv, csvFixtures.escapedQuotes))
       .catch(err => t.notOk(true, err.message))
       .then(() => t.end());
   });
 
-  testRunner.add('should escape quotes before new line with value in \'doubleQuote\'', (t) => {
+  testRunner.add('should escape quotes before new line with value in \'escapedQuote\'', (t) => {
     const opts = {
       fields: ['a string']
     };
@@ -714,8 +714,8 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
 
   testRunner.add('should escape " when preceeded by \\', (t) => {
     const parser = new AsyncParser();
-    parser.fromInput(jsonFixtures.escapeDoubleBackslashedDoubleQuote()).promise()
-      .then(csv => t.equal(csv, csvFixtures.escapeDoubleBackslashedDoubleQuote))
+    parser.fromInput(jsonFixtures.escapeDoubleBackslashedEscapedQuote()).promise()
+      .then(csv => t.equal(csv, csvFixtures.escapeDoubleBackslashedEscapedQuote))
       .catch(err => t.notOk(true, err.message))
       .then(() => t.end());
   });

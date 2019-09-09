@@ -69,7 +69,7 @@ Options:
   -S, --flatten-separator <separator>  Flattened keys separator. Defaults to '.'.
   -v, --default-value [defaultValue]   Default value to use for missing fields.
   -q, --quote [value]                  Character(s) to use a quote mark. Defaults to '"'.
-  -Q, --double-quote [value]           Character(s) to use as a escaped quote. Defaults to a double `quote`, '""'.
+  -Q, --escaped-quote [value]           Character(s) to use as a escaped quote. Defaults to a double `quote`, '""'.
   -d, --delimiter [delimiter]          Character(s) to use as delimiter. Defaults to ','.
   -e, --eol [value]                    Character(s) to use as End-of-Line for separating rows. Defaults to '\n'.
   -E, --excel-strings                  Wraps string data to force Excel to interpret it as string even if it contains a number.
@@ -181,7 +181,7 @@ The programatic APIs take a configuration object very equivalent to the CLI opti
 - `flattenSeparator` - String, separator to use between nested JSON keys when `flatten` option enabled. Defaults to `.` if not specified.
 - `defaultValue` - String, default value to use when missing data. Defaults to `<empty>` if not specified. (Overridden by `fields[].default`)
 - `quote` - String, quote around cell values and column names. Defaults to `"` if not specified.
-- `doubleQuote` - String, the value to replace double quote in strings. Defaults to 2x`quotes` (for example `""`) if not specified.
+- `escapedQuote` - String, the value to replace escaped quotes in strings. Defaults to 2x`quotes` (for example `""`) if not specified.
 - `delimiter` - String, delimiter of columns. Defaults to `,` if not specified.
 - `eol` - String, overrides the default OS line ending (i.e. `\n` on Unix and `\r\n` on Windows).
 - `excelStrings` - Boolean, converts string data into normalized Excel style data.

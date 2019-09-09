@@ -800,13 +800,13 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     };
 
     const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.doubleQuotes().pipe(transform);
+    const processor = jsonFixtures.escapedQuotes().pipe(transform);
 
     let csv = '';
     processor
       .on('data', chunk => (csv += chunk.toString()))
       .on('end', () => {
-        t.equal(csv, csvFixtures.doubleQuotesUnescaped);
+        t.equal(csv, csvFixtures.escapedQuotesUnescaped);
         t.end();
       })
       .on('error', err => {
@@ -815,7 +815,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       });
   });
 
-  // Double Quote
+  // Escaped Quote
 
   testRunner.add('should escape quotes with double quotes', (t) => {
     const transform = new Json2csvTransform();
@@ -868,20 +868,20 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       });
   });
 
-  testRunner.add('should escape quotes with value in \'doubleQuote\'', (t) => {
+  testRunner.add('should escape quotes with value in \'escapedQuote\'', (t) => {
     const opts = {
       fields: ['a string'],
-      doubleQuote: '*'
+      escapedQuote: '*'
     };
 
     const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.doubleQuotes().pipe(transform);
+    const processor = jsonFixtures.escapedQuotes().pipe(transform);
 
     let csv = '';
     processor
       .on('data', chunk => (csv += chunk.toString()))
       .on('end', () => {
-        t.equal(csv, csvFixtures.doubleQuotes);
+        t.equal(csv, csvFixtures.escapedQuotes);
         t.end();
       })
       .on('error', err => {
@@ -890,7 +890,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       });
   });
 
-  testRunner.add('should escape quotes before new line with value in \'doubleQuote\'', (t) => {
+  testRunner.add('should escape quotes before new line with value in \'escapedQuote\'', (t) => {
     const opts = {
       fields: ['a string']
     };
@@ -1027,13 +1027,13 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
 
   testRunner.add('should escape " when preceeded by \\', (t) => {
     const transform = new Json2csvTransform();
-    const processor = jsonFixtures.escapeDoubleBackslashedDoubleQuote().pipe(transform);
+    const processor = jsonFixtures.escapeDoubleBackslashedEscapedQuote().pipe(transform);
 
     let csv = '';
     processor
       .on('data', chunk => (csv += chunk.toString()))
       .on('end', () => {
-        t.equal(csv, csvFixtures.escapeDoubleBackslashedDoubleQuote);
+        t.equal(csv, csvFixtures.escapeDoubleBackslashedEscapedQuote);
         t.end();
       })
       .on('error', err => {

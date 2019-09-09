@@ -28,7 +28,7 @@ program
   .option('-S, --flatten-separator <separator>', 'Flattened keys separator. Defaults to \'.\'.')
   .option('-v, --default-value [defaultValue]', 'Default value to use for missing fields.')
   .option('-q, --quote [quote]', 'Character(s) to use as quote mark. Defaults to \'"\'.')
-  .option('-Q, --double-quote [doubleQuote]', 'Character(s) to use as a escaped quote. Defaults to a double `quote`, \'""\'.')
+  .option('-Q, --escaped-quote [escapedQuote]', 'Character(s) to use as a escaped quote. Defaults to a double `quote`, \'""\'.')
   .option('-d, --delimiter [delimiter]', 'Character(s) to use as delimiter. Defaults to \',\'.')
   .option('-e, --eol [eol]', 'Character(s) to use as End-of-Line for separating rows. Defaults to \'\\n\'.')
   .option('-E, --excel-strings','Wraps string data to force Excel to interpret it as string even if it contains a number.')
@@ -160,7 +160,7 @@ Promise.resolve()
       flattenSeparator: config.flattenSeparator,
       defaultValue: config.defaultValue,
       quote: config.quote,
-      doubleQuote: config.doubleQuote,
+      escapedQuote: config.escapedQuote,
       delimiter: config.delimiter,
       eol: config.eol,
       excelStrings: config.excelStrings,
