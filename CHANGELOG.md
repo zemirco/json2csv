@@ -2,12 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## [4.5.2](https://github.com/zemirco/json2csv/compare/v4.5.1...v4.5.2) (2019-07-05)
+## [4.5.3](https://github.com/zemirco/json2csv/compare/v4.5.2...v4.5.3) (2019-09-09)
 
 
 ### Bug Fixes
 
-* Improve the inference of the header name when using function as value ([#395](https://github.com/zemirco/json2csv/issues/395)) ([590d19a](https://github.com/zemirco/json2csv/commit/590d19a))
+* Always error asynchronously from parseAsync method ([#417](https://github.com/zemirco/json2csv/issues/417)) ([32c43a2](https://github.com/zemirco/json2csv/commit/32c43a2))
 
 
 
