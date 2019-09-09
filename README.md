@@ -3,6 +3,8 @@
 Converts json into csv with column titles and proper line endings.  
 Can be used as a module and from the command line.
 
+> :construction: See [v4 branch](https://github.com/zemirco/json2csv/tree/v4) for latest release, master is currently undergoing work for v5 release.
+
 [![npm version][npm-badge]][npm-badge-url]
 [![Build Status][travis-badge]][travis-badge-url]
 [![Coverage Status][coveralls-badge]][coveralls-badge-url]
