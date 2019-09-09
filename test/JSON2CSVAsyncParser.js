@@ -4,6 +4,17 @@ const { Readable, Transform, Writable } = require('stream');
 const { AsyncParser, parseAsync } = require('../lib/json2csv');
 
 module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) => {
+  testRunner.add('should should error async if invalid opts are passed using parseAsync method', (t) => {
+    const opts = {
+      fields: [undefined]
+    };
+
+    parseAsync(inMemoryJsonFixtures.default, opts)
+      .then(() => t.notOk(true))
+      .catch(err => t.ok(true, err.message))
+      .then(() => t.end());
+  });
+
   testRunner.add('should parse in-memory json array to csv, infer the fields automatically and not modify the opts passed using parseAsync method', (t) => {
     const opts = {
       fields: ['carModel', 'price', 'color', 'transmission']
