@@ -1,94 +1,67 @@
 'use strict';
 
-const fs = require('fs');
+const { readdir, readFile, createReadStream } = require('fs');
 const path = require('path');
+const { promisify } = require('util');
 const csvDirectory = path.join(__dirname, '../fixtures/csv');
 const jsonDirectory = path.join(__dirname, '../fixtures/json');
 
-function getFilesInDirectory(dir) {
-  return new Promise((resolve, reject) => {
-    fs.readdir(dir, (err, filenames) => {
-      if (err) {
-        reject(err);
-        return;
-      }
-      
-      resolve(filenames);
-    });
-  })
-}
+const readdirAsync = promisify(readdir);
+const readFileAsync = promisify(readFile);
+
 
 function parseToJson(fixtures) {
   return fixtures.reduce((data, fixture) => {
-    if (!fixture) return data;
     data[fixture.name] = fixture.content;
     return data;
-  } ,{})
+  } ,{});
 }
 
-module.exports.loadJSON = function () {
-  return getFilesInDirectory(jsonDirectory)
-    .then(filenames => Promise.all(filenames.map((filename) => {
-      if (filename.startsWith('.')) return;
+module.exports.loadJSON = async function () {
+  const filenames = await readdirAsync(jsonDirectory);
+  const fixtures = await Promise.all(filenames
+    .filter(filename => !filename.startsWith('.'))
+    .map(async (filename) => {
+      const name = path.parse(filename).name;
       const filePath = path.join(jsonDirectory, filename);
       try {
-        return Promise.resolve({
-          name: path.parse(filename).name,
+        return {
+          name,
           content: require(filePath)
-        });
+        };
       } catch (e) {
-        // Do nothing.
+        return {
+          name,
+          content: await readFileAsync(filePath, 'utf-8'),
+        };
       }
-
-      return new Promise((resolve, reject) => {
-        const filePath = path.join(jsonDirectory, filename);
-        fs.readFile(filePath, 'utf-8', (err, data) => {
-          if (err) {
-            reject(err);
-            return;
-          }
-
-          resolve({
-            name: path.parse(filename).name,
-            content: data.toString()
-          });
-        });
-      });
-    })))
-    .then(parseToJson);
+    }));
+  
+  return parseToJson(fixtures);
 };
 
-module.exports.loadJSONStreams = function () {
-  return getFilesInDirectory(jsonDirectory)
-    .then(filenames => filenames.map((filename) => {
-      if (filename.startsWith('.')) return;
-      const filePath = path.join(jsonDirectory, filename);
-      return {
+module.exports.loadJSONStreams = async function () {
+  const filenames = await readdirAsync(jsonDirectory);
+  const fixtures = filenames
+    .filter(filename => !filename.startsWith('.'))
+    .map(filename => ({
+      name: path.parse(filename).name,
+      content: () => createReadStream(path.join(jsonDirectory, filename), { highWaterMark: 175 }),
+    }));
+
+  return parseToJson(fixtures);
+};
+
+module.exports.loadCSV = async function () {
+  const filenames = await readdirAsync(csvDirectory);
+  const fixtures = await Promise.all(
+    filenames
+      .filter(filename => !filename.startsWith('.'))
+      .map(async (filename) => ({
         name: path.parse(filename).name,
-        content: () => fs.createReadStream(filePath, { highWaterMark: 175 })
-      };
-    }))
-    .then(parseToJson);
-};
+        content: await readFileAsync(path.join(csvDirectory, filename), 'utf-8'),
+      }))
+  );
 
-module.exports.loadCSV = function () {
-  return getFilesInDirectory(csvDirectory)
-    .then(filenames => Promise.all(filenames.map((filename) => {
-      if (filename.startsWith('.')) return;
-      return new Promise((resolve, reject) => {
-        const filePath = path.join(csvDirectory, filename);
-        fs.readFile(filePath, 'utf-8', (err, data) => {
-          if (err) {
-            reject(err);
-            return;
-          }
-
-          resolve({
-            name: path.parse(filename).name,
-            content: data.toString()
-          });
-        });
-      });
-    })))
-    .then(parseToJson);
+  return parseToJson(fixtures);
 };
