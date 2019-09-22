@@ -1,5 +1,7 @@
 'use strict';
 
+const { Writable } = require('stream');
+
 const MIN_CELL_WIDTH = 15;
 
 class TablePrinter {
@@ -89,6 +91,25 @@ class TablePrinter {
     return content.map((line) => {
       const horPad = width - line.length - 2;
       return ` ${line}${' '.repeat(horPad)} `;
+    });
+  }
+
+  writeStream() {
+    let csv = '';
+    const table = this;
+    return new Writable({
+      write(chunk, encoding, callback) {
+        csv += chunk.toString();
+        const index = csv.lastIndexOf(table.opts.eol);
+        let lines = csv.substring(0, index);
+        csv = csv.substring(index + 1);
+
+        if (lines) table.push(lines);
+        callback();
+      },
+      final() {
+        table.end(csv);
+      }
     });
   }
 }

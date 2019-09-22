@@ -1,13 +1,12 @@
 'use strict';
 
-const json2csv = require('../lib/json2csv');
-const Json2csvParser = json2csv.Parser;
+const { parse, Parser: Json2csvParser } = require('../lib/json2csv');
 
 module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   testRunner.add('should parse json to csv, infer the fields automatically and not modify the opts passed using parse method', (t) => {
     const opts = {};
 
-    const csv = json2csv.parse(jsonFixtures.default);
+    const csv = parse(jsonFixtures.default);
 
     t.ok(typeof csv === 'string');
     t.equal(csv, csvFixtures.default);
@@ -32,7 +31,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
       const parser = new Json2csvParser();
       parser.parse(input);
 
-      t.notOk(true);
+      t.fail('Exception expected');
     } catch(error) {
       t.equal(error.message, 'Data should not be empty or the "fields" option should be included');
     }
@@ -184,9 +183,9 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
       const parser = new Json2csvParser(opts);
       parser.parse(jsonFixtures.default);
 
-      t.notOk(true);
+      t.fail('Exception expected');
     } catch(error) {
-      t.equal(error.message, 'Invalid field info option. ' + JSON.stringify(opts.fields[1]));
+      t.equal(error.message, `Invalid field info option. ${JSON.stringify(opts.fields[1])}`);
     }
     t.end();
   });
@@ -203,9 +202,9 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
       const parser = new Json2csvParser(opts);
       parser.parse(jsonFixtures.default);
 
-      t.notOk(true);
+      t.fail('Exception expected');
     } catch(error) {
-      t.equal(error.message, 'Invalid field info option. ' + JSON.stringify(opts.fields[1]));
+      t.equal(error.message, `Invalid field info option. ${JSON.stringify(opts.fields[1])}`);
     }
     t.end();
   });

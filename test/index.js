@@ -21,30 +21,34 @@ const testRunner = {
   addAfter(func) {
     this.after.push(func);
   },
-  run() {
-    Promise.all(testRunner.before.map(before => before()))
-      .then(() => {
-        this.tests.forEach(args => tape(args.name, args.test));
-        this.after.forEach(after => tape.onFinish(after));
+  async run() {
+    try {
+      await Promise.all(testRunner.before.map(before => before()));
+      this.tests.forEach(args => tape(args.name, args.test));
+      this.after.forEach(after => tape.onFinish(after));
+    } catch (err) {
       // eslint-disable-next-line no-console
-      }).catch(console.error);
+      console.error(err);
+    }
   }
 };
 
-Promise.all([
-  loadFixtures.loadJSON(),
-  loadFixtures.loadJSONStreams(),
-  loadFixtures.loadCSV()])
-.then((fixtures) => {
-  const jsonFixtures = fixtures[0];
-  const jsonFixturesStreams = fixtures[1];
-  const csvFixtures = fixtures[2];
+async function loadAllFixtures() {
+  return Promise.all([
+    loadFixtures.loadJSON(),
+    loadFixtures.loadJSONStreams(),
+    loadFixtures.loadCSV()
+  ]);
+}
 
+async function setupTests([jsonFixtures, jsonFixturesStreams, csvFixtures]) {
   CLI(testRunner, jsonFixtures, csvFixtures);
   JSON2CSVParser(testRunner, jsonFixtures, csvFixtures);
   JSON2CSVAsyncParser(testRunner, jsonFixturesStreams, csvFixtures, jsonFixtures);
   JSON2CSVTransform(testRunner, jsonFixturesStreams, csvFixtures, jsonFixtures);
   parseNdjson(testRunner, jsonFixtures);
+}
 
-  testRunner.run();
-});
+loadAllFixtures()
+  .then(setupTests)
+  .then(() => testRunner.run());

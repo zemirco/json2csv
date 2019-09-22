@@ -2,14 +2,20 @@
 
 'use strict';
 
-const fs = require('fs');
+const { promisify } = require('util');
+const { createReadStream, createWriteStream, readFile: readFileOrig, writeFile: writeFileOrig } = require('fs');
 const os = require('os');
-const path = require('path');
+const { isAbsolute, join } = require('path');
 const program = require('commander');
 const pkg = require('../package');
 const json2csv = require('../lib/json2csv');
 const parseNdJson = require('./utils/parseNdjson');
 const TablePrinter = require('./utils/TablePrinter');
+
+const readFile = promisify(readFileOrig);
+const writeFile = promisify(writeFileOrig);
+const isAbsolutePath = promisify(isAbsolute);
+const joinPath = promisify(join);
 
 const JSON2CSVParser = json2csv.Parser;
 const Json2csvTransform = json2csv.Transform;
@@ -39,14 +45,14 @@ program
   .parse(process.argv);
 
 function makePathAbsolute(filePath) {
-  return (filePath && !path.isAbsolute(filePath))
-    ? path.join(process.cwd(), filePath)
+  return (filePath && !isAbsolutePath(filePath))
+    ? joinPath(process.cwd(), filePath)
     : filePath;
 }
 
-const inputPath = makePathAbsolute(program.input);
-const outputPath = makePathAbsolute(program.output);
-const configPath = makePathAbsolute(program.config);
+program.input = makePathAbsolute(program.input);
+program.output = makePathAbsolute(program.output);
+program.config = makePathAbsolute(program.config);
 
 if (program.fields) program.fields = program.fields.split(',');
 if (program.unwind) program.unwind = program.unwind.split(',');
@@ -56,57 +62,30 @@ program.eol = program.eol || os.EOL;
 // don't fail if piped to e.g. head
 /* istanbul ignore next */
 process.stdout.on('error', (error) => {
-  if (error.code === 'EPIPE') {
-    process.exit(1);
-  }
+  if (error.code === 'EPIPE') process.exit(1);
 });
 
-function getConfigFromFile() {
-  return configPath
-    ? require(configPath)
-    : {};
+function getInputStream(inputPath) {
+  if (inputPath) return createReadStream(inputPath, { encoding: 'utf8' });
+
+  process.stdin.resume();
+  process.stdin.setEncoding('utf8');
+  return process.stdin;
 }
 
-function getInputStream() {
-  if (!inputPath) {
-    process.stdin.resume();
-    process.stdin.setEncoding('utf8');
-    return process.stdin;
-  }
-
-  return fs.createReadStream(inputPath, { encoding: 'utf8' })
+function getOutputStream(outputPath, config) {
+  if (outputPath) return createWriteStream(outputPath, { encoding: 'utf8' });
+  if (config.pretty) return new TablePrinter(config).writeStream();
+  return process.stdout;
 }
 
-function getInput() {
-  if (!inputPath) {
-    return getInputFromStdin();
-  }
-
-  if (program.ndjson) {
-    return getInputFromNDJSON();
-  }
-
-  try {
-    return Promise.resolve(require(inputPath));
-  } catch (err) {
-    return Promise.reject(err);
-  }
+async function getInput(inputPath, ndjson) {
+  if (!inputPath) return getInputFromStdin();
+  if (ndjson) return parseNdJson(await readFile(inputPath, 'utf8'));
+  return require(inputPath);
 }
 
-function getInputFromNDJSON() {
-  return new Promise((resolve, reject) => {
-    fs.readFile(inputPath, 'utf8', (err, data) => {
-      if (err) {
-        reject(err);
-        return;
-      }
-
-      resolve(parseNdJson(data));
-    });
-  });
-}
-
-function getInputFromStdin() {
+async function getInputFromStdin() {
   return new Promise((resolve, reject) => {
     process.stdin.resume();
     process.stdin.setEncoding('utf8');
@@ -117,11 +96,7 @@ function getInputFromStdin() {
     process.stdin.on('error', err => reject(new Error('Could not read from stdin', err)));
     process.stdin.on('end', () => {
       try {
-        const rows = program.ndjson
-          ? parseNdJson(inputData)
-          : JSON.parse(inputData);
-
-        resolve(rows);
+        resolve(program.ndjson ? parseNdJson(inputData) : JSON.parse(inputData));
       } catch (err) {
         reject(new Error('Invalid data received from stdin', err));
       }
@@ -129,28 +104,39 @@ function getInputFromStdin() {
   });
 }
 
-function processOutput(csv) {
+async function processOutput(outputPath, csv, config) {
   if (!outputPath) {
     // eslint-disable-next-line no-console
-    program.pretty ? (new TablePrinter(program)).printCSV(csv) : console.log(csv);
+    config.pretty ? (new TablePrinter(config)).printCSV(csv) : console.log(csv);
     return;
   }
 
-  return new Promise((resolve, reject) => {
-    fs.writeFile(outputPath, csv, (err) => {
-      if (err) {
-        reject(err);
-        return;
-      }
+  await writeFile(outputPath, csv);
+}
 
-      resolve();
-    });
+async function processInMemory(config, opts) {
+  const input = await getInput(program.input, config.ndjson);
+  const output = new JSON2CSVParser(opts).parse(input);
+  await processOutput(program.output, output, config);
+}
+
+async function processStream(config, opts) {
+  const input = getInputStream(program.input);
+  const transform = new Json2csvTransform(opts);
+  const output = getOutputStream(program.output, config);
+
+  await new Promise((resolve, reject) => {
+    input.pipe(transform).pipe(output);
+    input.on('error', reject);
+    transform.on('error', reject);
+    output.on('error', reject)
+          .on('finish', resolve);
   });
 }
 
-Promise.resolve()
-  .then(() => {
-    const config = Object.assign({}, getConfigFromFile(), program);
+(async (program) => {
+  try {
+    const config = Object.assign({}, program.config ? require(program.config) : {}, program);
     
     const opts = {
       fields: config.fields,
@@ -169,70 +155,18 @@ Promise.resolve()
       withBOM: config.withBom
     };
 
-    if (!config.streaming) {
-      return getInput(config.ndjson)
-        .then(input => new JSON2CSVParser(opts).parse(input))
-        .then(processOutput);
-    }
-
-    const transform = new Json2csvTransform(opts);
-    const input = getInputStream();
-    const stream = input.pipe(transform);
-    
-    if (config.output) {
-      const outputStream = fs.createWriteStream(outputPath, { encoding: 'utf8' });
-      const output = stream.pipe(outputStream);
-      return new Promise((resolve, reject) => {
-        input.on('error', reject);
-        outputStream.on('error', reject);
-        output.on('error', reject);
-        output.on('finish', () => resolve());
-      });
-    }
-
-    if (!config.pretty) {
-      const output = stream.pipe(process.stdout);
-      return new Promise((resolve, reject) => {
-        input.on('error', reject);
-        stream
-          .on('finish', () => resolve())
-          .on('error', reject);
-        output.on('error', reject);
-      });
-    }
-
-    return new Promise((resolve, reject) => {
-      input.on('error', reject);
-      stream.on('error', reject);
-      let csv = '';
-      const table = new TablePrinter(config);
-      stream
-        .on('data', chunk => {
-          csv += chunk.toString();
-          const index = csv.lastIndexOf(config.eol);
-          let lines = csv.substring(0, index);
-          csv = csv.substring(index + 1);
-
-          if (lines) {
-            table.push(lines);
-          }
-        })
-        .on('end', () => {
-          table.end(csv);
-          resolve();
-        })
-        .on('error', reject);
-    });
-  })
-  .catch((err) => {
-    if (inputPath && err.message.includes(inputPath)) {
-      err = new Error('Invalid input file. (' + err.message + ')');
-    } else if (outputPath && err.message.includes(outputPath)) {
-      err = new Error('Invalid output file. (' + err.message + ')');
-    } else if (configPath && err.message.indexOf(configPath) !== -1) {
-      err = new Error('Invalid config file. (' + err.message + ')');
+    await (config.streaming ? processStream : processInMemory)(config, opts);
+  } catch(err) {
+    let processedError = err;
+    if (program.input && err.message.includes(program.input)) {
+      processedError = new Error(`Invalid input file. (${err.message})`);
+    } else if (program.output && err.message.includes(program.output)) {
+      processedError = new Error(`Invalid output file. (${err.message})`);
+    } else if (program.config && err.message.includes(program.config)) {
+      processedError = new Error(`Invalid config file. (${err.message})`);
     }
     // eslint-disable-next-line no-console
-    console.error(err);
+    console.error(processedError);
     process.exit(1);
-  });
+  }
+})(program);

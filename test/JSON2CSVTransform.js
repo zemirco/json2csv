@@ -1,7 +1,7 @@
 'use strict';
 
-const Readable = require('stream').Readable;
-const Json2csvTransform = require('../lib/json2csv').Transform;
+const { Readable } = require('stream');
+const { Transform: Json2csvTransform } = require('../lib/json2csv');
 
 module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) => {
   testRunner.add('should handle object mode', (t) => {
@@ -26,7 +26,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -48,7 +48,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -63,7 +63,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const processor = jsonFixtures.ndjsonInvalid().pipe(transform);
     
     processor.on('finish', () => {
-      t.notOk(true);
+      t.fail('Exception expected');
       t.end();
     });
     processor.on('error', (err) => {
@@ -87,7 +87,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -102,7 +102,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const processor = input.pipe(transform);
     
     processor.on('finish', () => {
-      t.notOk(true);
+      t.fail('Exception expected');
       t.end();
     });
     processor.on('error', (err) => {
@@ -120,7 +120,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const processor = jsonFixtures.defaultInvalid().pipe(transform);
     
     processor.on('finish', () => {
-      t.notOk(true);
+      t.fail('Exception expected');
       t.end();
     });
     processor.on('error', (err) => {
@@ -145,7 +145,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -166,7 +166,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -191,7 +191,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -208,7 +208,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -226,7 +226,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -248,7 +248,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
   
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -269,7 +269,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -290,7 +290,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -311,7 +311,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -338,7 +338,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -354,9 +354,9 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       const transform = new Json2csvTransform(opts);
       jsonFixtures.default().pipe(transform);
 
-      t.notOk(true);
+      t.fail('Exception expected');
     } catch(error) {
-      t.equal(error.message, 'Invalid field info option. ' + JSON.stringify(opts.fields[1]));
+      t.equal(error.message, `Invalid field info option. ${JSON.stringify(opts.fields[1])}`);
     }
     t.end();
   });
@@ -373,9 +373,9 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       const transform = new Json2csvTransform(opts);
       jsonFixtures.default().pipe(transform);
 
-      t.notOk(true);
+      t.fail('Exception expected');
     } catch(error) {
-      t.equal(error.message, 'Invalid field info option. ' + JSON.stringify(opts.fields[1]));
+      t.equal(error.message, `Invalid field info option. ${JSON.stringify(opts.fields[1])}`);
     }
     t.end();
   });
@@ -411,7 +411,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -439,7 +439,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -463,7 +463,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -500,7 +500,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -524,7 +524,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -546,7 +546,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -571,7 +571,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -592,7 +592,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -614,7 +614,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -636,7 +636,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -660,7 +660,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -686,7 +686,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -721,7 +721,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -745,7 +745,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -767,7 +767,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -789,7 +789,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -810,7 +810,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -829,7 +829,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -846,7 +846,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -863,7 +863,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -885,7 +885,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -906,7 +906,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -930,7 +930,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -949,7 +949,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -973,7 +973,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -997,7 +997,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -1020,7 +1020,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -1037,7 +1037,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -1062,7 +1062,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -1079,7 +1079,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -1103,7 +1103,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -1122,7 +1122,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -1143,7 +1143,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -1164,7 +1164,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -1198,7 +1198,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -1225,7 +1225,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
@@ -1252,7 +1252,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();
       })
       .on('error', err => {
-        t.notOk(true, err.message)
+        t.fail(err.message);
         t.end();  
       });
   });
