@@ -2,12 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## [4.5.3](https://github.com/zemirco/json2csv/compare/v4.5.2...v4.5.3) (2019-09-09)
+## [4.5.4](https://github.com/zemirco/json2csv/compare/v4.5.3...v4.5.4) (2019-10-09)
 
 
 ### Bug Fixes
 
-* Always error asynchronously from parseAsync method ([#417](https://github.com/zemirco/json2csv/issues/417)) ([32c43a2](https://github.com/zemirco/json2csv/commit/32c43a2))
+* Ensure defaultValue is always applied in the case of nulls ([#427](https://github.com/zemirco/json2csv/issues/427)) ([0a01470](https://github.com/zemirco/json2csv/commit/0a01470))
 
 
 
