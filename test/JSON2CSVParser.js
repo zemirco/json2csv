@@ -413,7 +413,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   testRunner.add('should output the default value as set in \'defaultValue\'', (t) => {
     const opts = {
       fields: ['carModel', 'price'],
-      defaultValue: ''
+      defaultValue: '-'
     };
 
     const parser = new Json2csvParser(opts);
@@ -430,7 +430,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
         { value: 'price', default: 1 },
         { value: 'color' }
       ],
-      defaultValue: ''
+      defaultValue: '-'
     };
 
     const parser = new Json2csvParser(opts);
@@ -456,7 +456,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
           value: row => row.color
         }
       ],
-      defaultValue: ''
+      defaultValue: '-'
     };
 
     const parser = new Json2csvParser(opts);

@@ -360,7 +360,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   // Default value
 
   testRunner.add('should output the default value as set in \'defaultValue\'', (t) => {
-    const opts = ' --fields carModel,price --default-value ""';
+    const opts = ' --fields carModel,price --default-value "-"';
 
     child_process.exec(cli + '-i ' + getFixturePath('/json/defaultValueEmpty.json') + opts, (err, stdout, stderr) => {
       t.notOk(stderr); 
@@ -372,7 +372,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
 
   testRunner.add('should override \'options.defaultValue\' with \'field.defaultValue\'', (t) => {
     const opts = ' --fields-config ' + getFixturePath('/fields/overriddenDefaultValue.json')
-      + ' --default-value ""';
+      + ' --default-value "-"';
 
     child_process.exec(cli + '-i ' + getFixturePath('/json/overriddenDefaultValue.json') + opts, (err, stdout, stderr) => {
       t.notOk(stderr);
@@ -384,7 +384,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
 
   testRunner.add('should use \'options.defaultValue\' when no \'field.defaultValue\'', (t) => {
     const opts = ' --fields-config ' + getFixturePath('/fields/overriddenDefaultValue2.js')
-      + ' --default-value ""';
+      + ' --default-value "-"';
 
     child_process.exec(cli + '-i ' + getFixturePath('/json/overriddenDefaultValue.json') + opts, (err, stdout, stderr) => {
       t.notOk(stderr);
