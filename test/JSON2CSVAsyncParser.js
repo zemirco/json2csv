@@ -513,7 +513,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
   testRunner.add('should output the default value as set in \'defaultValue\'', (t) => {
     const opts = {
       fields: ['carModel', 'price'],
-      defaultValue: ''
+      defaultValue: '-'
     };
 
     const parser = new AsyncParser(opts);
@@ -530,7 +530,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         { value: 'price', default: 1 },
         { value: 'color' }
       ],
-      defaultValue: ''
+      defaultValue: '-'
     };
 
     const parser = new AsyncParser(opts);
@@ -556,7 +556,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
           value: row => row.color
         }
       ],
-      defaultValue: ''
+      defaultValue: '-'
     };
 
     const parser = new AsyncParser(opts);
