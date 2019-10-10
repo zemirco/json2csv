@@ -799,15 +799,23 @@ This might produce few undesired effects with, for example, serial numbers:
 - Large numbers are displayed using scientific notation
 - Leading zeros are stripped.
 
-The `excelString` option produces a Excel-specific CSV file that forces Excel to interpret string fields as strings. Please note that the CSV will look incorrect if viewing it somewhere else than Excel.
+Enabling the `excelString` option produces a Excel-specific CSV file that forces Excel to interpret string fields as strings. Please note that the CSV will look incorrect if viewing it somewhere else than Excel.
+
+#### Avoiding CSV injection
+
+As part of Excel automatically format detection, fields regarded as formulas (starting with `=`, `+`, `-` or `@`) are interpreted regardless of whether the field is quoted or not, creating a security risk (see [CSV Injection](https://www.owasp.org/index.php/CSV_Injection).
+
+This issue has nothing to do with the CSV format, since CSV knows nothing about formulas, but with how Excel parses CSV files.
+
+Enabling the `excelString` option produces a Excel-specific CSV file that forces Excel to interpret string fields as strings. Please note that the CSV will look incorrect if viewing it somewhere else than Excel.
 
 #### Preserving new lines
 
-Excel only recognize `\r\n` as valid new line inside a cell.
+Excel only recognizes `\r\n` as valid new line inside a cell.
 
 #### Unicode Support
 
-Excel can display Unicode correctly (just setting the `withBOM` option to true). However, Excel can't save unicode so, if you do changes to the CSV and save it from Excel, the Unicode character will not be displayed correctly.
+Excel can display Unicode correctly (just setting the `withBOM` option to true). However, Excel can't save unicode so, if you perform any changes to the CSV and save it from Excel, the Unicode characters will not be displayed correctly.
 
 
 ### PowerShell escaping
