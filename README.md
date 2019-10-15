@@ -17,7 +17,7 @@ See the [CHANGELOG] for details about the latest release.
 - Fast and lightweight
 - Scalable to infinitely large datasets (using stream processing)
 - Support for standard JSON as well as NDJSON
-- Advanced data selection (automatic field discovery, underscore-like selectors, custom data getters, default values for missing fields, flattening nested object, unwinding arrays, etc.)
+- Advanced data selection (automatic field discovery, underscore-like selectors, custom data getters, default values for missing fields, transforms, etc.)
 - Highly customizable (supportting custom quotation marks, delimiters, eol values, etc.)
 - Automatic escaping (preserving new lines, quotes, etc. in them)
 - Optional headers
@@ -55,39 +55,37 @@ By default, the above script will get the latest release of json2csv. You can al
 ```bash
 Usage: json2csv [options]
 
-
 Options:
-
   -V, --version                        output the version number
-  -c, --config <path>                  Specify a file with a valid JSON configuration.
   -i, --input <input>                  Path and name of the incoming json file. Defaults to stdin.
   -o, --output [output]                Path and name of the resulting csv file. Defaults to stdout.
+  -c, --config <path>                  Specify a file with a valid JSON configuration.
   -n, --ndjson                         Treat the input as NewLine-Delimited JSON.
   -s, --no-streaming                   Process the whole JSON array in memory instead of doing it line by line.
   -f, --fields <fields>                List of fields to process. Defaults to field auto-detection.
-  -u, --unwind <paths>                 Creates multiple rows from a single JSON document similar to MongoDB unwind.
-  -B, --unwind-blank                   When unwinding, blank out instead of repeating data.
-  -F, --flatten                        Flatten nested objects.
-  -S, --flatten-separator <separator>  Flattened keys separator. Defaults to '.'.
   -v, --default-value [defaultValue]   Default value to use for missing fields.
-  -q, --quote [value]                  Character(s) to use a quote mark. Defaults to '"'.
-  -Q, --escaped-quote [value]           Character(s) to use as a escaped quote. Defaults to a double `quote`, '""'.
-  -d, --delimiter [delimiter]          Character(s) to use as delimiter. Defaults to ','.
-  -e, --eol [value]                    Character(s) to use as End-of-Line for separating rows. Defaults to '\n'.
+  -q, --quote [quote]                  Character(s) to use as quote mark. Defaults to '"'.
+  -Q, --escaped-quote [escapedQuote]   Character(s) to use as a escaped quote. Defaults to a double `quote`, '""'.
+  -d, --delimiter [delimiter]          Character(s) to use as delimiter. Defaults to ','. (default: ",")
+  -e, --eol [eol]                      Character(s) to use as End-of-Line for separating rows. Defaults to '\n'. (default: "\n")
   -E, --excel-strings                  Wraps string data to force Excel to interpret it as string even if it contains a number.
   -H, --no-header                      Disable the column name header.
   -a, --include-empty-rows             Includes empty rows in the resulting CSV output.
   -b, --with-bom                       Includes BOM character at the beginning of the CSV.
   -p, --pretty                         Print output as a pretty table. Use only when printing to console.
+  -u, --unwind <paths>                 Creates multiple rows from a single JSON document similar to MongoDB unwind.
+  -B, --unwind-blank                   When unwinding, blank out instead of repeating data.
+  -F, --flatten                        Flatten nested objects.
+  -S, --flatten-separator <separator>  Flattened keys separator. Defaults to '.'.
   -h, --help                           output usage information
 ```
 
 If no input `-i` is specified the result is expected from to the console standard input.
 If no output `-o` is specified the result is printed to the console standard output.
-If no fields `-f` or `-c` are passed the fields of the first element are used since json2csv CLI process the items one at a time. You can use the `--no-streaming` flag to load the entire JSON in memory and get all the headers. However, keep in mind that this is slower and requires much more memory.
+If no fields `-f` or config `-c` are passed the fields of the first element are used since json2csv CLI process the items one at a time. You can use the `--no-streaming` flag to load the entire JSON in memory and get all the headers. However, keep in mind that this is slower and requires much more memory.
 Use `-p` to show the result as a table in the console.
 
-Any option pass through a config file `-c` will be overriden if a specific flag is passed as well. For example, the fields option of the config will be overriden if the fields flag `-f` is used.
+Any option passed through the config file `-c` will be overriden if a specific flag is passed as well. For example, the fields option of the config will be overriden if the fields flag `-f` is used.
 
 ### CLI examples
 
@@ -177,10 +175,7 @@ The programatic APIs take a configuration object very equivalent to the CLI opti
 
 - `fields` - Array of Objects/Strings. Defaults to toplevel JSON attributes. See example below.
 - `ndjson` - Only effective on the streaming API. Indicates that data coming through the stream is NDJSON.
-- `unwind` - Array of Strings, creates multiple rows from a single JSON document similar to MongoDB's $unwind
-- `unwindBlank` - Boolean, unwind using blank values instead of repeating data.
-- `flatten` - Boolean, flattens nested objects. Defaults to `false`.
-- `flattenSeparator` - String, separator to use between nested JSON keys when `flatten` option enabled. Defaults to `.` if not specified.
+- `transforms` - Array of transforms to be applied to each data item. A transform is simply a function that receives a data item and returns the transformed item.
 - `defaultValue` - String, default value to use when missing data. Defaults to `<empty>` if not specified. (Overridden by `fields[].default`)
 - `quote` - String, quote around cell values and column names. Defaults to `"` if not specified.
 - `escapedQuote` - String, the value to replace escaped quotes in strings. Defaults to 2x`quotes` (for example `""`) if not specified.
@@ -341,23 +336,88 @@ json2csv
 The stream API can also work on object mode. This is useful when you have an input stream in object mode or if you are getting JSON objects one by one and want to convert them to CSV as they come.
 
 ```js
-    const { Transform } = require("json2csv");
-    const { Readable } = require('stream');
+const { Transform } = require("json2csv");
+const { Readable } = require('stream');
 
-    const input = new Readable({ objectMode: true });
-    input._read = () => {};
-    // myObjectEmitter is just a fake example representing anything that emit objects.
-    myObjectEmitter.on('object', obj => input.push(obj));
-    // Pushing a null close the stream
-    myObjectEmitter.end(()) => input.push(null));
+const input = new Readable({ objectMode: true });
+input._read = () => {};
+// myObjectEmitter is just a fake example representing anything that emit objects.
+myObjectEmitter.on('object', obj => input.push(obj));
+// Pushing a null close the stream
+myObjectEmitter.end(()) => input.push(null));
 
-    const output = process.stdout;
+const output = process.stdout;
 
-    const opts = {};
-    const transformOpts = { objectMode: true };
+const opts = {};
+const transformOpts = { objectMode: true };
 
-    const json2csv = new Transform(opts, transformOpts);
-    const processor = input.pipe(json2csv).pipe(output);
+const json2csv = new Transform(opts, transformOpts);
+const processor = input.pipe(json2csv).pipe(output);
+```
+
+### Data transforms
+
+json2csv supports data transforms. A transform is simply a function that receives a data item and returns the transformed item.
+
+
+#### Custom transforms
+
+```js
+function (item) {
+  // apply tranformations or create new object
+  return transformedItem;
+}
+```
+or using ES6 
+```js
+(item) => {
+  // apply tranformations or create new object
+  return transformedItem;
+}
+```
+
+For example, let's add a line counter to our CSV, capitalize the car field and change the pize to be in Ks (1000s).
+```js
+let counter = 1;
+(item) => ({ counter: counter++, ...item, car: item.car.toUpperCase(), price: item.price / 1000 });
+```
+
+#### Built-in transforms
+
+There is a number of built-in transform provider by the library.
+
+```js
+const { transforms: { unwind, flatten } } = require('json2csv');
+```
+
+##### Unwind
+
+The unwind transform deconstructs an array field from the input item to output a row for each element. Is's similar to MongoDB's $unwind aggregation.
+
+The transform needs to be instantiated and takes 2 arguments:
+- `paths` - Array of String, list the paths to the fields to be unwound. It's mandatory and should not be empty.
+- `blank` - Boolean, unwind using blank values instead of repeating data. Defaults to `false`.
+
+```js
+// Default
+unwind(['fieldToUnwind']);
+
+// Blanking out repeated data
+unwind(['fieldToUnwind'], true);
+```
+
+##### Flatten
+Flatten nested javascript objects into a single level object.
+
+The transform needs to be instantiated and takes 1 argument:
+- `separator` - String, separator to use between nested JSON keys when flattening a field. Defaults to `.`.
+
+```js
+// Default
+flatten();
+
+// Custom separator '__'
+flatten('_');
 ```
 
 ### Javascript module examples
@@ -402,7 +462,6 @@ The stream API can also work on object mode. This is useful when you have an inp
 ```js
 const { Parser } = require('json2csv');
 
-const fields = ['car', 'price', 'color'];
 const myCars = [
   {
     "car": "Audi",
@@ -419,7 +478,7 @@ const myCars = [
   }
 ];
 
-const json2csvParser = new Parser({ fields });
+const json2csvParser = new Parser();
 const csv = json2csvParser.parse(myCars);
 
 console.log(csv);
@@ -428,7 +487,7 @@ console.log(csv);
 will output to console
 
 ```
-car, price, color
+"car", "price", "color"
 "Audi", 40000, "blue"
 "BMW", 35000, "black"
 "Porsche", 60000, "green"
@@ -436,7 +495,7 @@ car, price, color
 
 #### Example 2
 
-Similarly to [mongoexport](http://www.mongodb.org/display/DOCS/mongoexport) you can choose which fields to export.
+You can choose which fields to include in the CSV.
 
 ```js
 const { Parser } = require('json2csv');
@@ -448,10 +507,10 @@ const csv = json2csvParser.parse(myCars);
 console.log(csv);
 ```
 
-Results in
+will output to console
 
 ```
-car, color
+"car", "color"
 "Audi", "blue"
 "BMW", "black"
 "Porsche", "green"
@@ -478,6 +537,15 @@ const csv = json2csvParser.parse(myCars);
 console.log(csv);
 ```
 
+will output to console
+
+```
+"Car Name", "Price USD"
+"Audi", 40000
+"BMW", 35000
+"Porsche", 60000
+```
+
 #### Example 4
 
 You can also specify nested properties using dot notation.
@@ -485,22 +553,23 @@ You can also specify nested properties using dot notation.
 ```js
 const { Parser } = require('json2csv');
 
-const fields = ['car.make', 'car.model', 'price', 'color'];
 const myCars = [
   {
-    "car": {"make": "Audi", "model": "A3"},
+    "car": { "make": "Audi", "model": "A3" },
     "price": 40000,
     "color": "blue"
   }, {
-    "car": {"make": "BMW", "model": "F20"},
+    "car": { "make": "BMW", "model": "F20" },
     "price": 35000,
     "color": "black"
   }, {
-    "car": {"make": "Porsche", "model": "9PA AF1"},
+    "car": { "make": "Porsche", "model": "9PA AF1" },
     "price": 60000,
     "color": "green"
   }
 ];
+
+const fields = ['car.make', 'car.model', 'price', 'color'];
 
 const json2csvParser = new Parser({ fields });
 const csv = json2csvParser.parse(myCars);
@@ -511,7 +580,7 @@ console.log(csv);
 will output to console
 
 ```
-car.make, car.model, price, color
+"car.make", "car.model", "price", "color"
 "Audi", "A3", 40000, "blue"
 "BMW", "F20", 35000, "black"
 "Porsche", "9PA AF1", 60000, "green"
@@ -524,25 +593,23 @@ Use a custom delimiter to create tsv files using the delimiter option:
 ```js
 const { Parser } = require('json2csv');
 
-const fields = ['car', 'price', 'color'];
-
-const json2csvParser = new Parser({ fields, delimiter: '\t' });
+const json2csvParser = new Parser({ delimiter: '\t' });
 const tsv = json2csvParser.parse(myCars);
 
 console.log(tsv);
 ```
 
-Will output:
+will output to console
 
 ```
-car price color
+"car" "price" "color"
 "Audi"  10000 "blue"
 "BMW" 15000 "red"
 "Mercedes"  20000 "yellow"
 "Porsche" 30000 "green"
 ```
 
-If no delimiter is specified, the default `,` is used
+If no delimiter is specified, the default `,` is used.
 
 #### Example 6
 
@@ -551,37 +618,28 @@ You can choose custom quotation marks.
 ```js
 const { Parser } = require('json2csv');
 
-const fields = [{
-  label: 'Car Name',
-  value: 'car'
-},{
-  label: 'Price USD',
-  value: 'price'
-}];
-
-const json2csvParser = new Parser({ fields, quote: '' });
+const json2csvParser = new Parser({ quote: '' });
 const csv = json2csvParser.parse(myCars);
 
 console.log(csv);
 ```
 
-Results in
+will output to console
 
 ```
-Car Name, Price USD
-Audi, 10000
-BMW, 15000
-Porsche, 30000
+car, price, color
+Audi, 40000, blue
+BMW", 35000, black
+Porsche", 60000, green
 ```
 
 #### Example 7
 
-You can unwind arrays similar to MongoDB's $unwind operation using the `unwind` option.
+You can unwind arrays similar to MongoDB's $unwind operation using the `unwind` transform.
 
 ```js
-const { Parser } = require('json2csv');
+const { Parser, transforms: { unwind } } = require('json2csv');
 
-const fields = ['carModel', 'price', 'colors'];
 const myCars = [
   {
     "carModel": "Audi",
@@ -602,7 +660,10 @@ const myCars = [
   }
 ];
 
-const json2csvParser = new Parser({ fields, unwind: 'colors' });
+const fields = ['carModel', 'price', 'colors'];
+const transforms = [unwind('colors')];
+
+const json2csvParser = new Parser({ fields, transforms });
 const csv = json2csvParser.parse(myCars);
 
 console.log(csv);
@@ -630,7 +691,6 @@ You can also unwind arrays multiple times or with nested objects.
 ```js
 const { Parser } = require('json2csv');
 
-const fields = ['carModel', 'price', 'items.name', 'items.color', 'items.items.position', 'items.items.color'];
 const myCars = [
   {
     "carModel": "BMW",
@@ -675,7 +735,9 @@ const myCars = [
   }
 ];
 
-const json2csvParser = new Parser({ fields, unwind: ['items', 'items.items'] });
+const fields = ['carModel', 'price', 'items.name', 'items.color', 'items.items.position', 'items.items.color'];
+const transforms = [unwind(['items', 'items.items'])];
+const json2csvParser = new Parser({ fields, transforms });
 const csv = json2csvParser.parse(myCars);
 
 console.log(csv);
@@ -700,7 +762,6 @@ You can also unwind arrays blanking the repeated fields.
 ```js
 const { Parser } = require('json2csv');
 
-const fields = ['carModel', 'price', 'items.name', 'items.color', 'items.items.position', 'items.items.color'];
 const myCars = [
   {
     "carModel": "BMW",
@@ -745,7 +806,10 @@ const myCars = [
   }
 ];
 
-const json2csvParser = new Parser({ fields, unwind: ['items', 'items.items'], unwindBlank: true });
+const fields = ['carModel', 'price', 'items.name', 'items.color', 'items.items.position', 'items.items.color'];
+const transforms = [unwind(['items', 'items.items'], true)];
+
+const json2csvParser = new Parser({ fields, transforms });
 const csv = json2csvParser.parse(myCars);
 
 console.log(csv);
@@ -763,7 +827,9 @@ will output to console
 ,,,,"right","black"
 ```
 
-### Migrating from 3.X to 4.X
+### Migrations
+
+#### Migrating from 3.X to 4.X
 
 What in 3.X used to be
 ```js
@@ -771,10 +837,10 @@ const json2csv = require('json2csv');
 const csv = json2csv({ data: myData, fields: myFields, unwindPath: paths, ... });
 ```
 
-can be replaced by
+should be replaced by
 ```js
-const Json2csvParser = require('json2csv').Parser;
-const json2csvParser = new Json2csvParser({ fields: myFields, unwind: paths, ... });
+const { Parser } = require('json2csv');
+const json2csvParser = new Parser({ fields: myFields, unwind: paths, ... });
 const csv = json2csvParser.parse(myData);
 ```
 
@@ -786,6 +852,32 @@ const csv = json2csv.parse(myData, { fields: myFields, unwind: paths, ... });
 
 Please note that many of the configuration parameters have been slightly renamed. Please check one by one that all your parameters are correct.
 You can se the documentation for json2csv 3.11.5 [here](https://github.com/zemirco/json2csv/blob/v3.11.5/README.md).
+
+#### Migrating from 4.X to 5.X
+
+In the CLI, the config file option, `-c`, used to be a list of fields and now it's expected to be a full configuration object.
+
+The `stringify` option hass been removed.
+
+`doubleQuote` has been renamed to `escapedQuote`.
+
+The `unwind` and `flatten` -related options has been moved to their own transforms.
+
+What used to be 
+```js
+const { Parser } = require('json2csv');
+const json2csvParser = new Parser({ unwind: paths, unwindBlank: true, flatten: true, flattenSeparator: '__' });
+const csv = json2csvParser.parse(myData);
+```
+
+should be replaced by
+```js
+const { Parser, transform: { unwind, flatten } } = require('json2csv');
+const json2csvParser = new Parser({ transforms: [unwind(paths, true), flatten('__')] });
+const csv = json2csvParser.parse(myData);
+```
+
+You can se the documentation for json2csv v4.X.X [here](https://github.com/zemirco/json2csv/blob/v4/README.md).
 
 ## Known Gotchas
 
