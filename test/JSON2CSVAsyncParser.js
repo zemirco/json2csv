@@ -1,7 +1,7 @@
 'use strict';
 
 const { Readable, Transform, Writable } = require('stream');
-const { AsyncParser, parseAsync } = require('../lib/json2csv');
+const { AsyncParser, parseAsync, transforms: { flatten, unwind } } = require('../lib/json2csv');
 
 module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) => {
   testRunner.add('should should error async if invalid opts are passed using parseAsync method', async (t) => {
@@ -499,110 +499,6 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     try {
       const csv = await parser.fromInput(jsonFixtures.fancyfields()).promise();
       t.equal(csv, csvFixtures.fancyfields);
-    } catch(err) {
-      t.fail(err.message);
-    }
-
-    t.end();
-  });
-
-  // Preprocessing
-
-  testRunner.add('should support unwinding an object into multiple rows', async (t) => {
-    const opts = {
-      fields: ['carModel', 'price', 'colors'],
-      unwind: 'colors'
-    };
-    const parser = new AsyncParser(opts);
-
-    try {
-      const csv = await parser.fromInput(jsonFixtures.unwind()).promise();
-      t.equal(csv, csvFixtures.unwind);
-    } catch(err) {
-      t.fail(err.message);
-    }
-
-    t.end();
-  });
-
-  testRunner.add('should support multi-level unwind', async (t) => {
-    const opts = {
-      fields: ['carModel', 'price', 'extras.items.name', 'extras.items.color', 'extras.items.items.position', 'extras.items.items.color'],
-      unwind: ['extras.items', 'extras.items.items']
-    };
-    const parser = new AsyncParser(opts);
-
-    try {
-      const csv = await parser.fromInput(jsonFixtures.unwind2()).promise();
-      t.equal(csv, csvFixtures.unwind2);
-    } catch(err) {
-      t.fail(err.message);
-    }
-
-    t.end();
-  });
-
-  testRunner.add('should unwind and blank out repeated data', async (t) => {
-    const opts = {
-      fields: ['carModel', 'price', 'extras.items.name', 'extras.items.color', 'extras.items.items.position', 'extras.items.items.color'],
-      unwind: ['extras.items', 'extras.items.items'],
-      unwindBlank: true
-    };
-    const parser = new AsyncParser(opts);
-
-    try {
-      const csv = await parser.fromInput(jsonFixtures.unwind2()).promise();
-      t.equal(csv, csvFixtures.unwind2Blank);
-    } catch(err) {
-      t.fail(err.message);
-    }
-
-    t.end();
-  });
-
-  testRunner.add('should support flattening deep JSON', async (t) => {
-    const opts = {
-      flatten: true
-    };
-    const parser = new AsyncParser(opts);
-
-    try {
-      const csv = await parser.fromInput(jsonFixtures.deepJSON()).promise();
-      t.equal(csv, csvFixtures.flattenedDeepJSON);
-    } catch(err) {
-      t.fail(err.message);
-    }
-
-    t.end();
-  });
-
-  testRunner.add('should support custom flatten separator', async (t) => {
-    const opts = {
-      flatten: true,
-      flattenSeparator: '__',
-    };
-    const parser = new AsyncParser(opts);
-
-    try {
-      const csv = await parser.fromInput(jsonFixtures.deepJSON()).promise();
-      t.equal(csv, csvFixtures.flattenedCustomSeparatorDeepJSON);
-    } catch(err) {
-      t.fail(err.message);
-    }
-
-    t.end();
-  });
-
-  testRunner.add('should unwind and flatten an object in the right order', async (t) => {
-    const opts = {
-      unwind: ['items'],
-      flatten: true
-    };
-    const parser = new AsyncParser(opts);
-
-    try {
-      const csv = await parser.fromInput(jsonFixtures.unwindAndFlatten()).promise();
-      t.equal(csv, csvFixtures.unwindAndFlatten);
     } catch(err) {
       t.fail(err.message);
     }
@@ -1230,4 +1126,126 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     t.end();
   });
 
+  // Transforms
+
+  testRunner.add('should support unwinding an object into multiple rows using the unwind transform', async (t) => {
+    const opts = {
+      fields: ['carModel', 'price', 'colors'],
+      transforms: [unwind(['colors'])],
+    };
+    const parser = new AsyncParser(opts);
+
+    try {
+      const csv = await parser.fromInput(jsonFixtures.unwind()).promise();
+      t.equal(csv, csvFixtures.unwind);
+    } catch(err) {
+      t.fail(err.message);
+    }
+
+    t.end();
+  });
+
+  testRunner.add('should support multi-level unwind using the unwind transform', async (t) => {
+    const opts = {
+      fields: ['carModel', 'price', 'extras.items.name', 'extras.items.color', 'extras.items.items.position', 'extras.items.items.color'],
+      transforms: [unwind(['extras.items', 'extras.items.items'])],
+    };
+    const parser = new AsyncParser(opts);
+
+    try {
+      const csv = await parser.fromInput(jsonFixtures.unwind2()).promise();
+      t.equal(csv, csvFixtures.unwind2);
+    } catch(err) {
+      t.fail(err.message);
+    }
+
+    t.end();
+  });
+
+  testRunner.add('should support unwind and blank out repeated data using the unwind transform', async (t) => {
+    const opts = {
+      fields: ['carModel', 'price', 'extras.items.name', 'extras.items.color', 'extras.items.items.position', 'extras.items.items.color'],
+      transforms: [unwind(['extras.items', 'extras.items.items'], true)],
+    };
+    const parser = new AsyncParser(opts);
+
+    try {
+      const csv = await parser.fromInput(jsonFixtures.unwind2()).promise();
+      t.equal(csv, csvFixtures.unwind2Blank);
+    } catch(err) {
+      t.fail(err.message);
+    }
+
+    t.end();
+  });
+
+  testRunner.add('should support flattening deep JSON using the flatten transform', async (t) => {
+    const opts = {
+      transforms: [flatten()],
+    };
+    const parser = new AsyncParser(opts);
+
+    try {
+      const csv = await parser.fromInput(jsonFixtures.deepJSON()).promise();
+      t.equal(csv, csvFixtures.flattenedDeepJSON);
+    } catch(err) {
+      t.fail(err.message);
+    }
+
+    t.end();
+  });
+
+  testRunner.add('should support custom flatten separator using the flatten transform', async (t) => {
+    const opts = {
+      transforms: [flatten('__')],
+    };
+    const parser = new AsyncParser(opts);
+
+    try {
+      const csv = await parser.fromInput(jsonFixtures.deepJSON()).promise();
+      t.equal(csv, csvFixtures.flattenedCustomSeparatorDeepJSON);
+    } catch(err) {
+      t.fail(err.message);
+    }
+
+    t.end();
+  });
+
+  testRunner.add('should support multiple transforms and honor the order in which they are declared', async (t) => {
+    const opts = {
+      transforms: [unwind(['items']), flatten()],
+    };
+    const parser = new AsyncParser(opts);
+
+    try {
+      const csv = await parser.fromInput(jsonFixtures.unwindAndFlatten()).promise();
+      t.equal(csv, csvFixtures.unwindAndFlatten);
+    } catch(err) {
+      t.fail(err.message);
+    }
+
+    t.end();
+  });
+
+  testRunner.add('should support custom transforms', async (t) => {
+    const opts = {
+      transforms: [row => ({
+        model: row.carModel,
+        price: row.price / 1000,
+        color: row.color,
+        transmission: row.transmission || 'automatic',
+      })],
+    };
+
+    const parser = new AsyncParser(opts);
+
+    try {
+      const csv = await parser.fromInput(jsonFixtures.default()).promise();
+      t.equal(csv, csvFixtures.defaultCustomTransform);
+    } catch(err) {
+      t.fail(err.message);
+    }
+
+    t.end();
+  });
 };

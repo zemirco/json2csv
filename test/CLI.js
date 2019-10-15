@@ -273,76 +273,6 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     });
   });
 
-  // Preprocessing
-
-  testRunner.add('should support unwinding an object into multiple rows', (t) => {
-    const opts = '--unwind colors';
-
-    exec(`${cli} -i "${getFixturePath('/json/unwind.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr);
-      const csv = stdout;
-      t.equal(csv, csvFixtures.unwind);
-      t.end();
-    });
-  });
-
-  testRunner.add('should support multi-level unwind', (t) => {
-    const opts = '--fields carModel,price,extras.items.name,extras.items.color,extras.items.items.position,extras.items.items.color'
-      + ' --unwind extras.items,extras.items.items';
-
-    exec(`${cli} -i "${getFixturePath('/json/unwind2.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr);
-      const csv = stdout;
-      t.equal(csv, csvFixtures.unwind2);
-      t.end();
-    });
-  });
-
-  testRunner.add('hould unwind and blank out repeated data', (t) => {
-    const opts = '--fields carModel,price,extras.items.name,extras.items.color,extras.items.items.position,extras.items.items.color'
-      + ' --unwind extras.items,extras.items.items --unwind-blank';
-
-    exec(`${cli} -i "${getFixturePath('/json/unwind2.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr);
-      const csv = stdout;
-      t.equal(csv, csvFixtures.unwind2Blank);
-      t.end();
-    });
-  });
-
-  testRunner.add('should support flattening deep JSON', (t) => {
-    const opts = '--flatten';
-
-    exec(`${cli} -i "${getFixturePath('/json/deepJSON.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr);
-      const csv = stdout;
-      t.equal(csv, csvFixtures.flattenedDeepJSON);
-      t.end();
-    });
-  });
-
-  testRunner.add('should support custom flatten separator', (t) => {
-    const opts = '--flatten --flatten-separator __';
-
-    exec(`${cli} -i "${getFixturePath('/json/deepJSON.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr);
-      const csv = stdout;
-      t.equal(csv, csvFixtures.flattenedCustomSeparatorDeepJSON);
-      t.end();
-    });
-  });
-
-  testRunner.add('should unwind and flatten an object in the right order', (t) => {
-    const opts = '--unwind items --flatten';
-
-    exec(`${cli} -i "${getFixturePath('/json/unwindAndFlatten.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr);
-      const csv = stdout;
-      t.equal(csv, csvFixtures.unwindAndFlatten);
-      t.end();
-    });
-  });
-
   // Default value
 
   testRunner.add('should output the default value as set in \'defaultValue\'', (t) => {
@@ -805,6 +735,76 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
       t.notOk(stderr);
       const csv = stdout;
       t.equal(csv, csvFixtures.prettyprintWithoutRows);
+      t.end();
+    });
+  });
+
+  // Preprocessing
+
+  testRunner.add('should support unwinding an object into multiple rows using the unwind transform', (t) => {
+    const opts = '--unwind colors';
+
+    exec(`${cli} -i "${getFixturePath('/json/unwind.json')}" ${opts}`, (err, stdout, stderr) => {
+      t.notOk(stderr);
+      const csv = stdout;
+      t.equal(csv, csvFixtures.unwind);
+      t.end();
+    });
+  });
+
+  testRunner.add('should support multi-level unwind using the unwind transform', (t) => {
+    const opts = '--fields carModel,price,extras.items.name,extras.items.color,extras.items.items.position,extras.items.items.color'
+      + ' --unwind extras.items,extras.items.items';
+
+    exec(`${cli} -i "${getFixturePath('/json/unwind2.json')}" ${opts}`, (err, stdout, stderr) => {
+      t.notOk(stderr);
+      const csv = stdout;
+      t.equal(csv, csvFixtures.unwind2);
+      t.end();
+    });
+  });
+
+  testRunner.add('hould unwind and blank out repeated data', (t) => {
+    const opts = '--fields carModel,price,extras.items.name,extras.items.color,extras.items.items.position,extras.items.items.color'
+      + ' --unwind extras.items,extras.items.items --unwind-blank';
+
+    exec(`${cli} -i "${getFixturePath('/json/unwind2.json')}" ${opts}`, (err, stdout, stderr) => {
+      t.notOk(stderr);
+      const csv = stdout;
+      t.equal(csv, csvFixtures.unwind2Blank);
+      t.end();
+    });
+  });
+
+  testRunner.add('should support flattening deep JSON using the flatten transform', (t) => {
+    const opts = '--flatten';
+
+    exec(`${cli} -i "${getFixturePath('/json/deepJSON.json')}" ${opts}`, (err, stdout, stderr) => {
+      t.notOk(stderr);
+      const csv = stdout;
+      t.equal(csv, csvFixtures.flattenedDeepJSON);
+      t.end();
+    });
+  });
+
+  testRunner.add('should support custom flatten separator using the flatten transform', (t) => {
+    const opts = '--flatten --flatten-separator __';
+
+    exec(`${cli} -i "${getFixturePath('/json/deepJSON.json')}" ${opts}`, (err, stdout, stderr) => {
+      t.notOk(stderr);
+      const csv = stdout;
+      t.equal(csv, csvFixtures.flattenedCustomSeparatorDeepJSON);
+      t.end();
+    });
+  });
+
+  testRunner.add('should support multiple transforms and honor the order in which they are declared', (t) => {
+    const opts = '--unwind items --flatten';
+
+    exec(`${cli} -i "${getFixturePath('/json/unwindAndFlatten.json')}" ${opts}`, (err, stdout, stderr) => {
+      t.notOk(stderr);
+      const csv = stdout;
+      t.equal(csv, csvFixtures.unwindAndFlatten);
       t.end();
     });
   });

@@ -1,7 +1,7 @@
 'use strict';
 
 const { Readable } = require('stream');
-const { Transform: Json2csvTransform } = require('../lib/json2csv');
+const { Transform: Json2csvTransform, transforms: { flatten, unwind } } = require('../lib/json2csv');
 
 module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) => {
   testRunner.add('should handle object mode', (t) => {
@@ -497,142 +497,6 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       .on('data', chunk => (csv += chunk.toString()))
       .on('end', () => {
         t.equal(csv, csvFixtures.fancyfields);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
-  });
-
-  // Preprocessing
-
-  testRunner.add('should support unwinding an object into multiple rows', (t) => {
-    const opts = {
-      fields: ['carModel', 'price', 'colors'],
-      unwind: 'colors'
-    };
-
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.unwind().pipe(transform);
-
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.unwind);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
-  });
-
-  testRunner.add('should support multi-level unwind', (t) => {
-    const opts = {
-      fields: ['carModel', 'price', 'extras.items.name', 'extras.items.color', 'extras.items.items.position', 'extras.items.items.color'],
-      unwind: ['extras.items', 'extras.items.items']
-    };
-
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.unwind2().pipe(transform);
-
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.unwind2);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
-  });
-
-
-
-  testRunner.add('should unwind and blank out repeated data', (t) => {
-    const opts = {
-      fields: ['carModel', 'price', 'extras.items.name', 'extras.items.color', 'extras.items.items.position', 'extras.items.items.color'],
-      unwind: ['extras.items', 'extras.items.items'],
-      unwindBlank: true
-    };
-
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.unwind2().pipe(transform);
-
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.unwind2Blank);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
-  });
-
-  testRunner.add('should support flattening deep JSON', (t) => {
-    const opts = {
-      flatten: true
-    };
-
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.deepJSON().pipe(transform);
-
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.flattenedDeepJSON);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
-  });
-
-  testRunner.add('should support custom flatten separator', (t) => {
-    const opts = {
-      flatten: true,
-      flattenSeparator: '__',
-    };
-
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.deepJSON().pipe(transform);
-
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.flattenedCustomSeparatorDeepJSON);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
-  });
-
-  testRunner.add('should unwind and flatten an object in the right order', (t) => {
-    const opts = {
-      unwind: ['items'],
-      flatten: true
-    };
-
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.unwindAndFlatten().pipe(transform);
-
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.unwindAndFlatten);
         t.end();
       })
       .on('error', err => {
@@ -1249,6 +1113,165 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.equal(csv[0], '\ufeff');
         t.equal(csv.length, csvFixtures.default.length + 1);
         t.equal(csv.length, csvFixtures.withBOM.length);
+        t.end();
+      })
+      .on('error', err => {
+        t.fail(err.message);
+        t.end();  
+      });
+  });
+
+  // Transform
+
+  testRunner.add('should support unwinding an object into multiple rows using the unwind transform', (t) => {
+    const opts = {
+      fields: ['carModel', 'price', 'colors'],
+      transforms: [unwind(['colors'])],
+    };
+
+    const transform = new Json2csvTransform(opts);
+    const processor = jsonFixtures.unwind().pipe(transform);
+
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.equal(csv, csvFixtures.unwind);
+        t.end();
+      })
+      .on('error', err => {
+        t.fail(err.message);
+        t.end();  
+      });
+  });
+
+  testRunner.add('should support multi-level unwind using the unwind transform', (t) => {
+    const opts = {
+      fields: ['carModel', 'price', 'extras.items.name', 'extras.items.color', 'extras.items.items.position', 'extras.items.items.color'],
+      transforms: [unwind(['extras.items', 'extras.items.items'])],
+    };
+
+    const transform = new Json2csvTransform(opts);
+    const processor = jsonFixtures.unwind2().pipe(transform);
+
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.equal(csv, csvFixtures.unwind2);
+        t.end();
+      })
+      .on('error', err => {
+        t.fail(err.message);
+        t.end();  
+      });
+  });
+
+
+
+  testRunner.add('should support unwind and blank out repeated data using the unwind transform', (t) => {
+    const opts = {
+      fields: ['carModel', 'price', 'extras.items.name', 'extras.items.color', 'extras.items.items.position', 'extras.items.items.color'],
+      transforms: [unwind(['extras.items', 'extras.items.items'], true)],
+    };
+
+    const transform = new Json2csvTransform(opts);
+    const processor = jsonFixtures.unwind2().pipe(transform);
+
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.equal(csv, csvFixtures.unwind2Blank);
+        t.end();
+      })
+      .on('error', err => {
+        t.fail(err.message);
+        t.end();  
+      });
+  });
+
+  testRunner.add('should support flattening deep JSON using the flatten transform', (t) => {
+    const opts = {
+      transforms: [flatten()],
+    };
+
+    const transform = new Json2csvTransform(opts);
+    const processor = jsonFixtures.deepJSON().pipe(transform);
+
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.equal(csv, csvFixtures.flattenedDeepJSON);
+        t.end();
+      })
+      .on('error', err => {
+        t.fail(err.message);
+        t.end();  
+      });
+  });
+
+  testRunner.add('should support custom flatten separator using the flatten transform', (t) => {
+    const opts = {
+      transforms: [flatten('__')],
+    };
+
+    const transform = new Json2csvTransform(opts);
+    const processor = jsonFixtures.deepJSON().pipe(transform);
+
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.equal(csv, csvFixtures.flattenedCustomSeparatorDeepJSON);
+        t.end();
+      })
+      .on('error', err => {
+        t.fail(err.message);
+        t.end();  
+      });
+  });
+
+  testRunner.add('should support multiple transforms and honor the order in which they are declared', (t) => {
+    const opts = {
+      transforms: [unwind(['items']), flatten()],
+    };
+
+    const transform = new Json2csvTransform(opts);
+    const processor = jsonFixtures.unwindAndFlatten().pipe(transform);
+
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.equal(csv, csvFixtures.unwindAndFlatten);
+        t.end();
+      })
+      .on('error', err => {
+        t.fail(err.message);
+        t.end();  
+      });
+  });
+
+  testRunner.add('should support custom transforms', async (t) => {
+    const opts = {
+      transforms: [row => ({
+        model: row.carModel,
+        price: row.price / 1000,
+        color: row.color,
+        transmission: row.transmission || 'automatic',
+      })],
+    };
+
+    const transform = new Json2csvTransform(opts);
+    const processor = jsonFixtures.default().pipe(transform);
+
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.equal(csv, csvFixtures.defaultCustomTransform);
         t.end();
       })
       .on('error', err => {

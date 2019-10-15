@@ -1,6 +1,6 @@
 'use strict';
 
-const { parse, Parser: Json2csvParser } = require('../lib/json2csv');
+const { parse, Parser: Json2csvParser, transforms: { flatten, unwind } } = require('../lib/json2csv');
 
 module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   testRunner.add('should parse json to csv, infer the fields automatically and not modify the opts passed using parse method', (t) => {
@@ -295,99 +295,6 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     const csv = parser.parse(jsonFixtures.fancyfields);
 
     t.equal(csv, csvFixtures.fancyfields);
-    t.end();
-  });
-
-  // Preprocessing
-
-  testRunner.add('should support unwinding an object into multiple rows', (t) => {
-    const opts = {
-      fields: ['carModel', 'price', 'colors'],
-      unwind: 'colors'
-    };
-
-    const parser = new Json2csvParser(opts);
-    const csv = parser.parse(jsonFixtures.unwind);
-
-    t.equal(csv, csvFixtures.unwind);
-    t.end();
-  });
-
-  testRunner.add('should support multi-level unwind', (t) => {
-    const opts = {
-      fields: ['carModel', 'price', 'extras.items.name', 'extras.items.color', 'extras.items.items.position', 'extras.items.items.color'],
-      unwind: ['extras.items', 'extras.items.items']
-    };
-
-    const parser = new Json2csvParser(opts);
-    const csv = parser.parse(jsonFixtures.unwind2);
-
-    t.equal(csv, csvFixtures.unwind2);
-    t.end();
-  });
-
-  testRunner.add('should unwind and blank out repeated data', (t) => {
-    const opts = {
-      fields: ['carModel', 'price', 'extras.items.name', 'extras.items.color', 'extras.items.items.position', 'extras.items.items.color'],
-      unwind: ['extras.items', 'extras.items.items'],
-      unwindBlank: true
-    };
-
-    const parser = new Json2csvParser(opts);
-    const csv = parser.parse(jsonFixtures.unwind2);
-
-    t.equal(csv, csvFixtures.unwind2Blank);
-    t.end();
-  });
-
-
-  testRunner.add('should support flattening deep JSON', (t) => {
-    const opts = {
-      flatten: true
-    };
-
-    const parser = new Json2csvParser(opts);
-    const csv = parser.parse(jsonFixtures.deepJSON);
-
-    t.equal(csv, csvFixtures.flattenedDeepJSON);
-    t.end();
-  });
-
-  testRunner.add('should support flattening JSON with toJSON', (t) => {
-    const opts = {
-      flatten: true
-    };
-
-    const parser = new Json2csvParser(opts);
-    const csv = parser.parse(jsonFixtures.flattenToJSON);
-
-    t.equal(csv, csvFixtures.flattenToJSON);
-    t.end();
-  });
-
-  testRunner.add('should support custom flatten separator', (t) => {
-    const opts = {
-      flatten: true,
-      flattenSeparator: '__',
-    };
-
-    const parser = new Json2csvParser(opts);
-    const csv = parser.parse(jsonFixtures.deepJSON);
-
-    t.equal(csv, csvFixtures.flattenedCustomSeparatorDeepJSON);
-    t.end();
-  });
-
-  testRunner.add('should unwind and flatten an object in the right order', (t) => {
-    const opts = {
-      unwind: ['items'],
-      flatten: true
-    };
-
-    const parser = new Json2csvParser(opts);
-    const csv = parser.parse(jsonFixtures.unwindAndFlatten);
-
-    t.equal(csv, csvFixtures.unwindAndFlatten);
     t.end();
   });
 
@@ -757,6 +664,113 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     t.equal(csv[0], '\ufeff');
     t.equal(csv.length, csvFixtures.default.length + 1);
     t.equal(csv.length, csvFixtures.withBOM.length);
+    t.end();
+  });
+
+  // Transforms
+
+  testRunner.add('should support unwinding an object into multiple rows using the unwind transform', (t) => {
+    const opts = {
+      fields: ['carModel', 'price', 'colors'],
+      transforms: [unwind(['colors'])],
+    };
+
+    const parser = new Json2csvParser(opts);
+    const csv = parser.parse(jsonFixtures.unwind);
+
+    t.equal(csv, csvFixtures.unwind);
+    t.end();
+  });
+
+  testRunner.add('should support multi-level unwind using the unwind transform', (t) => {
+    const opts = {
+      fields: ['carModel', 'price', 'extras.items.name', 'extras.items.color', 'extras.items.items.position', 'extras.items.items.color'],
+      transforms: [unwind(['extras.items', 'extras.items.items'])],
+    };
+
+    const parser = new Json2csvParser(opts);
+    const csv = parser.parse(jsonFixtures.unwind2);
+
+    t.equal(csv, csvFixtures.unwind2);
+    t.end();
+  });
+
+  testRunner.add('should support unwind and blank out repeated data using the unwind transform', (t) => {
+    const opts = {
+      fields: ['carModel', 'price', 'extras.items.name', 'extras.items.color', 'extras.items.items.position', 'extras.items.items.color'],
+      transforms: [unwind(['extras.items', 'extras.items.items'], true)],
+    };
+
+    const parser = new Json2csvParser(opts);
+    const csv = parser.parse(jsonFixtures.unwind2);
+
+    t.equal(csv, csvFixtures.unwind2Blank);
+    t.end();
+  });
+
+
+  testRunner.add('should support flattening deep JSON using the flatten transform', (t) => {
+    const opts = {
+      transforms: [flatten()],
+    };
+
+    const parser = new Json2csvParser(opts);
+    const csv = parser.parse(jsonFixtures.deepJSON);
+
+    t.equal(csv, csvFixtures.flattenedDeepJSON);
+    t.end();
+  });
+
+  testRunner.add('should support flattening JSON with toJSON using the flatten transform', (t) => {
+    const opts = {
+      transforms: [flatten()],
+    };
+
+    const parser = new Json2csvParser(opts);
+    const csv = parser.parse(jsonFixtures.flattenToJSON);
+
+    t.equal(csv, csvFixtures.flattenToJSON);
+    t.end();
+  });
+
+  testRunner.add('should support custom flatten separator using the flatten transform', (t) => {
+    const opts = {
+      transforms: [flatten('__')],
+    };
+
+    const parser = new Json2csvParser(opts);
+    const csv = parser.parse(jsonFixtures.deepJSON);
+
+    t.equal(csv, csvFixtures.flattenedCustomSeparatorDeepJSON);
+    t.end();
+  });
+
+  testRunner.add('should support multiple transforms and honor the order in which they are declared', (t) => {
+    const opts = {
+      transforms: [unwind('items'), flatten()],
+    };
+
+    const parser = new Json2csvParser(opts);
+    const csv = parser.parse(jsonFixtures.unwindAndFlatten);
+
+    t.equal(csv, csvFixtures.unwindAndFlatten);
+    t.end();
+  });
+
+  testRunner.add('should support custom transforms', (t) => {
+    const opts = {
+      transforms: [row => ({
+        model: row.carModel,
+        price: row.price / 1000,
+        color: row.color,
+        transmission: row.transmission || 'automatic',
+      })],
+    };
+
+    const parser = new Json2csvParser(opts);
+    const csv = parser.parse(jsonFixtures.default);
+
+    t.equal(csv, csvFixtures.defaultCustomTransform);
     t.end();
   });
 };
