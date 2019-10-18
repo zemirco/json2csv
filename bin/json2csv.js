@@ -17,6 +17,7 @@ const writeFile = promisify(writeFileOrig);
 const isAbsolutePath = promisify(isAbsolute);
 const joinPath = promisify(join);
 
+const { unwind, flatten } = json2csv.transforms;
 const JSON2CSVParser = json2csv.Parser;
 const Json2csvTransform = json2csv.Transform;
 
@@ -28,20 +29,21 @@ program
   .option('-n, --ndjson', 'Treat the input as NewLine-Delimited JSON.')
   .option('-s, --no-streaming', 'Process the whole JSON array in memory instead of doing it line by line.')
   .option('-f, --fields <fields>', 'List of fields to process. Defaults to field auto-detection.')
-  .option('-u, --unwind <paths>', 'Creates multiple rows from a single JSON document similar to MongoDB unwind.')
-  .option('-B, --unwind-blank', 'When unwinding, blank out instead of repeating data.')
-  .option('-F, --flatten', 'Flatten nested objects.')
-  .option('-S, --flatten-separator <separator>', 'Flattened keys separator. Defaults to \'.\'.')
   .option('-v, --default-value [defaultValue]', 'Default value to use for missing fields.')
   .option('-q, --quote [quote]', 'Character(s) to use as quote mark. Defaults to \'"\'.')
   .option('-Q, --escaped-quote [escapedQuote]', 'Character(s) to use as a escaped quote. Defaults to a double `quote`, \'""\'.')
-  .option('-d, --delimiter [delimiter]', 'Character(s) to use as delimiter. Defaults to \',\'.')
-  .option('-e, --eol [eol]', 'Character(s) to use as End-of-Line for separating rows. Defaults to \'\\n\'.')
+  .option('-d, --delimiter [delimiter]', 'Character(s) to use as delimiter. Defaults to \',\'.', ',')
+  .option('-e, --eol [eol]', 'Character(s) to use as End-of-Line for separating rows. Defaults to \'\\n\'.', os.EOL)
   .option('-E, --excel-strings','Wraps string data to force Excel to interpret it as string even if it contains a number.')
   .option('-H, --no-header', 'Disable the column name header.')
   .option('-a, --include-empty-rows', 'Includes empty rows in the resulting CSV output.')
   .option('-b, --with-bom', 'Includes BOM character at the beginning of the CSV.')
   .option('-p, --pretty', 'Print output as a pretty table. Use only when printing to console.')
+  // Built-in transforms
+  .option('-u, --unwind <paths>', 'Creates multiple rows from a single JSON document similar to MongoDB unwind.')
+  .option('-B, --unwind-blank', 'When unwinding, blank out instead of repeating data.')
+  .option('-F, --flatten', 'Flatten nested objects.')
+  .option('-S, --flatten-separator <separator>', 'Flattened keys separator. Defaults to \'.\'.')
   .parse(process.argv);
 
 function makePathAbsolute(filePath) {
@@ -53,11 +55,6 @@ function makePathAbsolute(filePath) {
 program.input = makePathAbsolute(program.input);
 program.output = makePathAbsolute(program.output);
 program.config = makePathAbsolute(program.config);
-
-if (program.fields) program.fields = program.fields.split(',');
-if (program.unwind) program.unwind = program.unwind.split(',');
-program.delimiter = program.delimiter || ',';
-program.eol = program.eol || os.EOL;
 
 // don't fail if piped to e.g. head
 /* istanbul ignore next */
@@ -137,13 +134,16 @@ async function processStream(config, opts) {
 (async (program) => {
   try {
     const config = Object.assign({}, program.config ? require(program.config) : {}, program);
+
+    const transforms = [];
+    if (config.unwind) transforms.push(unwind(config.unwind.split(','), config.unwindBlank || false));
+    if (config.flatten) transforms.push(flatten(config.flattenSeparator || '.'));
     
     const opts = {
-      fields: config.fields,
-      unwind: config.unwind,
-      unwindBlank: config.unwindBlank,
-      flatten: config.flatten,
-      flattenSeparator: config.flattenSeparator,
+      transforms,
+      fields: config.fields
+        ? (Array.isArray(config.fields) ? config.fields : config.fields.split(','))
+        : config.fields,
       defaultValue: config.defaultValue,
       quote: config.quote,
       escapedQuote: config.escapedQuote,
