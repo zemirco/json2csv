@@ -672,7 +672,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   testRunner.add('should support unwinding an object into multiple rows using the unwind transform', (t) => {
     const opts = {
       fields: ['carModel', 'price', 'colors'],
-      transforms: [unwind(['colors'])],
+      transforms: [unwind({ paths: ['colors'] })],
     };
 
     const parser = new Json2csvParser(opts);
@@ -685,7 +685,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   testRunner.add('should support multi-level unwind using the unwind transform', (t) => {
     const opts = {
       fields: ['carModel', 'price', 'extras.items.name', 'extras.items.color', 'extras.items.items.position', 'extras.items.items.color'],
-      transforms: [unwind(['extras.items', 'extras.items.items'])],
+      transforms: [unwind({ paths: ['extras.items', 'extras.items.items'] })],
     };
 
     const parser = new Json2csvParser(opts);
@@ -698,7 +698,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   testRunner.add('should support unwind and blank out repeated data using the unwind transform', (t) => {
     const opts = {
       fields: ['carModel', 'price', 'extras.items.name', 'extras.items.color', 'extras.items.items.position', 'extras.items.items.color'],
-      transforms: [unwind(['extras.items', 'extras.items.items'], true)],
+      transforms: [unwind({ paths: ['extras.items', 'extras.items.items'], blankOut: true })],
     };
 
     const parser = new Json2csvParser(opts);
@@ -733,9 +733,21 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     t.end();
   });
 
+  testRunner.add('should support flattening JSON with nested arrays using the flatten transform', (t) => {
+    const opts = {
+      transforms: [flatten({ arrays: true })],
+    };
+
+    const parser = new Json2csvParser(opts);
+    const csv = parser.parse(jsonFixtures.flattenArrays);
+
+    t.equal(csv, csvFixtures.flattenedArrays);
+    t.end();
+  });
+
   testRunner.add('should support custom flatten separator using the flatten transform', (t) => {
     const opts = {
-      transforms: [flatten('__')],
+      transforms: [flatten({ separator: '__' })],
     };
 
     const parser = new Json2csvParser(opts);
@@ -747,7 +759,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
 
   testRunner.add('should support multiple transforms and honor the order in which they are declared', (t) => {
     const opts = {
-      transforms: [unwind('items'), flatten()],
+      transforms: [unwind({ paths: ['items'] }), flatten()],
     };
 
     const parser = new Json2csvParser(opts);
