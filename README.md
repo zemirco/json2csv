@@ -799,7 +799,7 @@ This might produce few undesired effects with, for example, serial numbers:
 - Large numbers are displayed using scientific notation
 - Leading zeros are stripped.
 
-Enabling the `excelString` option produces a Excel-specific CSV file that forces Excel to interpret string fields as strings. Please note that the CSV will look incorrect if viewing it somewhere else than Excel.
+Enabling the `excelString` option produces an Excel-specific CSV file that forces Excel to interpret string fields as strings. Please note that the CSV will look incorrect if viewing it somewhere else than Excel.
 
 #### Avoiding CSV injection
 
@@ -807,7 +807,7 @@ As part of Excel automatically format detection, fields regarded as formulas (st
 
 This issue has nothing to do with the CSV format, since CSV knows nothing about formulas, but with how Excel parses CSV files.
 
-Enabling the `excelString` option produces a Excel-specific CSV file that forces Excel to interpret string fields as strings. Please note that the CSV will look incorrect if viewing it somewhere else than Excel.
+Enabling the `excelString` option produces an Excel-specific CSV file that forces Excel to interpret string fields as strings. Please note that the CSV will look incorrect if viewing it somewhere else than Excel.
 
 #### Preserving new lines
 
