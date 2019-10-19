@@ -1,0 +1,3 @@
+"name","age","friends.0.name","friends.0.age","friends.1.name","friends.1.age"
+"Jack",39,"Oliver",40,"Harry",50
+"Thomas",40,"Harry",35,,

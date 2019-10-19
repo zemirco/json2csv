@@ -40,10 +40,11 @@ program
   .option('-b, --with-bom', 'Includes BOM character at the beginning of the CSV.')
   .option('-p, --pretty', 'Print output as a pretty table. Use only when printing to console.')
   // Built-in transforms
-  .option('-u, --unwind <paths>', 'Creates multiple rows from a single JSON document similar to MongoDB unwind.')
-  .option('-B, --unwind-blank', 'When unwinding, blank out instead of repeating data.')
-  .option('-F, --flatten', 'Flatten nested objects.')
-  .option('-S, --flatten-separator <separator>', 'Flattened keys separator. Defaults to \'.\'.')
+  .option('--unwind <paths>', 'Creates multiple rows from a single JSON document similar to MongoDB unwind.')
+  .option('--unwind-blank', 'When unwinding, blank out instead of repeating data. Defaults to false.', false)
+  .option('--flatten-objects', 'Flatten nested objects. Defaults to false.', false)
+  .option('--flatten-arrays', 'Flatten nested arrays. Defaults to false.', false)
+  .option('--flatten-separator <separator>', 'Flattened keys separator. Defaults to \'.\'.', '.')
   .parse(process.argv);
 
 function makePathAbsolute(filePath) {
@@ -136,8 +137,20 @@ async function processStream(config, opts) {
     const config = Object.assign({}, program.config ? require(program.config) : {}, program);
 
     const transforms = [];
-    if (config.unwind) transforms.push(unwind(config.unwind.split(','), config.unwindBlank || false));
-    if (config.flatten) transforms.push(flatten(config.flattenSeparator || '.'));
+    if (config.unwind) {
+      transforms.push(unwind({
+        paths: config.unwind.split(','),
+        blankOut: config.unwindBlank
+      }));
+    }
+
+    if (config.flattenObjects || config.flattenArrays) {
+      transforms.push(flatten({
+        objects: config.flattenObjects,
+        arrays: config.flattenArrays,
+        separator: config.flattenSeparator
+      }));
+    }
     
     const opts = {
       transforms,

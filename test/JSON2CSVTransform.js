@@ -1126,7 +1126,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
   testRunner.add('should support unwinding an object into multiple rows using the unwind transform', (t) => {
     const opts = {
       fields: ['carModel', 'price', 'colors'],
-      transforms: [unwind(['colors'])],
+      transforms: [unwind({ paths: ['colors'] })],
     };
 
     const transform = new Json2csvTransform(opts);
@@ -1148,7 +1148,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
   testRunner.add('should support multi-level unwind using the unwind transform', (t) => {
     const opts = {
       fields: ['carModel', 'price', 'extras.items.name', 'extras.items.color', 'extras.items.items.position', 'extras.items.items.color'],
-      transforms: [unwind(['extras.items', 'extras.items.items'])],
+      transforms: [unwind({ paths: ['extras.items', 'extras.items.items'] })],
     };
 
     const transform = new Json2csvTransform(opts);
@@ -1172,7 +1172,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
   testRunner.add('should support unwind and blank out repeated data using the unwind transform', (t) => {
     const opts = {
       fields: ['carModel', 'price', 'extras.items.name', 'extras.items.color', 'extras.items.items.position', 'extras.items.items.color'],
-      transforms: [unwind(['extras.items', 'extras.items.items'], true)],
+      transforms: [unwind({ paths: ['extras.items', 'extras.items.items'], blankOut: true })],
     };
 
     const transform = new Json2csvTransform(opts);
@@ -1212,9 +1212,30 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       });
   });
 
+  testRunner.add('should support flattening JSON with nested arrays using the flatten transform', (t) => {
+    const opts = {
+      transforms: [flatten({ arrays: true })],
+    };
+
+    const transform = new Json2csvTransform(opts);
+    const processor = jsonFixtures.flattenArrays().pipe(transform);
+
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.equal(csv, csvFixtures.flattenedArrays);
+        t.end();
+      })
+      .on('error', err => {
+        t.fail(err.message);
+        t.end();  
+      });
+  });
+
   testRunner.add('should support custom flatten separator using the flatten transform', (t) => {
     const opts = {
-      transforms: [flatten('__')],
+      transforms: [flatten({ separator: '__' })],
     };
 
     const transform = new Json2csvTransform(opts);
@@ -1235,7 +1256,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
 
   testRunner.add('should support multiple transforms and honor the order in which they are declared', (t) => {
     const opts = {
-      transforms: [unwind(['items']), flatten()],
+      transforms: [unwind({ paths: ['items'] }), flatten()],
     };
 
     const transform = new Json2csvTransform(opts);
@@ -1254,7 +1275,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       });
   });
 
-  testRunner.add('should support custom transforms', async (t) => {
+  testRunner.add('should support custom transforms', (t) => {
     const opts = {
       transforms: [row => ({
         model: row.carModel,

@@ -777,7 +777,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   });
 
   testRunner.add('should support flattening deep JSON using the flatten transform', (t) => {
-    const opts = '--flatten';
+    const opts = '--flatten-objects';
 
     exec(`${cli} -i "${getFixturePath('/json/deepJSON.json')}" ${opts}`, (err, stdout, stderr) => {
       t.notOk(stderr);
@@ -786,9 +786,19 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
       t.end();
     });
   });
+  testRunner.add('should support flattening JSON with nested arrays using the flatten transform', (t) => {
+    const opts = '--flatten-objects --flatten-arrays';
+
+    exec(`${cli} -i "${getFixturePath('/json/flattenArrays.json')}" ${opts}`, (err, stdout, stderr) => {
+      t.notOk(stderr);
+      const csv = stdout;
+      t.equal(csv, csvFixtures.flattenedArrays);
+      t.end();
+    });
+  });
 
   testRunner.add('should support custom flatten separator using the flatten transform', (t) => {
-    const opts = '--flatten --flatten-separator __';
+    const opts = '--flatten-objects --flatten-separator __';
 
     exec(`${cli} -i "${getFixturePath('/json/deepJSON.json')}" ${opts}`, (err, stdout, stderr) => {
       t.notOk(stderr);
@@ -799,7 +809,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   });
 
   testRunner.add('should support multiple transforms and honor the order in which they are declared', (t) => {
-    const opts = '--unwind items --flatten';
+    const opts = '--unwind items --flatten-objects';
 
     exec(`${cli} -i "${getFixturePath('/json/unwindAndFlatten.json')}" ${opts}`, (err, stdout, stderr) => {
       t.notOk(stderr);

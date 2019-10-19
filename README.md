@@ -74,9 +74,10 @@ Options:
   -b, --with-bom                       Includes BOM character at the beginning of the CSV.
   -p, --pretty                         Print output as a pretty table. Use only when printing to console.
   -u, --unwind <paths>                 Creates multiple rows from a single JSON document similar to MongoDB unwind.
-  -B, --unwind-blank                   When unwinding, blank out instead of repeating data.
-  -F, --flatten                        Flatten nested objects.
-  -S, --flatten-separator <separator>  Flattened keys separator. Defaults to '.'.
+  -B, --unwind-blank                   When unwinding, blank out instead of repeating data. Defaults to false.
+  -F, --flatten-objects                Flatten nested objects. Defaults to false.
+  -F, --flatten-arrays                 Flatten nested arrays. Defaults to false.
+  -S, --flatten-separator <separator>  Flattened keys separator. Defaults to '.'. (default: ".")
   -h, --help                           output usage information
 ```
 
@@ -394,22 +395,24 @@ const { transforms: { unwind, flatten } } = require('json2csv');
 
 The unwind transform deconstructs an array field from the input item to output a row for each element. Is's similar to MongoDB's $unwind aggregation.
 
-The transform needs to be instantiated and takes 2 arguments:
+The transform needs to be instantiated and takes an options object as arguments containing:
 - `paths` - Array of String, list the paths to the fields to be unwound. It's mandatory and should not be empty.
-- `blank` - Boolean, unwind using blank values instead of repeating data. Defaults to `false`.
+- `blankOut` - Boolean, unwind using blank values instead of repeating data. Defaults to `false`.
 
 ```js
 // Default
-unwind(['fieldToUnwind']);
+unwind({ paths: ['fieldToUnwind'] });
 
 // Blanking out repeated data
-unwind(['fieldToUnwind'], true);
+unwind({ paths: ['fieldToUnwind'], blankOut: true });
 ```
 
 ##### Flatten
 Flatten nested javascript objects into a single level object.
 
-The transform needs to be instantiated and takes 1 argument:
+The transform needs to be instantiated and takes an options object as arguments containing:
+- `objects` - Boolean, whether to flatten JSON objects or not. Defaults to `true`.
+- `arrays`- Boolean, whether to flatten Arrays or not. Defaults to `false`.
 - `separator` - String, separator to use between nested JSON keys when flattening a field. Defaults to `.`.
 
 ```js
@@ -417,7 +420,10 @@ The transform needs to be instantiated and takes 1 argument:
 flatten();
 
 // Custom separator '__'
-flatten('_');
+flatten({ separator: '_' });
+
+// Flatten only arrays
+flatten({ objects: false, arrays: true });
 ```
 
 ### Javascript module examples
