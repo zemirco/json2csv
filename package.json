@@ -26,6 +26,7 @@
     "type": "git",
     "url": "https://github.com/zemirco/json2csv"
   },
+  "homepage": "http://zemirco.github.io/json2csv",
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
