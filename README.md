@@ -73,7 +73,7 @@ Options:
   -a, --include-empty-rows            Includes empty rows in the resulting CSV output.
   -b, --with-bom                      Includes BOM character at the beginning of the CSV.
   -p, --pretty                        Print output as a pretty table. Use only when printing to console.
-  --unwind <paths>                    Creates multiple rows from a single JSON document similar to MongoDB unwind.
+  --unwind [paths]                    Creates multiple rows from a single JSON document similar to MongoDB unwind.
   --unwind-blank                      When unwinding, blank out instead of repeating data. Defaults to false. (default: false)
   --flatten-objects                   Flatten nested objects. Defaults to false. (default: false)
   --flatten-arrays                    Flatten nested arrays. Defaults to false. (default: false)

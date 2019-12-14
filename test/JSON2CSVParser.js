@@ -669,7 +669,20 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
 
   // Transforms
 
-  testRunner.add('should support unwinding an object into multiple rows using the unwind transform', (t) => {
+  testRunner.add('should unwind all unwindable fields using the unwind transform', (t) => {
+    const opts = {
+      fields: ['carModel', 'price', 'extras.items.name', 'extras.items.color', 'extras.items.items.position', 'extras.items.items.color'],
+      transforms: [unwind()],
+    };
+
+    const parser = new Json2csvParser(opts);
+    const csv = parser.parse(jsonFixtures.unwind2);
+
+    t.equal(csv, csvFixtures.unwind2);
+    t.end();
+  });
+
+  testRunner.add('should support unwinding specific fields using the unwind transform', (t) => {
     const opts = {
       fields: ['carModel', 'price', 'colors'],
       transforms: [unwind({ paths: ['colors'] })],
@@ -707,7 +720,6 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     t.equal(csv, csvFixtures.unwind2Blank);
     t.end();
   });
-
 
   testRunner.add('should support flattening deep JSON using the flatten transform', (t) => {
     const opts = {

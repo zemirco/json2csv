@@ -40,7 +40,7 @@ program
   .option('-b, --with-bom', 'Includes BOM character at the beginning of the CSV.')
   .option('-p, --pretty', 'Print output as a pretty table. Use only when printing to console.')
   // Built-in transforms
-  .option('--unwind <paths>', 'Creates multiple rows from a single JSON document similar to MongoDB unwind.')
+  .option('--unwind [paths]', 'Creates multiple rows from a single JSON document similar to MongoDB unwind.')
   .option('--unwind-blank', 'When unwinding, blank out instead of repeating data. Defaults to false.', false)
   .option('--flatten-objects', 'Flatten nested objects. Defaults to false.', false)
   .option('--flatten-arrays', 'Flatten nested arrays. Defaults to false.', false)
@@ -139,7 +139,7 @@ async function processStream(config, opts) {
     const transforms = [];
     if (config.unwind) {
       transforms.push(unwind({
-        paths: config.unwind.split(','),
+        paths: config.unwind === true ? undefined : config.unwind.split(','),
         blankOut: config.unwindBlank
       }));
     }

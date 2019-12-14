@@ -1128,7 +1128,24 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
 
   // Transforms
 
-  testRunner.add('should support unwinding an object into multiple rows using the unwind transform', async (t) => {
+  testRunner.add('should unwind all unwindable fields using the unwind transform', async (t) => {
+    const opts = {
+      fields: ['carModel', 'price', 'extras.items.name', 'extras.items.color', 'extras.items.items.position', 'extras.items.items.color'],
+      transforms: [unwind()],
+    };
+    const parser = new AsyncParser(opts);
+
+    try {
+      const csv = await parser.fromInput(jsonFixtures.unwind2()).promise();
+      t.equal(csv, csvFixtures.unwind2);
+    } catch(err) {
+      t.fail(err.message);
+    }
+
+    t.end();
+  });
+
+  testRunner.add('should support unwinding specific fields using the unwind transform', async (t) => {
     const opts = {
       fields: ['carModel', 'price', 'colors'],
       transforms: [unwind({ paths: ['colors'] })],

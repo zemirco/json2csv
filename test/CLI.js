@@ -741,7 +741,19 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
 
   // Preprocessing
 
-  testRunner.add('should support unwinding an object into multiple rows using the unwind transform', (t) => {
+  testRunner.add('should unwind all unwindable fields using the unwind transform', (t) => {
+    const opts = '--fields carModel,price,extras.items.name,extras.items.color,extras.items.items.position,extras.items.items.color'
+      + ' --unwind';
+
+    exec(`${cli} -i "${getFixturePath('/json/unwind2.json')}" ${opts}`, (err, stdout, stderr) => {
+      t.notOk(stderr);
+      const csv = stdout;
+      t.equal(csv, csvFixtures.unwind2);
+      t.end();
+    });
+  });
+
+  testRunner.add('should support unwinding specific fields using the unwind transform', (t) => {
     const opts = '--unwind colors';
 
     exec(`${cli} -i "${getFixturePath('/json/unwind.json')}" ${opts}`, (err, stdout, stderr) => {
@@ -786,6 +798,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
       t.end();
     });
   });
+
   testRunner.add('should support flattening JSON with nested arrays using the flatten transform', (t) => {
     const opts = '--flatten-objects --flatten-arrays';
 
