@@ -30,7 +30,7 @@ You can install json2csv as a dependency using NPM.
 Requires **Node v8** or higher.
 
 ```sh
-# Global so it can be call from anywhere
+# Global so it can be called from anywhere
 $ npm install -g json2csv
 # or as a dependency of a project
 $ npm install json2csv --save
