@@ -377,7 +377,7 @@ or using ES6
 }
 ```
 
-For example, let's add a line counter to our CSV, capitalize the car field and change the pize to be in Ks (1000s).
+For example, let's add a line counter to our CSV, capitalize the car field and change the price to be in Ks (1000s).
 ```js
 let counter = 1;
 (item) => ({ counter: counter++, ...item, car: item.car.toUpperCase(), price: item.price / 1000 });
