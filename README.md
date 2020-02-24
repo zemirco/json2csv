@@ -345,7 +345,7 @@ input._read = () => {};
 // myObjectEmitter is just a fake example representing anything that emit objects.
 myObjectEmitter.on('object', obj => input.push(obj));
 // Pushing a null close the stream
-myObjectEmitter.end(()) => input.push(null));
+myObjectEmitter.end(() => input.push(null));
 
 const output = process.stdout;
 
