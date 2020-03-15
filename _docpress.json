@@ -56,14 +56,19 @@
                 "id": "json2csv-transform-(streaming-api)"
               },
               {
+                "title": "Data transforms",
+                "depth": 3,
+                "id": "data-transforms"
+              },
+              {
                 "title": "Javascript module examples",
                 "depth": 3,
                 "id": "javascript-module-examples"
               },
               {
-                "title": "Migrating from 3.X to 4.X",
+                "title": "Migrations",
                 "depth": 3,
-                "id": "migrating-from-3.x-to-4.x"
+                "id": "migrations"
               }
             ]
           },
@@ -163,14 +168,19 @@
               "id": "json2csv-transform-(streaming-api)"
             },
             {
+              "title": "Data transforms",
+              "depth": 3,
+              "id": "data-transforms"
+            },
+            {
               "title": "Javascript module examples",
               "depth": 3,
               "id": "javascript-module-examples"
             },
             {
-              "title": "Migrating from 3.X to 4.X",
+              "title": "Migrations",
               "depth": 3,
-              "id": "migrating-from-3.x-to-4.x"
+              "id": "migrations"
             }
           ]
         },
