@@ -1,6 +1,48 @@
-# Change Log
+# Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+## [5.0.0](https://github.com/zemirco/json2csv/compare/v4.5.2...v5.0.0) (2020-03-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* Node 8 and 9 no longer supported, use Node 10 or greater. It might still work, but it has reached End-Of-Life.
+* module no longer takes `unwind`, `unwindBlank`, `flatten` or the `flattenSeparator` options, instead see the new `transforms` option. CLI options are unchanged from the callers side, but use the built in transforms under the hood.
+
+* Add support for transforms
+
+* Add documentation about transforms
+* remove extra commonjs build, use starting point in package.json `main` field.
+* Renamed `doubleQuote` to `escapedQuote`
+* remove `stringify` option
+* `--fields-config` option has been removed, use the new `--config` option for all configuration, not just fields.
+* Drop node 6 and 7, and add node 11 and 12
+
+### Bug Fixes
+
+* Always error asynchronously from parseAsync method ([#412](https://github.com/zemirco/json2csv/issues/412)) ([16cc044](https://github.com/zemirco/json2csv/commit/16cc044))
+* audit deps ([15992cf](https://github.com/zemirco/json2csv/commit/15992cf))
+* drop Node 8 and 9 ([7295465](https://github.com/zemirco/json2csv/commit/7295465))
+* Make some CLI options mandatory ([#433](https://github.com/zemirco/json2csv/issues/433)) ([bd51527](https://github.com/zemirco/json2csv/commit/bd51527))
+* Remove CommonJS build ([#422](https://github.com/zemirco/json2csv/issues/422)) ([5ce0089](https://github.com/zemirco/json2csv/commit/5ce0089))
+* Remove stringify option ([#419](https://github.com/zemirco/json2csv/issues/419)) ([39f303d](https://github.com/zemirco/json2csv/commit/39f303d))
+* Rename doubleQuote to escapedQuote ([#418](https://github.com/zemirco/json2csv/issues/418)) ([f99408c](https://github.com/zemirco/json2csv/commit/f99408c))
+* update CI node versions ([#413](https://github.com/zemirco/json2csv/issues/413)) ([6fd6c09](https://github.com/zemirco/json2csv/commit/6fd6c09))
+* update commander cli dep ([74aa40a](https://github.com/zemirco/json2csv/commit/74aa40a))
+* update commander dep ([272675b](https://github.com/zemirco/json2csv/commit/272675b))
+* **deps:** audit dependencies ([bf9877a](https://github.com/zemirco/json2csv/commit/bf9877a))
+* **deps:** update commander ([3f099f2](https://github.com/zemirco/json2csv/commit/3f099f2))
+* **security:** fix audit vulnerabilities ([b57715b](https://github.com/zemirco/json2csv/commit/b57715b))
+
+
+### Features
+
+* Add support for flattening arrays and change transforms arguments to an object. ([#432](https://github.com/zemirco/json2csv/issues/432)) ([916e448](https://github.com/zemirco/json2csv/commit/916e448))
+* Add support for transforms ([#431](https://github.com/zemirco/json2csv/issues/431)) ([f1d04d0](https://github.com/zemirco/json2csv/commit/f1d04d0))
+* Improve async promise to optionally not return ([#421](https://github.com/zemirco/json2csv/issues/421)) ([3e296f6](https://github.com/zemirco/json2csv/commit/3e296f6))
+* Improves the unwind transform so it unwinds all unwindable fields if … ([#434](https://github.com/zemirco/json2csv/issues/434)) ([ec1f301](https://github.com/zemirco/json2csv/commit/ec1f301))
+* replace fields config by a global config ([#338](https://github.com/zemirco/json2csv/issues/338)) ([d6c1c5f](https://github.com/zemirco/json2csv/commit/d6c1c5f))
 
 ## [4.5.2](https://github.com/zemirco/json2csv/compare/v4.5.1...v4.5.2) (2019-07-05)
 
