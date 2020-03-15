@@ -27,7 +27,7 @@ See the [CHANGELOG] for details about the latest release.
 ## How to install
 
 You can install json2csv as a dependency using NPM.  
-Requires **Node v8** or higher.
+Requires **Node v10** or higher.
 
 ```sh
 # Global so it can be called from anywhere

@@ -62,5 +62,12 @@
     "standard-version": "^7.0.0",
     "tap-spec": "^5.0.0",
     "tape": "^4.10.1"
+  },
+  "engines": {
+    "node": ">= 10",
+    "npm": ">= 6.13.0"
+  },
+  "volta": {
+    "node": "10.19.0"
   }
 }
