@@ -665,7 +665,7 @@ const myCars = [
 ];
 
 const fields = ['carModel', 'price', 'colors'];
-const transforms = [unwind('colors')];
+const transforms = [unwind({ paths: ['colors'] })];
 
 const json2csvParser = new Parser({ fields, transforms });
 const csv = json2csvParser.parse(myCars);
@@ -693,7 +693,7 @@ will output to console
 You can also unwind arrays multiple times or with nested objects.
 
 ```js
-const { Parser } = require('json2csv');
+const { Parser, transforms: { unwind } } = require('json2csv');
 
 const myCars = [
   {
@@ -740,7 +740,7 @@ const myCars = [
 ];
 
 const fields = ['carModel', 'price', 'items.name', 'items.color', 'items.items.position', 'items.items.color'];
-const transforms = [unwind(['items', 'items.items'])];
+const transforms = [unwind({ paths: ['items', 'items.items'] })];
 const json2csvParser = new Parser({ fields, transforms });
 const csv = json2csvParser.parse(myCars);
 
@@ -764,7 +764,7 @@ will output to console
 You can also unwind arrays blanking the repeated fields.
 
 ```js
-const { Parser } = require('json2csv');
+const { Parser, transforms: { unwind }  } = require('json2csv');
 
 const myCars = [
   {
@@ -811,7 +811,7 @@ const myCars = [
 ];
 
 const fields = ['carModel', 'price', 'items.name', 'items.color', 'items.items.position', 'items.items.color'];
-const transforms = [unwind(['items', 'items.items'], true)];
+const transforms = [unwind({ paths: ['items', 'items.items'], blankOut: true })];
 
 const json2csvParser = new Parser({ fields, transforms });
 const csv = json2csvParser.parse(myCars);
@@ -876,8 +876,8 @@ const csv = json2csvParser.parse(myData);
 
 should be replaced by
 ```js
-const { Parser, transforms: { unwind, flatten } } = require('json2csv');
-const json2csvParser = new Parser({ transforms: [unwind(paths, true), flatten('__')] });
+const { Parser, transform: { unwind, flatten } } = require('json2csv');
+const json2csvParser = new Parser({ transforms: [unwind({ paths, blankOut: true }), flatten('__')] });
 const csv = json2csvParser.parse(myData);
 ```
 
