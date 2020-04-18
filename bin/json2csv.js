@@ -16,6 +16,7 @@ const readFile = promisify(readFileOrig);
 const writeFile = promisify(writeFileOrig);
 
 const { unwind, flatten } = json2csv.transforms;
+const { string: stringFormatterCtr, stringExcel: stringExcelFormatter } = json2csv.formatters;
 const JSON2CSVParser = json2csv.Parser;
 const Json2csvTransform = json2csv.Transform;
 
@@ -149,18 +150,24 @@ async function processStream(config, opts) {
         separator: config.flattenSeparator
       }));
     }
+
+    const stringFormatter = stringFormatterCtr({
+      quote: config.quote,
+      escapedQuote: config.escapedQuote,
+    });
+    const formatters = {
+      string: config.excelStrings ? stringExcelFormatter({ stringFormatter }) : stringFormatter
+    };
     
     const opts = {
       transforms,
+      formatters,
       fields: config.fields
         ? (Array.isArray(config.fields) ? config.fields : config.fields.split(','))
         : config.fields,
       defaultValue: config.defaultValue,
-      quote: config.quote,
-      escapedQuote: config.escapedQuote,
       delimiter: config.delimiter,
       eol: config.eol,
-      excelStrings: config.excelStrings,
       header: config.header,
       includeEmptyRows: config.includeEmptyRows,
       withBOM: config.withBom

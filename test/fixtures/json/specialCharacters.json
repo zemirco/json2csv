@@ -8,7 +8,7 @@
     "carModel": "BMW",
     "price": 15000,
     "color": "red",
-    "transmission": "manual"
+    "manual": true
   },
   {
     "carModel": "Mercedes",

@@ -1,6 +1,11 @@
 'use strict';
 
-const { parse, Parser: Json2csvParser, transforms: { flatten, unwind } } = require('../lib/json2csv');
+const {
+  parse,
+  Parser: Json2csvParser,
+  transforms: { flatten, unwind },
+  formatters: { number: numberFormatter, string: stringFormatter, stringExcel: stringExcelFormatter, stringQuoteOnlyIfNecessary: stringQuoteOnlyIfNecessaryFormatter },
+} = require('../lib/json2csv');
 
 module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   testRunner.add('should parse json to csv, infer the fields automatically and not modify the opts passed using parse method', (t) => {
@@ -110,7 +115,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
 
   testRunner.add('should parse json to csv using custom fields', (t) => {
     const opts = {
-      fields: ['carModel', 'price', 'color', 'transmission']
+      fields: ['carModel', 'price', 'color', 'manual']
     };
 
     const parser = new Json2csvParser(opts);
@@ -356,110 +361,6 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     t.end();
   });
 
-  // Quote
-
-  testRunner.add('should use a custom quote when \'quote\' property is present', (t) => {
-    const opts = {
-      fields: ['carModel', 'price'],
-      quote: '\''
-    };
-
-    const parser = new Json2csvParser(opts);
-    const csv = parser.parse(jsonFixtures.default);
-
-    t.equal(csv, csvFixtures.withSimpleQuotes);
-    t.end();
-  });
-
-  testRunner.add('should be able to don\'t output quotes when setting \'quote\' to empty string', (t) => {
-    const opts = {
-      fields: ['carModel', 'price'],
-      quote: ''
-    };
-
-    const parser = new Json2csvParser(opts);
-    const csv = parser.parse(jsonFixtures.default);
-
-    t.equal(csv, csvFixtures.withoutQuotes);
-    t.end();
-  });
-
-  testRunner.add('should escape quotes when setting \'quote\' property is present', (t) => {
-    const opts = {
-      fields: ['carModel', 'color'],
-      quote: '\''
-    };
-
-    const parser = new Json2csvParser(opts);
-    const csv = parser.parse(jsonFixtures.escapeCustomQuotes);
-
-    t.equal(csv, csvFixtures.escapeCustomQuotes);
-    t.end();
-  });
-
-  testRunner.add('should not escape \'"\' when setting \'quote\' set to something else', (t) => {
-    const opts = {
-      quote: '\''
-    };
-
-    const parser = new Json2csvParser(opts);
-    const csv = parser.parse(jsonFixtures.escapedQuotes);
-
-    t.equal(csv, csvFixtures.escapedQuotesUnescaped);
-    t.end();
-  });
-
-  // Escaped Quote
-
-  testRunner.add('should escape quotes with double quotes', (t) => {
-    const parser = new Json2csvParser();
-    const csv = parser.parse(jsonFixtures.quotes);
-
-    t.equal(csv, csvFixtures.quotes);
-    t.end();
-  });
-
-  testRunner.add('should not escape quotes with double quotes, when there is a backslash in the end', (t) => {
-    const parser = new Json2csvParser();
-    const csv = parser.parse(jsonFixtures.backslashAtEnd);
-
-    t.equal(csv, csvFixtures.backslashAtEnd);
-    t.end();
-  });
-
-  testRunner.add('should not escape quotes with double quotes, when there is a backslash in the end, and its not the last column', (t) => {
-    const parser = new Json2csvParser();
-    const csv = parser.parse(jsonFixtures.backslashAtEndInMiddleColumn);
-
-    t.equal(csv, csvFixtures.backslashAtEndInMiddleColumn);
-    t.end();
-  });
-
-  testRunner.add('should escape quotes with value in \'escapedQuote\'', (t) => {
-    const opts = {
-      fields: ['a string'],
-      escapedQuote: '*'
-    };
-
-    const parser = new Json2csvParser(opts);
-    const csv = parser.parse(jsonFixtures.escapedQuotes);
-
-    t.equal(csv, csvFixtures.escapedQuotes);
-    t.end();
-  });
-
-  testRunner.add('should escape quotes before new line with value in \'escapedQuote\'', (t) => {
-    const opts = {
-      fields: ['a string']
-    };
-
-    const parser = new Json2csvParser(opts);
-    const csv = parser.parse(jsonFixtures.backslashBeforeNewLine);
-
-    t.equal(csv, csvFixtures.backslashBeforeNewLine);
-    t.end();
-  });
-
   // Delimiter
 
   testRunner.add('should use a custom delimiter when \'delimiter\' property is defined', (t) => {
@@ -500,73 +401,12 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     t.end();
   });
 
-  // Excell
-
-  testRunner.add('should format strings to force excel to view the values as strings', (t) => {
-    const opts = {
-      fields: ['carModel', 'price', 'color'],
-      excelStrings:true
-    };
-
-    const parser = new Json2csvParser(opts);
-    const csv = parser.parse(jsonFixtures.default);
-
-    t.equal(csv, csvFixtures.excelStrings);
-    t.end();
-  });
-
-  // Escaping and preserving values
-
-  testRunner.add('should parse JSON values with trailing backslashes', (t) => {
-    const opts = {
-      fields: ['carModel', 'price', 'color']
-    };
-
-    const parser = new Json2csvParser(opts);
-    const csv = parser.parse(jsonFixtures.trailingBackslash);
-
-    t.equal(csv, csvFixtures.trailingBackslash);
-    t.end();
-  });
-
-  testRunner.add('should escape " when preceeded by \\', (t) => {
-    const parser = new Json2csvParser();
-    const csv = parser.parse(jsonFixtures.escapeDoubleBackslashedEscapedQuote);
-
-    t.equal(csv, csvFixtures.escapeDoubleBackslashedEscapedQuote);
-    t.end();
-  });
-
-  testRunner.add('should preserve new lines in values', (t) => {
-    const opts = {
-      eol: '\r\n'
-    };
-
-    const parser = new Json2csvParser(opts);
-    const csv = parser.parse(jsonFixtures.escapeEOL);
-
-    t.equal(csv, [
-      '"a string"',
-      '"with a \u2028description\\n and\na new line"',
-      '"with a \u2029\u2028description and\r\nanother new line"'
-    ].join('\r\n'));
-    t.end();
-  });
-
-  testRunner.add('should preserve tabs in values', (t) => {
-    const parser = new Json2csvParser();
-    const csv = parser.parse(jsonFixtures.escapeTab);
-
-    t.equal(csv, csvFixtures.escapeTab);
-    t.end();
-  });
-
   // Header
 
   testRunner.add('should parse json to csv without column title', (t) => {
     const opts = {
       header: false,
-      fields: ['carModel', 'price', 'color', 'transmission']
+      fields: ['carModel', 'price', 'color', 'manual']
     };
 
     const parser = new Json2csvParser(opts);
@@ -654,7 +494,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   testRunner.add('should add BOM character', (t) => {
     const opts = {
       withBOM: true,
-      fields: ['carModel', 'price', 'color', 'transmission']
+      fields: ['carModel', 'price', 'color', 'manual']
     };
 
     const parser = new Json2csvParser(opts);
@@ -787,7 +627,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
         model: row.carModel,
         price: row.price / 1000,
         color: row.color,
-        transmission: row.transmission || 'automatic',
+        manual: row.manual || 'automatic',
       })],
     };
 
@@ -795,6 +635,279 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     const csv = parser.parse(jsonFixtures.default);
 
     t.equal(csv, csvFixtures.defaultCustomTransform);
+    t.end();
+  });
+
+  // Formatters
+
+  // undefined
+  // boolean
+
+  // Number
+
+  testRunner.add('should used a custom separator when \'decimals\' is passed to the number formatter', (t) => {
+    const opts = {
+      formatters: {
+        number: numberFormatter({ decimals: 2 })
+      }
+    };
+
+    const parser = new Json2csvParser(opts);
+    const csv = parser.parse(jsonFixtures.numberFormatter);
+
+    t.equal(csv, csvFixtures.numberFixedDecimals);
+    t.end();
+  });
+
+  testRunner.add('should used a custom separator when \'separator\' is passed to the number formatter', (t) => {
+    const opts = {
+      delimiter: ';',
+      formatters: {
+        number: numberFormatter({ separator: ',' })
+      }
+    };
+
+    const parser = new Json2csvParser(opts);
+    const csv = parser.parse(jsonFixtures.numberFormatter);
+
+    t.equal(csv, csvFixtures.numberCustomSeparator);
+    t.end();
+  });
+
+  testRunner.add('should used a custom separator and fixed number of decimals when \'separator\' and \'decimals\' are passed to the number formatter', (t) => {
+    const opts = {
+      delimiter: ';',
+      formatters: {
+        number: numberFormatter({ separator: ',', decimals: 2 })
+      }
+    };
+
+    const parser = new Json2csvParser(opts);
+    const csv = parser.parse(jsonFixtures.numberFormatter);
+
+    t.equal(csv, csvFixtures.numberFixedDecimalsAndCustomSeparator);
+    t.end();
+  });
+ 
+  // Symbol
+
+  testRunner.add('should format Symbol by its name', (t) => {
+    const parser = new Json2csvParser();
+    const csv = parser.parse([{ test: Symbol('test1') }, { test: Symbol('test2') }]);
+
+    t.equal(csv, '"test"\n"test1"\n"test2"');
+    t.end();
+  });
+
+  // function
+  // object
+
+  // String Quote
+
+  testRunner.add('should use a custom quote when \'quote\' property is present', (t) => {
+    const opts = {
+      fields: ['carModel', 'price'],
+      formatters: {
+        string: stringFormatter({ quote: '\'' })
+      }
+    };
+
+    const parser = new Json2csvParser(opts);
+    const csv = parser.parse(jsonFixtures.default);
+
+    t.equal(csv, csvFixtures.withSimpleQuotes);
+    t.end();
+  });
+
+  testRunner.add('should be able to don\'t output quotes when setting \'quote\' to empty string', (t) => {
+    const opts = {
+      fields: ['carModel', 'price'],
+      formatters: {
+        string: stringFormatter({ quote: '' })
+      }
+    };
+
+    const parser = new Json2csvParser(opts);
+    const csv = parser.parse(jsonFixtures.default);
+
+    t.equal(csv, csvFixtures.withoutQuotes);
+    t.end();
+  });
+
+  testRunner.add('should escape quotes when setting \'quote\' property is present', (t) => {
+    const opts = {
+      fields: ['carModel', 'color'],
+      formatters: {
+        string: stringFormatter({ quote: '\'' })
+      }
+    };
+
+    const parser = new Json2csvParser(opts);
+    const csv = parser.parse(jsonFixtures.escapeCustomQuotes);
+
+    t.equal(csv, csvFixtures.escapeCustomQuotes);
+    t.end();
+  });
+
+  testRunner.add('should not escape \'"\' when setting \'quote\' set to something else', (t) => {
+    const opts = {
+      formatters: {
+        string: stringFormatter({ quote: '\'' })
+      }
+    };
+
+    const parser = new Json2csvParser(opts);
+    const csv = parser.parse(jsonFixtures.escapedQuotes);
+
+    t.equal(csv, csvFixtures.escapedQuotesUnescaped);
+    t.end();
+  });
+
+  // String Escaped Quote
+
+  testRunner.add('should escape quotes with double quotes', (t) => {
+    const parser = new Json2csvParser();
+    const csv = parser.parse(jsonFixtures.quotes);
+
+    t.equal(csv, csvFixtures.quotes);
+    t.end();
+  });
+
+  testRunner.add('should not escape quotes with double quotes, when there is a backslash in the end', (t) => {
+    const parser = new Json2csvParser();
+    const csv = parser.parse(jsonFixtures.backslashAtEnd);
+
+    t.equal(csv, csvFixtures.backslashAtEnd);
+    t.end();
+  });
+
+  testRunner.add('should not escape quotes with double quotes, when there is a backslash in the end, and its not the last column', (t) => {
+    const parser = new Json2csvParser();
+    const csv = parser.parse(jsonFixtures.backslashAtEndInMiddleColumn);
+
+    t.equal(csv, csvFixtures.backslashAtEndInMiddleColumn);
+    t.end();
+  });
+
+  testRunner.add('should escape quotes with value in \'escapedQuote\'', (t) => {
+    const opts = {
+      fields: ['a string'],
+      formatters: {
+        string: stringFormatter({ escapedQuote: '*' })
+      }
+    };
+
+    const parser = new Json2csvParser(opts);
+    const csv = parser.parse(jsonFixtures.escapedQuotes);
+
+    t.equal(csv, csvFixtures.escapedQuotes);
+    t.end();
+  });
+
+  testRunner.add('should escape quotes before new line with value in \'escapedQuote\'', (t) => {
+    const opts = {
+      fields: ['a string']
+    };
+
+    const parser = new Json2csvParser(opts);
+    const csv = parser.parse(jsonFixtures.backslashBeforeNewLine);
+
+    t.equal(csv, csvFixtures.backslashBeforeNewLine);
+    t.end();
+  });
+
+  // String Quote Only if Necessary
+
+  testRunner.add('should quote only if necessary if using stringQuoteOnlyIfNecessary formatter', (t) => {
+    const opts = {
+      formatters: {
+        string: stringQuoteOnlyIfNecessaryFormatter()
+      }
+    };
+    
+    const parser = new Json2csvParser(opts);
+    const csv = parser.parse(jsonFixtures.quoteOnlyIfNecessary);
+
+    t.equal(csv, csvFixtures.quoteOnlyIfNecessary);
+    t.end();
+  });
+
+  // String Excel
+
+  testRunner.add('should format strings to force excel to view the values as strings', (t) => {
+    const opts = {
+      fields: ['carModel', 'price', 'color'],
+      formatters: {
+        string: stringExcelFormatter()
+      }
+    };
+
+    const parser = new Json2csvParser(opts);
+    const csv = parser.parse(jsonFixtures.default);
+
+    t.equal(csv, csvFixtures.excelStrings);
+    t.end();
+  });
+
+  // String Escaping and preserving values
+
+  testRunner.add('should parse JSON values with trailing backslashes', (t) => {
+    const opts = {
+      fields: ['carModel', 'price', 'color']
+    };
+
+    const parser = new Json2csvParser(opts);
+    const csv = parser.parse(jsonFixtures.trailingBackslash);
+
+    t.equal(csv, csvFixtures.trailingBackslash);
+    t.end();
+  });
+
+  testRunner.add('should escape " when preceeded by \\', (t) => {
+    const parser = new Json2csvParser();
+    const csv = parser.parse(jsonFixtures.escapeDoubleBackslashedEscapedQuote);
+
+    t.equal(csv, csvFixtures.escapeDoubleBackslashedEscapedQuote);
+    t.end();
+  });
+
+  testRunner.add('should preserve new lines in values', (t) => {
+    const opts = {
+      eol: '\r\n'
+    };
+
+    const parser = new Json2csvParser(opts);
+    const csv = parser.parse(jsonFixtures.escapeEOL);
+
+    t.equal(csv, [
+      '"a string"',
+      '"with a \u2028description\\n and\na new line"',
+      '"with a \u2029\u2028description and\r\nanother new line"'
+    ].join('\r\n'));
+    t.end();
+  });
+
+  testRunner.add('should preserve tabs in values', (t) => {
+    const parser = new Json2csvParser();
+    const csv = parser.parse(jsonFixtures.escapeTab);
+
+    t.equal(csv, csvFixtures.escapeTab);
+    t.end();
+  });
+
+  // Headers
+
+  testRunner.add('should format headers based on the headers formatter', (t) => {
+    const opts = {
+      formatters: {
+        header: stringFormatter({ quote: '' })
+      }
+    };
+  
+    const parser = new Json2csvParser(opts);
+    const csv = parser.parse(jsonFixtures.default);
+
+    t.equal(csv, csvFixtures.customHeaderQuotes);
     t.end();
   });
 };

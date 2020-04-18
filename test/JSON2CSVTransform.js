@@ -1,7 +1,11 @@
 'use strict';
 
 const { Readable } = require('stream');
-const { Transform: Json2csvTransform, transforms: { flatten, unwind } } = require('../lib/json2csv');
+const {
+  Transform: Json2csvTransform,
+  transforms: { flatten, unwind },
+  formatters: { number: numberFormatter, string: stringFormatter, stringExcel: stringExcelFormatter, stringQuoteOnlyIfNecessary: stringQuoteOnlyIfNecessaryFormatter },
+} = require('../lib/json2csv');
 
 module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) => {
   testRunner.add('should handle object mode', (t) => {
@@ -11,7 +15,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     input.push(null);
 
     const opts = {
-      fields: ['carModel', 'price', 'color', 'transmission']
+      fields: ['carModel', 'price', 'color', 'manual']
     };
     const transformOpts = { objectMode: true };
 
@@ -33,7 +37,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
 
   testRunner.add('should handle ndjson', (t) => {
     const opts = {
-      fields: ['carModel', 'price', 'color', 'transmission'],
+      fields: ['carModel', 'price', 'color', 'manual'],
       ndjson: true
     };
 
@@ -55,7 +59,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
 
   testRunner.add('should error on invalid ndjson input data', (t) => {
     const opts = {
-      fields: ['carModel', 'price', 'color', 'transmission'],
+      fields: ['carModel', 'price', 'color', 'manual'],
       ndjson: true
     };
 
@@ -113,7 +117,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
 
   testRunner.add('should error on invalid json input data', (t) => {
     const opts = {
-      fields: ['carModel', 'price', 'color', 'transmission']
+      fields: ['carModel', 'price', 'color', 'manual']
     };
 
     const transform = new Json2csvTransform(opts);
@@ -233,7 +237,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
 
   testRunner.add('should parse json to csv using custom fields', (t) => {
     const opts = {
-      fields: ['carModel', 'price', 'color', 'transmission']
+      fields: ['carModel', 'price', 'color', 'manual']
     };
 
     const transform = new Json2csvTransform(opts);
@@ -590,191 +594,6 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       });
   });
 
-  // Quote
-
-  testRunner.add('should use a custom quote when \'quote\' property is present', (t) => {
-    const opts = {
-      fields: ['carModel', 'price'],
-      quote: '\''
-    };
-
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.default().pipe(transform);
-
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.withSimpleQuotes);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
-  });
-
-  testRunner.add('should be able to don\'t output quotes when setting \'quote\' to empty string', (t) => {
-    const opts = {
-      fields: ['carModel', 'price'],
-      quote: ''
-    };
-
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.default().pipe(transform);
-
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.withoutQuotes);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
-  });
-
-  testRunner.add('should escape quotes when setting \'quote\' property is present', (t) => {
-    const opts = {
-      fields: ['carModel', 'color'],
-      quote: '\''
-    };
-
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.escapeCustomQuotes().pipe(transform);
-
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.escapeCustomQuotes);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
-  });
-
-  testRunner.add('should not escape \'"\' when setting \'quote\' set to something else', (t) => {
-    const opts = {
-      quote: '\''
-    };
-
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.escapedQuotes().pipe(transform);
-
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.escapedQuotesUnescaped);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
-  });
-
-  // Escaped Quote
-
-  testRunner.add('should escape quotes with double quotes', (t) => {
-    const transform = new Json2csvTransform();
-    const processor = jsonFixtures.quotes().pipe(transform);
-
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.quotes);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
-  });
-
-  testRunner.add('should not escape quotes with double quotes, when there is a backslash in the end', (t) => {
-    const transform = new Json2csvTransform();
-    const processor = jsonFixtures.backslashAtEnd().pipe(transform);
-
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.backslashAtEnd);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
-  });
-
-  testRunner.add('should not escape quotes with double quotes, when there is a backslash in the end, and its not the last column', (t) => {
-    const transform = new Json2csvTransform();
-    const processor = jsonFixtures.backslashAtEndInMiddleColumn().pipe(transform);
-
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.backslashAtEndInMiddleColumn);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
-  });
-
-  testRunner.add('should escape quotes with value in \'escapedQuote\'', (t) => {
-    const opts = {
-      fields: ['a string'],
-      escapedQuote: '*'
-    };
-
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.escapedQuotes().pipe(transform);
-
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.escapedQuotes);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
-  });
-
-  testRunner.add('should escape quotes before new line with value in \'escapedQuote\'', (t) => {
-    const opts = {
-      fields: ['a string']
-    };
-
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.backslashBeforeNewLine().pipe(transform);
-
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.backslashBeforeNewLine);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
-  });
-
   // Delimiter
 
   testRunner.add('should use a custom delimiter when \'delimiter\' property is defined', (t) => {
@@ -842,118 +661,12 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       });
   });
 
-  // Excell
-
-  testRunner.add('should format strings to force excel to view the values as strings', (t) => {
-    const opts = {
-      fields: ['carModel', 'price', 'color'],
-      excelStrings:true
-    };
-
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.default().pipe(transform);
-
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.excelStrings);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
-  });
-
-  // Escaping and preserving values
-
-  testRunner.add('should parse JSON values with trailing backslashes', (t) => {
-    const opts = {
-      fields: ['carModel', 'price', 'color']
-    };
-
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.trailingBackslash().pipe(transform);
-
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.trailingBackslash);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
-  });
-
-  testRunner.add('should escape " when preceeded by \\', (t) => {
-    const transform = new Json2csvTransform();
-    const processor = jsonFixtures.escapeDoubleBackslashedEscapedQuote().pipe(transform);
-
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.escapeDoubleBackslashedEscapedQuote);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
-  });
-
-  testRunner.add('should preserve new lines in values', (t) => {
-    const opts = {
-      eol: '\r\n'
-    };
-
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.escapeEOL().pipe(transform);
-
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, [
-      '"a string"',
-      '"with a \u2028description\\n and\na new line"',
-      '"with a \u2029\u2028description and\r\nanother new line"'
-    ].join('\r\n'));
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
-  });
-
-  testRunner.add('should preserve tabs in values', (t) => {
-    const transform = new Json2csvTransform();
-    const processor = jsonFixtures.escapeTab().pipe(transform);
-
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.escapeTab);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
-  });
-
   // Header
 
   testRunner.add('should parse json to csv without column title', (t) => {
     const opts = {
       header: false,
-      fields: ['carModel', 'price', 'color', 'transmission']
+      fields: ['carModel', 'price', 'color', 'manual']
     };
 
     const transform = new Json2csvTransform(opts);
@@ -1099,7 +812,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
   testRunner.add('should add BOM character', (t) => {
     const opts = {
       withBOM: true,
-      fields: ['carModel', 'price', 'color', 'transmission']
+      fields: ['carModel', 'price', 'color', 'manual']
     };
 
     const transform = new Json2csvTransform(opts);
@@ -1301,7 +1014,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         model: row.carModel,
         price: row.price / 1000,
         color: row.color,
-        transmission: row.transmission || 'automatic',
+        manual: row.manual || 'automatic',
       })],
     };
 
@@ -1313,6 +1026,459 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       .on('data', chunk => (csv += chunk.toString()))
       .on('end', () => {
         t.equal(csv, csvFixtures.defaultCustomTransform);
+        t.end();
+      })
+      .on('error', err => {
+        t.fail(err.message);
+        t.end();  
+      });
+  });
+
+  // Formatters
+
+  // Number
+
+  testRunner.add('should used a custom separator when \'decimals\' is passed to the number formatter', (t) => {
+    const opts = {
+      formatters: {
+        number: numberFormatter({ decimals: 2 })
+      }
+    };
+    const transform = new Json2csvTransform(opts);
+    const processor = jsonFixtures.numberFormatter().pipe(transform);
+
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.equal(csv, csvFixtures.numberFixedDecimals);
+        t.end();
+      })
+      .on('error', err => {
+        t.fail(err.message);
+        t.end();  
+      });
+  });
+
+  testRunner.add('should used a custom separator when \'separator\' is passed to the number formatter', (t) => {
+    const opts = {
+      delimiter: ';',
+      formatters: {
+        number: numberFormatter({ separator: ',' })
+      }
+    };
+    const transform = new Json2csvTransform(opts);
+    const processor = jsonFixtures.numberFormatter().pipe(transform);
+
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.equal(csv, csvFixtures.numberCustomSeparator);
+        t.end();
+      })
+      .on('error', err => {
+        t.fail(err.message);
+        t.end();  
+      });
+  });
+
+  testRunner.add('should used a custom separator and fixed number of decimals when \'separator\' and \'decimals\' are passed to the number formatter', (t) => {
+    const opts = {
+      delimiter: ';',
+      formatters: {
+        number: numberFormatter({ separator: ',', decimals: 2 })
+      }
+    };
+    const transform = new Json2csvTransform(opts);
+    const processor = jsonFixtures.numberFormatter().pipe(transform);
+
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.equal(csv, csvFixtures.numberFixedDecimalsAndCustomSeparator);
+        t.end();
+      })
+      .on('error', err => {
+        t.fail(err.message);
+        t.end();  
+      });
+  });
+
+  // Symbol
+
+  testRunner.add('should format Symbol by its name', async (t) => {
+    const data = [{ test: Symbol('test1') }, { test: Symbol('test2') }];  
+    const input = new Readable({ objectMode: true });
+    input._read = () => {};
+    data.forEach(item => input.push(item));
+    input.push(null);
+
+    const transformOpts = { readableObjectMode: true, writableObjectMode: true };
+
+    const transform = new Json2csvTransform({}, transformOpts);
+    const processor = input.pipe(transform);
+
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.equal(csv, '"test"\n"test1"\n"test2"');
+        t.end();
+      })
+      .on('error', err => {
+        t.fail(err.message);
+        t.end();  
+      });
+  });
+
+  // String Quote
+
+  testRunner.add('should use a custom quote when \'quote\' property is present', (t) => {
+    const opts = {
+      fields: ['carModel', 'price'],
+      formatters: {
+        string: stringFormatter({ quote: '\'' })
+      }
+    };
+
+    const transform = new Json2csvTransform(opts);
+    const processor = jsonFixtures.default().pipe(transform);
+
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.equal(csv, csvFixtures.withSimpleQuotes);
+        t.end();
+      })
+      .on('error', err => {
+        t.fail(err.message);
+        t.end();  
+      });
+  });
+
+  testRunner.add('should be able to don\'t output quotes when setting \'quote\' to empty string', (t) => {
+    const opts = {
+      fields: ['carModel', 'price'],
+      formatters: {
+        string: stringFormatter({ quote: '' })
+      }
+    };
+
+    const transform = new Json2csvTransform(opts);
+    const processor = jsonFixtures.default().pipe(transform);
+
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.equal(csv, csvFixtures.withoutQuotes);
+        t.end();
+      })
+      .on('error', err => {
+        t.fail(err.message);
+        t.end();  
+      });
+  });
+
+  testRunner.add('should escape quotes when setting \'quote\' property is present', (t) => {
+    const opts = {
+      fields: ['carModel', 'color'],
+      formatters: {
+        string: stringFormatter({ quote: '\'' })
+      }
+    };
+
+    const transform = new Json2csvTransform(opts);
+    const processor = jsonFixtures.escapeCustomQuotes().pipe(transform);
+
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.equal(csv, csvFixtures.escapeCustomQuotes);
+        t.end();
+      })
+      .on('error', err => {
+        t.fail(err.message);
+        t.end();  
+      });
+  });
+
+  testRunner.add('should not escape \'"\' when setting \'quote\' set to something else', (t) => {
+    const opts = {
+      formatters: {
+        string: stringFormatter({ quote: '\'' })
+      }
+    };
+
+    const transform = new Json2csvTransform(opts);
+    const processor = jsonFixtures.escapedQuotes().pipe(transform);
+
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.equal(csv, csvFixtures.escapedQuotesUnescaped);
+        t.end();
+      })
+      .on('error', err => {
+        t.fail(err.message);
+        t.end();  
+      });
+  });
+
+  // String Escaped Quote
+
+  testRunner.add('should escape quotes with double quotes', (t) => {
+    const transform = new Json2csvTransform();
+    const processor = jsonFixtures.quotes().pipe(transform);
+
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.equal(csv, csvFixtures.quotes);
+        t.end();
+      })
+      .on('error', err => {
+        t.fail(err.message);
+        t.end();  
+      });
+  });
+
+  testRunner.add('should not escape quotes with double quotes, when there is a backslash in the end', (t) => {
+    const transform = new Json2csvTransform();
+    const processor = jsonFixtures.backslashAtEnd().pipe(transform);
+
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.equal(csv, csvFixtures.backslashAtEnd);
+        t.end();
+      })
+      .on('error', err => {
+        t.fail(err.message);
+        t.end();  
+      });
+  });
+
+  testRunner.add('should not escape quotes with double quotes, when there is a backslash in the end, and its not the last column', (t) => {
+    const transform = new Json2csvTransform();
+    const processor = jsonFixtures.backslashAtEndInMiddleColumn().pipe(transform);
+
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.equal(csv, csvFixtures.backslashAtEndInMiddleColumn);
+        t.end();
+      })
+      .on('error', err => {
+        t.fail(err.message);
+        t.end();  
+      });
+  });
+
+  testRunner.add('should escape quotes with value in \'escapedQuote\'', (t) => {
+    const opts = {
+      fields: ['a string'],
+      formatters: {
+        string: stringFormatter({ escapedQuote: '*' })
+      }
+    };
+
+    const transform = new Json2csvTransform(opts);
+    const processor = jsonFixtures.escapedQuotes().pipe(transform);
+
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.equal(csv, csvFixtures.escapedQuotes);
+        t.end();
+      })
+      .on('error', err => {
+        t.fail(err.message);
+        t.end();  
+      });
+  });
+
+  testRunner.add('should escape quotes before new line with value in \'escapedQuote\'', (t) => {
+    const opts = {
+      fields: ['a string']
+    };
+
+    const transform = new Json2csvTransform(opts);
+    const processor = jsonFixtures.backslashBeforeNewLine().pipe(transform);
+
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.equal(csv, csvFixtures.backslashBeforeNewLine);
+        t.end();
+      })
+      .on('error', err => {
+        t.fail(err.message);
+        t.end();  
+      });
+  });
+
+  // String Quote Only if Necessary
+
+  testRunner.add('should quote only if necessary if using stringQuoteOnlyIfNecessary formatter', async (t) => {
+    const opts = {
+      formatters: {
+        string: stringQuoteOnlyIfNecessaryFormatter()
+      }
+    };
+
+    const transform = new Json2csvTransform(opts);
+    const processor = jsonFixtures.quoteOnlyIfNecessary().pipe(transform);
+
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.equal(csv, csvFixtures.quoteOnlyIfNecessary);
+        t.end();
+      })
+      .on('error', err => {
+        t.fail(err.message);
+        t.end();  
+      });
+  });
+
+  // String Excel
+
+  testRunner.add('should format strings to force excel to view the values as strings', (t) => {
+    const opts = {
+      fields: ['carModel', 'price', 'color'],
+      formatters: {
+        string: stringExcelFormatter()
+      }
+    };
+
+    const transform = new Json2csvTransform(opts);
+    const processor = jsonFixtures.default().pipe(transform);
+
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.equal(csv, csvFixtures.excelStrings);
+        t.end();
+      })
+      .on('error', err => {
+        t.fail(err.message);
+        t.end();  
+      });
+  });
+
+  // String Escaping and preserving values
+
+  testRunner.add('should parse JSON values with trailing backslashes', (t) => {
+    const opts = {
+      fields: ['carModel', 'price', 'color']
+    };
+
+    const transform = new Json2csvTransform(opts);
+    const processor = jsonFixtures.trailingBackslash().pipe(transform);
+
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.equal(csv, csvFixtures.trailingBackslash);
+        t.end();
+      })
+      .on('error', err => {
+        t.fail(err.message);
+        t.end();  
+      });
+  });
+
+  testRunner.add('should escape " when preceeded by \\', (t) => {
+    const transform = new Json2csvTransform();
+    const processor = jsonFixtures.escapeDoubleBackslashedEscapedQuote().pipe(transform);
+
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.equal(csv, csvFixtures.escapeDoubleBackslashedEscapedQuote);
+        t.end();
+      })
+      .on('error', err => {
+        t.fail(err.message);
+        t.end();  
+      });
+  });
+
+  testRunner.add('should preserve new lines in values', (t) => {
+    const opts = {
+      eol: '\r\n'
+    };
+
+    const transform = new Json2csvTransform(opts);
+    const processor = jsonFixtures.escapeEOL().pipe(transform);
+
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.equal(csv, [
+      '"a string"',
+      '"with a \u2028description\\n and\na new line"',
+      '"with a \u2029\u2028description and\r\nanother new line"'
+    ].join('\r\n'));
+        t.end();
+      })
+      .on('error', err => {
+        t.fail(err.message);
+        t.end();  
+      });
+  });
+
+  testRunner.add('should preserve tabs in values', (t) => {
+    const transform = new Json2csvTransform();
+    const processor = jsonFixtures.escapeTab().pipe(transform);
+
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.equal(csv, csvFixtures.escapeTab);
+        t.end();
+      })
+      .on('error', err => {
+        t.fail(err.message);
+        t.end();  
+      });
+  });
+
+  // Headers
+
+  testRunner.add('should format headers based on the headers formatter', async (t) => {
+    const opts = {
+      fields: ['carModel', 'price', 'color', 'manual'],
+      formatters: {
+        header: stringFormatter({ quote: '' })
+      }
+    };
+
+    const transform = new Json2csvTransform(opts);
+    const processor = jsonFixtures.default().pipe(transform);
+
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.equal(csv, csvFixtures.customHeaderQuotes);
         t.end();
       })
       .on('error', err => {
