@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.0.1](https://github.com/zemirco/json2csv/compare/v5.0.0...v5.0.1) (2020-04-28)
+
+
+### Bug Fixes
+
+* wrong call to processValue ([#454](https://github.com/zemirco/json2csv/issues/454)) ([66abd45](https://github.com/zemirco/json2csv/commit/66abd45))
+
 ## [5.0.0](https://github.com/zemirco/json2csv/compare/v4.5.2...v5.0.0) (2020-03-15)
 
 
