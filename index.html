@@ -595,7 +595,7 @@ Porsche&quot;, 60000, green
 ];
 
 <span class="pl-k">const</span> fields = [<span class="pl-s">&apos;carModel&apos;</span>, <span class="pl-s">&apos;price&apos;</span>, <span class="pl-s">&apos;colors&apos;</span>];
-<span class="pl-k">const</span> transforms = [unwind(<span class="pl-s">&apos;colors&apos;</span>)];
+<span class="pl-k">const</span> transforms = [unwind({ <span class="hljs-attr">paths</span>: [<span class="pl-s">&apos;colors&apos;</span>] })];
 
 <span class="pl-k">const</span> json2csvParser = <span class="pl-k">new</span> Parser({ fields, transforms });
 <span class="pl-k">const</span> csv = json2csvParser.parse(myCars);
@@ -616,7 +616,7 @@ Porsche&quot;, 60000, green
 </code></pre>
 <h4 id="example-8">Example 8</h4>
 <p>You can also unwind arrays multiple times or with nested objects.</p>
-<pre><code class="lang-js"><span class="pl-k">const</span> { Parser } = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>);
+<pre><code class="lang-js"><span class="pl-k">const</span> { Parser, <span class="hljs-attr">transforms</span>: { unwind } } = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>);
 
 <span class="pl-k">const</span> myCars = [
   {
@@ -663,7 +663,7 @@ Porsche&quot;, 60000, green
 ];
 
 <span class="pl-k">const</span> fields = [<span class="pl-s">&apos;carModel&apos;</span>, <span class="pl-s">&apos;price&apos;</span>, <span class="pl-s">&apos;items.name&apos;</span>, <span class="pl-s">&apos;items.color&apos;</span>, <span class="pl-s">&apos;items.items.position&apos;</span>, <span class="pl-s">&apos;items.items.color&apos;</span>];
-<span class="pl-k">const</span> transforms = [unwind([<span class="pl-s">&apos;items&apos;</span>, <span class="pl-s">&apos;items.items&apos;</span>])];
+<span class="pl-k">const</span> transforms = [unwind({ <span class="hljs-attr">paths</span>: [<span class="pl-s">&apos;items&apos;</span>, <span class="pl-s">&apos;items.items&apos;</span>] })];
 <span class="pl-k">const</span> json2csvParser = <span class="pl-k">new</span> Parser({ fields, transforms });
 <span class="pl-k">const</span> csv = json2csvParser.parse(myCars);
 
@@ -680,7 +680,7 @@ Porsche&quot;, 60000, green
 </code></pre>
 <h4 id="example-9">Example 9</h4>
 <p>You can also unwind arrays blanking the repeated fields.</p>
-<pre><code class="lang-js"><span class="pl-k">const</span> { Parser } = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>);
+<pre><code class="lang-js"><span class="pl-k">const</span> { Parser, <span class="hljs-attr">transforms</span>: { unwind }  } = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>);
 
 <span class="pl-k">const</span> myCars = [
   {
@@ -727,7 +727,7 @@ Porsche&quot;, 60000, green
 ];
 
 <span class="pl-k">const</span> fields = [<span class="pl-s">&apos;carModel&apos;</span>, <span class="pl-s">&apos;price&apos;</span>, <span class="pl-s">&apos;items.name&apos;</span>, <span class="pl-s">&apos;items.color&apos;</span>, <span class="pl-s">&apos;items.items.position&apos;</span>, <span class="pl-s">&apos;items.items.color&apos;</span>];
-<span class="pl-k">const</span> transforms = [unwind([<span class="pl-s">&apos;items&apos;</span>, <span class="pl-s">&apos;items.items&apos;</span>], <span class="pl-c1">true</span>)];
+<span class="pl-k">const</span> transforms = [unwind({ <span class="hljs-attr">paths</span>: [<span class="pl-s">&apos;items&apos;</span>, <span class="pl-s">&apos;items.items&apos;</span>], <span class="hljs-attr">blankOut</span>: <span class="pl-c1">true</span> })];
 
 <span class="pl-k">const</span> json2csvParser = <span class="pl-k">new</span> Parser({ fields, transforms });
 <span class="pl-k">const</span> csv = json2csvParser.parse(myCars);
@@ -772,7 +772,7 @@ You can se the documentation for json2csv 3.11.5 <a href="https://github.com/zem
 </code></pre>
 <p>should be replaced by</p>
 <pre><code class="lang-js"><span class="pl-k">const</span> { Parser, <span class="hljs-attr">transform</span>: { unwind, flatten } } = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>);
-<span class="pl-k">const</span> json2csvParser = <span class="pl-k">new</span> Parser({ <span class="hljs-attr">transforms</span>: [unwind(paths, <span class="pl-c1">true</span>), flatten(<span class="pl-s">&apos;__&apos;</span>)] });
+<span class="pl-k">const</span> json2csvParser = <span class="pl-k">new</span> Parser({ <span class="hljs-attr">transforms</span>: [unwind({ paths, <span class="hljs-attr">blankOut</span>: <span class="pl-c1">true</span> }), flatten(<span class="pl-s">&apos;__&apos;</span>)] });
 <span class="pl-k">const</span> csv = json2csvParser.parse(myData);
 </code></pre>
 <p>You can se the documentation for json2csv v4.X.X <a href="https://github.com/zemirco/json2csv/blob/v4/README.md">here</a>.</p>
