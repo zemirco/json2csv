@@ -487,7 +487,7 @@ This reverts commit 250d3e6ddf3062cbdc1e0174493a37fa21197d8e.
 
 ### Features
 
-* Preserve new lines in cells with option preserveNewLinesInCells ([#91](https://github.com/zemirco/json2csv/issues/91)) ([#171](https://github.com/zemirco/json2csv/issues/171)) ([187b701](https://github.com/zemirco/json2csv/commit/187b701))
+* Preserve new lines in cells with option `preserveNewLinesInValues` ([#91](https://github.com/zemirco/json2csv/issues/91)) ([#171](https://github.com/zemirco/json2csv/issues/171)) ([187b701](https://github.com/zemirco/json2csv/commit/187b701))
 
 
 
