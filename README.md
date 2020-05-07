@@ -876,7 +876,7 @@ const csv = json2csvParser.parse(myData);
 
 should be replaced by
 ```js
-const { Parser, transform: { unwind, flatten } } = require('json2csv');
+const { Parser, transforms: { unwind, flatten } } = require('json2csv');
 const json2csvParser = new Parser({ transforms: [unwind({ paths, blankOut: true }), flatten('__')] });
 const csv = json2csvParser.parse(myData);
 ```
