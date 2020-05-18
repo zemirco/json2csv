@@ -6,7 +6,6 @@ Can be used as a module and from the command line.
 [![npm version][npm-badge]][npm-badge-url]
 [![Build Status][travis-badge]][travis-badge-url]
 [![Coverage Status][coveralls-badge]][coveralls-badge-url]
-[![Dependency Status][dev-badge]][dev-badge-url]
 
 See the [CHANGELOG] for details about the latest release.
 
@@ -967,7 +966,5 @@ See [LICENSE.md].
 [travis-badge-url]: https://travis-ci.org/zemirco/json2csv
 [coveralls-badge]: https://coveralls.io/repos/zemirco/json2csv/badge.svg?branch=master
 [coveralls-badge-url]: https://coveralls.io/r/zemirco/json2csv?branch=master
-[dev-badge]: https://david-dm.org/zemirco/json2csv.svg
-[dev-badge-url]: https://david-dm.org/zemirco/json2csv
 [CHANGELOG]: https://github.com/zemirco/json2csv/blob/master/CHANGELOG.md
 [LICENSE.md]: https://github.com/zemirco/json2csv/blob/master/LICENSE.md
