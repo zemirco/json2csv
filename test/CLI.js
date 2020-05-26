@@ -810,6 +810,17 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     });
   });
 
+  testRunner.add('should support flattening JSON with nested arrays using the flatten transform, when arrays a longer in non-0 index entries', (t) => {
+    const opts = '--flatten-objects --flatten-arrays';
+
+    exec(`${cli} -i "${getFixturePath('/json/flattenArraysReversed.json')}" ${opts}`, (err, stdout, stderr) => {
+      t.notOk(stderr);
+      const csv = stdout;
+      t.equal(csv, csvFixtures.flattenedArraysReversed);
+      t.end();
+    });
+  });
+
   testRunner.add('should support custom flatten separator using the flatten transform', (t) => {
     const opts = '--flatten-objects --flatten-separator __';
 
