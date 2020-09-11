@@ -186,7 +186,7 @@ The programatic APIs take a configuration object very equivalent to the CLI opti
 
 ### json2csv parser (Synchronous API)
 
-`json2csv` can also be use programatically as a synchronous converter using its `parse` method. 
+`json2csv` can also be used programatically as a synchronous converter using its `parse` method. 
 ```js
 const { Parser } = require('json2csv');
 
