@@ -15,9 +15,8 @@ const rmdirAsync = promisify(rmdir);
 
 const cli = `node "${joinPath(process.cwd(), './bin/json2csv.js')}"`;
 
-const resultsPath = joinPath(process.cwd(), './test/fixtures/results');
-const getFixturePath = fixture => joinPath(process.cwd(), './test/fixtures', fixture);
-// const readFile = (filePath) => readFileAsync(filePath.slice(1, filePath.length - 1), 'utf8');
+const resultsPath = './test/fixtures/results';
+const getFixturePath = fixture => joinPath('./test/fixtures', fixture);
 
 module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   testRunner.addBefore(async () => {
