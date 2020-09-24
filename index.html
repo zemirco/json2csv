@@ -74,8 +74,7 @@
 Can be used as a module and from the command line.</p>
 <p><a href="http://badge.fury.io/js/json2csv"><img src="https://badge.fury.io/js/json2csv.svg" alt="npm version"></a>
 <a href="https://travis-ci.org/zemirco/json2csv"><img src="https://travis-ci.org/zemirco/json2csv.svg" alt="Build Status"></a>
-<a href="https://coveralls.io/r/zemirco/json2csv?branch=master"><img src="https://coveralls.io/repos/zemirco/json2csv/badge.svg?branch=master" alt="Coverage Status"></a>
-<a href="https://david-dm.org/zemirco/json2csv"><img src="https://david-dm.org/zemirco/json2csv.svg" alt="Dependency Status"></a></p>
+<a href="https://coveralls.io/r/zemirco/json2csv?branch=master"><img src="https://coveralls.io/repos/zemirco/json2csv/badge.svg?branch=master" alt="Coverage Status"></a></p>
 <p>See the <a href="https://github.com/zemirco/json2csv/blob/master/CHANGELOG.md">CHANGELOG</a> for details about the latest release.</p>
 <h2 id="features">Features</h2>
 <ul>
@@ -206,7 +205,7 @@ $ json2csv -i test.json -f name,version --no-header &gt;&gt; test.csv
 <li><code>withBOM</code> - Boolean, with BOM character. Defaults to <code>false</code>.</li>
 </ul>
 <h3 id="json2csv-parser-(synchronous-api)">json2csv parser (Synchronous API)</h3>
-<p><code>json2csv</code> can also be use programatically as a synchronous converter using its <code>parse</code> method.</p>
+<p><code>json2csv</code> can also be used programatically as a synchronous converter using its <code>parse</code> method.</p>
 <pre><code class="lang-js"><span class="pl-k">const</span> { Parser } = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>);
 
 <span class="pl-k">const</span> fields = [<span class="pl-s">&apos;field1&apos;</span>, <span class="pl-s">&apos;field2&apos;</span>, <span class="pl-s">&apos;field3&apos;</span>];
@@ -771,7 +770,7 @@ You can se the documentation for json2csv 3.11.5 <a href="https://github.com/zem
 <span class="pl-k">const</span> csv = json2csvParser.parse(myData);
 </code></pre>
 <p>should be replaced by</p>
-<pre><code class="lang-js"><span class="pl-k">const</span> { Parser, <span class="hljs-attr">transform</span>: { unwind, flatten } } = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>);
+<pre><code class="lang-js"><span class="pl-k">const</span> { Parser, <span class="hljs-attr">transforms</span>: { unwind, flatten } } = <span class="pl-c1">require</span>(<span class="pl-s">&apos;json2csv&apos;</span>);
 <span class="pl-k">const</span> json2csvParser = <span class="pl-k">new</span> Parser({ <span class="hljs-attr">transforms</span>: [unwind({ paths, <span class="hljs-attr">blankOut</span>: <span class="pl-c1">true</span> }), flatten(<span class="pl-s">&apos;__&apos;</span>)] });
 <span class="pl-k">const</span> csv = json2csvParser.parse(myData);
 </code></pre>
