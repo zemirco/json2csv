@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.0.3](https://github.com/zemirco/json2csv/compare/v5.0.2...v5.0.3) (2020-09-24)
+
+
+### Bug Fixes
+
+* audit dependencies fix ([d6d0fc7](https://github.com/zemirco/json2csv/commit/d6d0fc78128e01e021414aaf52a65cbcd09a1225))
+* update commander dep ([322e568](https://github.com/zemirco/json2csv/commit/322e568793ec4a64f43ec2ac82c9886177bcc4ed))
+
 ### [5.0.2](https://github.com/zemirco/json2csv/compare/v5.0.1...v5.0.2) (2020-09-24)
 
 
