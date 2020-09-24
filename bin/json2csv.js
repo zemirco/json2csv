@@ -14,8 +14,6 @@ const TablePrinter = require('./utils/TablePrinter');
 
 const readFile = promisify(readFileOrig);
 const writeFile = promisify(writeFileOrig);
-const isAbsolutePath = promisify(isAbsolute);
-const joinPath = promisify(join);
 
 const { unwind, flatten } = json2csv.transforms;
 const JSON2CSVParser = json2csv.Parser;
@@ -48,8 +46,8 @@ program
   .parse(process.argv);
 
 function makePathAbsolute(filePath) {
-  return (filePath && !isAbsolutePath(filePath))
-    ? joinPath(process.cwd(), filePath)
+  return (filePath && !isAbsolute(filePath))
+    ? join(process.cwd(), filePath)
     : filePath;
 }
 
