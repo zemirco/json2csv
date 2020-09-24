@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.0.2](https://github.com/zemirco/json2csv/compare/v5.0.1...v5.0.2) (2020-09-24)
+
+
+### Bug Fixes
+
+* **cli:** fix relative paths issue in CLI when not streaming ([#488](https://github.com/zemirco/json2csv/issues/488)) ([06079e8](https://github.com/zemirco/json2csv/commit/06079e840128030eacfecde66da11295eb162234))
+
 ### [5.0.1](https://github.com/zemirco/json2csv/compare/v5.0.0...v5.0.1) (2020-04-28)
 
 
