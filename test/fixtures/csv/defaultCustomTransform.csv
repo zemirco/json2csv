@@ -1,5 +1,5 @@
-"model","price","color","transmission"
+"model","price","color","manual"
 "Audi",0,"blue","automatic"
-"BMW",15,"red","manual"
+"BMW",15,"red",true
 "Mercedes",20,"yellow","automatic"
 "Porsche",30,"green","automatic"

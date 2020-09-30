@@ -48,7 +48,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   });
 
   testRunner.add('should handle ndjson', (t) => {
-    const opts = '--fields carModel,price,color,transmission --ndjson';
+    const opts = '--fields carModel,price,color,manual --ndjson';
 
     exec(`${cli} -i "${getFixturePath('/json/ndjson.json')}" ${opts}`, (err, stdout, stderr) => {
       t.notOk(stderr);
@@ -59,7 +59,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   });
 
   testRunner.add('should error on invalid ndjson input path without streaming', (t) => {
-    const opts = '--fields carModel,price,color,transmission --ndjson --no-streaming';
+    const opts = '--fields carModel,price,color,manual --ndjson --no-streaming';
 
     exec(`${cli} -i "${getFixturePath('/json2/ndjsonInvalid.json')}" ${opts}`, (err, stdout, stderr) => {   
       t.ok(stderr.includes('Invalid input file.'));
@@ -68,7 +68,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   });
 
   testRunner.add('should error on invalid ndjson input data', (t) => {
-    const opts = '--fields carModel,price,color,transmission --ndjson';
+    const opts = '--fields carModel,price,color,manual --ndjson';
 
     exec(`${cli} -i "${getFixturePath('/json/ndjsonInvalid.json')}" ${opts}`, (err, stdout, stderr) => {   
       t.ok(stderr.includes('Invalid JSON'));
@@ -77,7 +77,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   });
 
   testRunner.add('should handle ndjson without streaming', (t) => {
-    const opts = '--fields carModel,price,color,transmission --ndjson --no-streaming';
+    const opts = '--fields carModel,price,color,manual --ndjson --no-streaming';
 
     exec(`${cli} -i "${getFixturePath('/json/ndjson.json')}" ${opts}`, (err, stdout, stderr) => {
       t.notOk(stderr);
@@ -174,7 +174,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   });
 
   testRunner.add('should parse json to csv using custom fields', (t) => {
-    const opts = '--fields carModel,price,color,transmission';
+    const opts = '--fields carModel,price,color,manual';
 
     exec(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`, (err, stdout, stderr) => {
       t.notOk(stderr);
@@ -307,92 +307,6 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     });
   });
 
-  // Quote
-
-  testRunner.add('should use a custom quote when \'quote\' property is present', (t) => {
-    const opts = '--fields carModel,price --quote "\'"';
-
-    exec(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr); 
-      const csv = stdout;
-      t.equal(csv, csvFixtures.withSimpleQuotes);
-      t.end();
-    });
-  });
-
-  testRunner.add('should be able to don\'t output quotes when setting \'quote\' to empty string', (t) => {
-    const opts = '--fields carModel,price --quote ""';
-
-    exec(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr); 
-      const csv = stdout;
-      t.equal(csv, csvFixtures.withoutQuotes);
-      t.end();
-    });
-  });
-
-  testRunner.add('should escape quotes when setting \'quote\' property is present', (t) => {
-    const opts = '--fields carModel,color --quote "\'"';
-
-    exec(`${cli} -i "${getFixturePath('/json/escapeCustomQuotes.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr); 
-      const csv = stdout;
-        t.equal(csv, csvFixtures.escapeCustomQuotes);
-        t.end();
-      });
-  });
-
-  testRunner.add('should not escape \'"\' when setting \'quote\' set to something else', (t) => {
-    const opts = '--quote "\'"';
-
-    exec(`${cli} -i "${getFixturePath('/json/escapedQuotes.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr); 
-      const csv = stdout;
-        t.equal(csv, csvFixtures.escapedQuotesUnescaped);
-        t.end();
-      });
-  });
-
-  // Escaped Quote
-
-  testRunner.add('should escape quotes with double quotes', (t) => {
-    exec(`${cli} -i "${getFixturePath('/json/quotes.json')}"`, (err, stdout, stderr) => {
-      t.notOk(stderr); 
-      const csv = stdout;
-      t.equal(csv, csvFixtures.quotes);
-      t.end();
-    });
-  });
-
-  testRunner.add('should not escape quotes with double quotes, when there is a backslash in the end', (t) => {
-    exec(`${cli} -i "${getFixturePath('/json/backslashAtEnd.json')}"`, (err, stdout, stderr) => {
-      t.notOk(stderr); 
-      const csv = stdout;
-      t.equal(csv, csvFixtures.backslashAtEnd);
-      t.end();
-    });
-  });
-
-  testRunner.add('should not escape quotes with double quotes, when there is a backslash in the end, and its not the last column', (t) => {
-    exec(`${cli} -i "${getFixturePath('/json/backslashAtEndInMiddleColumn.json')}"`, (err, stdout, stderr) => {
-      t.notOk(stderr); 
-      const csv = stdout;
-      t.equal(csv, csvFixtures.backslashAtEndInMiddleColumn);
-      t.end();
-    });
-  });
-
-  testRunner.add('should escape quotes with value in \'escapedQuote\'', (t) => {
-    const opts = '--fields "a string" --escaped-quote "*"';
-
-    exec(`${cli} -i "${getFixturePath('/json/escapedQuotes.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr); 
-      const csv = stdout;
-      t.equal(csv, csvFixtures.escapedQuotes);
-      t.end();
-    });
-  });
-
   // Delimiter
 
   testRunner.add('should use a custom delimiter when \'delimiter\' property is defined', (t) => {
@@ -430,69 +344,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     });
   });
 
-  // Excell
-
-  testRunner.add('should format strings to force excel to view the values as strings', (t) => {
-    const opts = '--fields carModel,price,color --excel-strings';
-
-    exec(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr); 
-      const csv = stdout;
-      t.equal(csv, csvFixtures.excelStrings);
-      t.end();
-    });
-  });
-
-  // Escaping and preserving values
-
-  testRunner.add('should parse JSON values with trailing backslashes', (t) => {
-    const opts = '--fields carModel,price,color';
-
-    exec(`${cli} -i "${getFixturePath('/json/trailingBackslash.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr); 
-      const csv = stdout;
-      t.equal(csv, csvFixtures.trailingBackslash);
-      t.end();
-    });
-  });
-
-  testRunner.add('should escape " when preceeded by \\', (t) => {
-    exec(`${cli} -i "${getFixturePath('/json/escapeDoubleBackslashedEscapedQuote.json')}"`, (err, stdout, stderr) => {
-      t.notOk(stderr); 
-      const csv = stdout;
-      t.equal(csv, csvFixtures.escapeDoubleBackslashedEscapedQuote);
-      t.end();
-    });
-  });
-
-  testRunner.add('should preserve new lines in values', (t) => {
-    const opts = '--eol "\r\n"';
-
-    exec(`${cli} -i "${getFixturePath('/json/escapeEOL.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr); 
-      const csv = stdout;
-      t.equal(csv, [
-      '"a string"',
-      '"with a \u2028description\\n and\na new line"',
-      '"with a \u2029\u2028description and\r\nanother new line"'
-    ].join('\r\n'));
-      t.end();
-    });
-  });
-
-  testRunner.add('should preserve tabs in values', (t) => {
-    exec(`${cli} -i "${getFixturePath('/json/escapeTab.json')}"`, (err, stdout, stderr) => {
-      t.notOk(stderr); 
-      const csv = stdout;
-      t.equal(csv, csvFixtures.escapeTab);
-      t.end();
-    });
-  });
-
   // Header
 
   testRunner.add('should parse json to csv without column title', (t) => {
-    const opts = '--fields carModel,price,color,transmission --no-header';
+    const opts = '--fields carModel,price,color,manual --no-header';
 
     exec(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`, (err, stdout, stderr) => {
       t.notOk(stderr); 
@@ -555,7 +410,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   // BOM
 
   testRunner.add('should add BOM character', (t) => {
-    const opts = '--fields carModel,price,color,transmission --with-bom';
+    const opts = '--fields carModel,price,color,manual --with-bom';
 
     exec(`${cli} -i "${getFixturePath('/json/specialCharacters.json')}" ${opts}`, (err, stdout, stderr) => {
       t.notOk(stderr); 
@@ -630,7 +485,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
 
   testRunner.add('should output to file', (t) => {
     const outputPath = getFixturePath('/results/default.csv');
-    const opts = `-o "${outputPath}" --fields carModel,price,color,transmission`;
+    const opts = `-o "${outputPath}" --fields carModel,price,color,manual`;
 
     exec(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`, async (err, stdout, stderr) => {
       t.notOk(stderr);
@@ -647,7 +502,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
 
   testRunner.add('should output to file without streaming', (t) => {
     const outputPath = getFixturePath('/results/default.csv');
-    const opts = `-o ${outputPath} --fields carModel,price,color,transmission --no-streaming`;
+    const opts = `-o ${outputPath} --fields carModel,price,color,manual --no-streaming`;
 
     exec(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`, async (err, stdout, stderr) => {
       t.notOk(stderr);
@@ -663,7 +518,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
 
   testRunner.add('should error on invalid output file path', (t) => {
     const outputPath = getFixturePath('/results2/default.csv');
-    const opts = `-o "${outputPath}" --fields carModel,price,color,transmission`;
+    const opts = `-o "${outputPath}" --fields carModel,price,color,manual`;
 
     exec(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`, (err, stdout, stderr) => {
       t.ok(stderr.includes('Invalid output file.'));
@@ -673,7 +528,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
 
   testRunner.add('should error on invalid output file path without streaming', (t) => {
     const outputPath = getFixturePath('/results2/default.csv');
-    const opts = `-o "${outputPath}" --fields carModel,price,color,transmission --no-streaming`;
+    const opts = `-o "${outputPath}" --fields carModel,price,color,manual --no-streaming`;
 
     exec(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`, (err, stdout, stderr) => {
       t.ok(stderr.includes('Invalid output file.'));
@@ -827,6 +682,154 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
       t.notOk(stderr);
       const csv = stdout;
       t.equal(csv, csvFixtures.unwindAndFlatten);
+      t.end();
+    });
+  });
+
+  // Formatters
+
+
+  // String Quote
+
+  testRunner.add('should use a custom quote when \'quote\' property is present', (t) => {
+    const opts = '--fields carModel,price --quote "\'"';
+
+    exec(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`, (err, stdout, stderr) => {
+      t.notOk(stderr); 
+      const csv = stdout;
+      t.equal(csv, csvFixtures.withSimpleQuotes);
+      t.end();
+    });
+  });
+
+  testRunner.add('should be able to don\'t output quotes when setting \'quote\' to empty string', (t) => {
+    const opts = '--fields carModel,price --quote ""';
+
+    exec(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`, (err, stdout, stderr) => {
+      t.notOk(stderr); 
+      const csv = stdout;
+      t.equal(csv, csvFixtures.withoutQuotes);
+      t.end();
+    });
+  });
+
+  testRunner.add('should escape quotes when setting \'quote\' property is present', (t) => {
+    const opts = '--fields carModel,color --quote "\'"';
+
+    exec(`${cli} -i "${getFixturePath('/json/escapeCustomQuotes.json')}" ${opts}`, (err, stdout, stderr) => {
+      t.notOk(stderr); 
+      const csv = stdout;
+        t.equal(csv, csvFixtures.escapeCustomQuotes);
+        t.end();
+      });
+  });
+
+  testRunner.add('should not escape \'"\' when setting \'quote\' set to something else', (t) => {
+    const opts = '--quote "\'"';
+
+    exec(`${cli} -i "${getFixturePath('/json/escapedQuotes.json')}" ${opts}`, (err, stdout, stderr) => {
+      t.notOk(stderr); 
+      const csv = stdout;
+        t.equal(csv, csvFixtures.escapedQuotesUnescaped);
+        t.end();
+      });
+  });
+
+  // String Escaped Quote
+
+  testRunner.add('should escape quotes with double quotes', (t) => {
+    exec(`${cli} -i "${getFixturePath('/json/quotes.json')}"`, (err, stdout, stderr) => {
+      t.notOk(stderr); 
+      const csv = stdout;
+      t.equal(csv, csvFixtures.quotes);
+      t.end();
+    });
+  });
+
+  testRunner.add('should not escape quotes with double quotes, when there is a backslash in the end', (t) => {
+    exec(`${cli} -i "${getFixturePath('/json/backslashAtEnd.json')}"`, (err, stdout, stderr) => {
+      t.notOk(stderr); 
+      const csv = stdout;
+      t.equal(csv, csvFixtures.backslashAtEnd);
+      t.end();
+    });
+  });
+
+  testRunner.add('should not escape quotes with double quotes, when there is a backslash in the end, and its not the last column', (t) => {
+    exec(`${cli} -i "${getFixturePath('/json/backslashAtEndInMiddleColumn.json')}"`, (err, stdout, stderr) => {
+      t.notOk(stderr); 
+      const csv = stdout;
+      t.equal(csv, csvFixtures.backslashAtEndInMiddleColumn);
+      t.end();
+    });
+  });
+
+  testRunner.add('should escape quotes with value in \'escapedQuote\'', (t) => {
+    const opts = '--fields "a string" --escaped-quote "*"';
+
+    exec(`${cli} -i "${getFixturePath('/json/escapedQuotes.json')}" ${opts}`, (err, stdout, stderr) => {
+      t.notOk(stderr); 
+      const csv = stdout;
+      t.equal(csv, csvFixtures.escapedQuotes);
+      t.end();
+    });
+  });
+
+  // String Excel
+
+  testRunner.add('should format strings to force excel to view the values as strings', (t) => {
+    const opts = '--fields carModel,price,color --excel-strings';
+
+    exec(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`, (err, stdout, stderr) => {
+      t.notOk(stderr); 
+      const csv = stdout;
+      t.equal(csv, csvFixtures.excelStrings);
+      t.end();
+    });
+  });
+
+  // String Escaping and preserving values
+
+  testRunner.add('should parse JSON values with trailing backslashes', (t) => {
+    const opts = '--fields carModel,price,color';
+
+    exec(`${cli} -i "${getFixturePath('/json/trailingBackslash.json')}" ${opts}`, (err, stdout, stderr) => {
+      t.notOk(stderr); 
+      const csv = stdout;
+      t.equal(csv, csvFixtures.trailingBackslash);
+      t.end();
+    });
+  });
+
+  testRunner.add('should escape " when preceeded by \\', (t) => {
+    exec(`${cli} -i "${getFixturePath('/json/escapeDoubleBackslashedEscapedQuote.json')}"`, (err, stdout, stderr) => {
+      t.notOk(stderr); 
+      const csv = stdout;
+      t.equal(csv, csvFixtures.escapeDoubleBackslashedEscapedQuote);
+      t.end();
+    });
+  });
+
+  testRunner.add('should preserve new lines in values', (t) => {
+    const opts = '--eol "\r\n"';
+
+    exec(`${cli} -i "${getFixturePath('/json/escapeEOL.json')}" ${opts}`, (err, stdout, stderr) => {
+      t.notOk(stderr); 
+      const csv = stdout;
+      t.equal(csv, [
+      '"a string"',
+      '"with a \u2028description\\n and\na new line"',
+      '"with a \u2029\u2028description and\r\nanother new line"'
+    ].join('\r\n'));
+      t.end();
+    });
+  });
+
+  testRunner.add('should preserve tabs in values', (t) => {
+    exec(`${cli} -i "${getFixturePath('/json/escapeTab.json')}"`, (err, stdout, stderr) => {
+      t.notOk(stderr); 
+      const csv = stdout;
+      t.equal(csv, csvFixtures.escapeTab);
       t.end();
     });
   });

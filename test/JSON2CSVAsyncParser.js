@@ -1,7 +1,12 @@
 'use strict';
 
 const { Readable, Transform, Writable } = require('stream');
-const { AsyncParser, parseAsync, transforms: { flatten, unwind } } = require('../lib/json2csv');
+const {
+  parseAsync,
+  AsyncParser,
+  transforms: { flatten, unwind },
+  formatters: { number: numberFormatter, string: stringFormatter, stringExcel: stringExcelFormatter, stringQuoteOnlyIfNecessary: stringQuoteOnlyIfNecessaryFormatter },
+} = require('../lib/json2csv');
 
 module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) => {
   testRunner.add('should should error async if invalid opts are passed using parseAsync method', async (t) => {
@@ -21,14 +26,14 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
 
   testRunner.add('should parse in-memory json array to csv, infer the fields automatically and not modify the opts passed using parseAsync method', async (t) => {
     const opts = {
-      fields: ['carModel', 'price', 'color', 'transmission']
+      fields: ['carModel', 'price', 'color', 'manual']
     };
 
     try {
       const csv = await parseAsync(inMemoryJsonFixtures.default, opts);
       t.ok(typeof csv === 'string');
       t.equal(csv, csvFixtures.default);
-      t.deepEqual(opts, { fields: ['carModel', 'price', 'color', 'transmission'] });
+      t.deepEqual(opts, { fields: ['carModel', 'price', 'color', 'manual'] });
     } catch(err) {
       t.fail(err.message);
     }
@@ -38,14 +43,14 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
   
   testRunner.add('should parse in-memory json object to csv, infer the fields automatically and not modify the opts passed using parseAsync method', async (t) => {
     const opts = {
-      fields: ['carModel', 'price', 'color', 'transmission']
+      fields: ['carModel', 'price', 'color', 'manual']
     };
 
     try {
       const csv = await parseAsync({ "carModel": "Audi",      "price": 0,  "color": "blue" }, opts);
       t.ok(typeof csv === 'string');
-      t.equal(csv, '"carModel","price","color","transmission"\n"Audi",0,"blue",');
-      t.deepEqual(opts, { fields: ['carModel', 'price', 'color', 'transmission'] });
+      t.equal(csv, '"carModel","price","color","manual"\n"Audi",0,"blue",');
+      t.deepEqual(opts, { fields: ['carModel', 'price', 'color', 'manual'] });
     } catch(err) {
       t.fail(err.message);
     }
@@ -55,14 +60,14 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
 
   testRunner.add('should parse streaming json to csv, infer the fields automatically and not modify the opts passed using parseAsync method', async (t) => {
     const opts = {
-      fields: ['carModel', 'price', 'color', 'transmission']
+      fields: ['carModel', 'price', 'color', 'manual']
     };
 
     try {
       const csv = await parseAsync(jsonFixtures.default(), opts);
       t.ok(typeof csv === 'string');
       t.equal(csv, csvFixtures.default);
-      t.deepEqual(opts, { fields: ['carModel', 'price', 'color', 'transmission'] });
+      t.deepEqual(opts, { fields: ['carModel', 'price', 'color', 'manual'] });
     } catch(err) {
       t.fail(err.message);
     }
@@ -72,7 +77,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
 
   testRunner.add('should handle object mode with default input', async (t) => {
     const opts = {
-      fields: ['carModel', 'price', 'color', 'transmission']
+      fields: ['carModel', 'price', 'color', 'manual']
     };
     const transformOpts = { readableObjectMode: true, writableObjectMode: true };
     const parser = new AsyncParser(opts, transformOpts);
@@ -98,7 +103,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     input.push(null);
 
     const opts = {
-      fields: ['carModel', 'price', 'color', 'transmission']
+      fields: ['carModel', 'price', 'color', 'manual']
     };
     const transformOpts = { readableObjectMode: true, writableObjectMode: true };
     const parser = new AsyncParser(opts, transformOpts);
@@ -115,7 +120,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
 
   testRunner.add('should handle ndjson', async (t) => {
     const opts = {
-      fields: ['carModel', 'price', 'color', 'transmission'],
+      fields: ['carModel', 'price', 'color', 'manual'],
       ndjson: true
     };
     const parser = new AsyncParser(opts);
@@ -132,7 +137,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
 
   testRunner.add('should error on invalid ndjson input data', async (t) => {
     const opts = {
-      fields: ['carModel', 'price', 'color', 'transmission'],
+      fields: ['carModel', 'price', 'color', 'manual'],
       ndjson: true
     };
     const parser = new AsyncParser(opts);
@@ -183,7 +188,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
 
   testRunner.add('should error on invalid json input data', async (t) => {
     const opts = {
-      fields: ['carModel', 'price', 'color', 'transmission']
+      fields: ['carModel', 'price', 'color', 'manual']
     };
     const parser = new AsyncParser(opts);
 
@@ -279,7 +284,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
 
   testRunner.add('should parse json to csv using custom fields', async (t) => {
     const opts = {
-      fields: ['carModel', 'price', 'color', 'transmission']
+      fields: ['carModel', 'price', 'color', 'manual']
     };
     const parser = new AsyncParser(opts);
 
@@ -576,146 +581,6 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     t.end();
   });
 
-  // Quote
-
-  testRunner.add('should use a custom quote when \'quote\' property is present', async (t) => {
-    const opts = {
-      fields: ['carModel', 'price'],
-      quote: '\''
-    };
-    const parser = new AsyncParser(opts);
-
-    try {
-      const csv = await parser.fromInput(jsonFixtures.default()).promise();
-      t.equal(csv, csvFixtures.withSimpleQuotes);
-    } catch(err) {
-      t.fail(err.message);
-    }
-
-    t.end();
-  });
-
-  testRunner.add('should be able to don\'t output quotes when setting \'quote\' to empty string', async (t) => {
-    const opts = {
-      fields: ['carModel', 'price'],
-      quote: ''
-    };
-    const parser = new AsyncParser(opts);
-
-    try {
-      const csv = await parser.fromInput(jsonFixtures.default()).promise();
-      t.equal(csv, csvFixtures.withoutQuotes);
-    } catch(err) {
-      t.fail(err.message);
-    }
-
-    t.end();
-  });
-
-  testRunner.add('should escape quotes when setting \'quote\' property is present', async (t) => {
-    const opts = {
-      fields: ['carModel', 'color'],
-      quote: '\''
-    };
-    const parser = new AsyncParser(opts);
-
-    try {
-      const csv = await parser.fromInput(jsonFixtures.escapeCustomQuotes()).promise();
-      t.equal(csv, csvFixtures.escapeCustomQuotes);
-    } catch(err) {
-      t.fail(err.message);
-    }
-
-    t.end();
-  });
-
-  testRunner.add('should not escape \'"\' when setting \'quote\' set to something else', async (t) => {
-    const opts = {
-      quote: '\''
-    };
-    const parser = new AsyncParser(opts);
-
-    try {
-      const csv = await parser.fromInput(jsonFixtures.escapedQuotes()).promise();
-      t.equal(csv, csvFixtures.escapedQuotesUnescaped);
-    } catch(err) {
-      t.fail(err.message);
-    }
-
-    t.end();
-  });
-
-  // Escaped Quote
-
-  testRunner.add('should escape quotes with double quotes', async (t) => {
-    const parser = new AsyncParser();
-    try {
-      const csv = await parser.fromInput(jsonFixtures.quotes()).promise();
-      t.equal(csv, csvFixtures.quotes);
-    } catch(err) {
-      t.fail(err.message);
-    }
-
-    t.end();
-  });
-
-  testRunner.add('should not escape quotes with double quotes, when there is a backslash in the end', async (t) => {
-    const parser = new AsyncParser();
-    try {
-      const csv = await parser.fromInput(jsonFixtures.backslashAtEnd()).promise();
-      t.equal(csv, csvFixtures.backslashAtEnd);
-    } catch(err) {
-      t.fail(err.message);
-    }
-
-    t.end();
-  });
-
-  testRunner.add('should not escape quotes with double quotes, when there is a backslash in the end, and its not the last column', async (t) => {
-    const parser = new AsyncParser();
-    try {
-      const csv = await parser.fromInput(jsonFixtures.backslashAtEndInMiddleColumn()).promise();
-      t.equal(csv, csvFixtures.backslashAtEndInMiddleColumn);
-    } catch(err) {
-      t.fail(err.message);
-    }
-
-    t.end();
-  });
-
-  testRunner.add('should escape quotes with value in \'escapedQuote\'', async (t) => {
-    const opts = {
-      fields: ['a string'],
-      escapedQuote: '*'
-    };
-    const parser = new AsyncParser(opts);
-
-    try {
-      const csv = await parser.fromInput(jsonFixtures.escapedQuotes()).promise();
-      t.equal(csv, csvFixtures.escapedQuotes);
-    } catch(err) {
-      t.fail(err.message);
-    }
-
-    t.end();
-  });
-
-  testRunner.add('should escape quotes before new line with value in \'escapedQuote\'', async (t) => {
-    const opts = {
-      fields: ['a string']
-    };
-    const parser = new AsyncParser(opts);
-
-    try {
-      const csv = await parser.fromInput(jsonFixtures.backslashBeforeNewLine()).promise();
-      t.equal(csv, csvFixtures.backslashBeforeNewLine);
-    } catch(err) {
-      t.fail(err.message);
-    }
-
-    t.end();
-  });
-
   // Delimiter
 
   testRunner.add('should use a custom delimiter when \'delimiter\' property is defined', async (t) => {
@@ -768,93 +633,12 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     t.end();
   });
 
-  // Excell
-
-  testRunner.add('should format strings to force excel to view the values as strings', async (t) => {
-    const opts = {
-      fields: ['carModel', 'price', 'color'],
-      excelStrings:true
-    };
-    const parser = new AsyncParser(opts);
-
-    try {
-      const csv = await parser.fromInput(jsonFixtures.default()).promise();
-      t.equal(csv, csvFixtures.excelStrings);
-    } catch(err) {
-      t.fail(err.message);
-    }
-
-    t.end();
-  });
-
-  // Escaping and preserving values
-
-  testRunner.add('should parse JSON values with trailing backslashes', async (t) => {
-    const opts = {
-      fields: ['carModel', 'price', 'color']
-    };
-    const parser = new AsyncParser(opts);
-
-    try {
-      const csv = await parser.fromInput(jsonFixtures.trailingBackslash()).promise();
-      t.equal(csv, csvFixtures.trailingBackslash);
-    } catch(err) {
-      t.fail(err.message);
-    }
-
-    t.end();
-  });
-
-  testRunner.add('should escape " when preceeded by \\', async (t) => {
-    const parser = new AsyncParser();
-    try {
-      const csv = await parser.fromInput(jsonFixtures.escapeDoubleBackslashedEscapedQuote()).promise();
-      t.equal(csv, csvFixtures.escapeDoubleBackslashedEscapedQuote);
-    } catch(err) {
-      t.fail(err.message);
-    }
-
-    t.end();
-  });
-
-  testRunner.add('should preserve new lines in values', async (t) => {
-    const opts = {
-      eol: '\r\n'
-    };
-    const parser = new AsyncParser(opts);
-    
-    try {
-      const csv = await parser.fromInput(jsonFixtures.escapeEOL()).promise();
-      t.equal(csv, [
-        '"a string"',
-        '"with a \u2028description\\n and\na new line"',
-        '"with a \u2029\u2028description and\r\nanother new line"'
-      ].join('\r\n'));
-    } catch(err) {
-      t.fail(err.message);
-    }
-
-    t.end();
-  });
-
-  testRunner.add('should preserve tabs in values', async (t) => {
-    const parser = new AsyncParser();
-    try {
-      const csv = await parser.fromInput(jsonFixtures.escapeTab()).promise();
-      t.equal(csv, csvFixtures.escapeTab);
-    } catch(err) {
-      t.fail(err.message);
-    }
-
-    t.end();
-  });
-
   // Header
 
   testRunner.add('should parse json to csv without column title', async (t) => {
     const opts = {
       header: false,
-      fields: ['carModel', 'price', 'color', 'transmission']
+      fields: ['carModel', 'price', 'color', 'manual']
     };
     const parser = new AsyncParser(opts);
 
@@ -970,7 +754,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
   testRunner.add('should add BOM character', async (t) => {
     const opts = {
       withBOM: true,
-      fields: ['carModel', 'price', 'color', 'transmission']
+      fields: ['carModel', 'price', 'color', 'manual']
     };
     const parser = new AsyncParser(opts);
     
@@ -1003,7 +787,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
 
   testRunner.add('should use custom transforms if configured', async (t) => {
     const opts = {
-      fields: ['carModel', 'price', 'color', 'transmission']
+      fields: ['carModel', 'price', 'color', 'manual']
     };
     const myTransform = new Transform({
       transform(chunk, encoding, callback) {
@@ -1051,7 +835,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
 
   testRunner.add('should use custom output if configured', async (t) => {
     const opts = {
-      fields: ['carModel', 'price', 'color', 'transmission']
+      fields: ['carModel', 'price', 'color', 'manual']
     };
     const memoryOutput = new Writable({
       write(chunk, enc, cb) {
@@ -1111,7 +895,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
 
   testRunner.add('should catch errors even if ret option is set to false', async (t) => {
     const opts = {
-      fields: ['carModel', 'price', 'color', 'transmission']
+      fields: ['carModel', 'price', 'color', 'manual']
     };
 
     const parser = new AsyncParser(opts);
@@ -1266,7 +1050,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         model: row.carModel,
         price: row.price / 1000,
         color: row.color,
-        transmission: row.transmission || 'automatic',
+        manual: row.manual || 'automatic',
       })],
     };
 
@@ -1275,6 +1059,365 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     try {
       const csv = await parser.fromInput(jsonFixtures.default()).promise();
       t.equal(csv, csvFixtures.defaultCustomTransform);
+    } catch(err) {
+      t.fail(err.message);
+    }
+
+    t.end();
+  });
+
+  // Formatters
+
+
+
+  // Number
+
+  testRunner.add('should used a custom separator when \'decimals\' is passed to the number formatter', async (t) => {
+    const opts = {
+      formatters: {
+        number: numberFormatter({ decimals: 2 })
+      }
+    };
+    const parser = new AsyncParser(opts);
+
+    try {
+      const csv = await parser.fromInput(jsonFixtures.numberFormatter()).promise();
+      t.equal(csv, csvFixtures.numberFixedDecimals);
+    } catch(err) {
+      t.fail(err.message);
+    }
+
+    t.end();
+  });
+
+  testRunner.add('should used a custom separator when \'separator\' is passed to the number formatter', async (t) => {
+    const opts = {
+      delimiter: ';',
+      formatters: {
+        number: numberFormatter({ separator: ',' })
+      }
+    };
+    const parser = new AsyncParser(opts);
+
+    try {
+      const csv = await parser.fromInput(jsonFixtures.numberFormatter()).promise();
+      t.equal(csv, csvFixtures.numberCustomSeparator);
+    } catch(err) {
+      t.fail(err.message);
+    }
+
+    t.end();
+  });
+
+  testRunner.add('should used a custom separator and fixed number of decimals when \'separator\' and \'decimals\' are passed to the number formatter', async (t) => {
+    const opts = {
+      delimiter: ';',
+      formatters: {
+        number: numberFormatter({ separator: ',', decimals: 2 })
+      }
+    };
+    const parser = new AsyncParser(opts);
+
+    try {
+      const csv = await parser.fromInput(jsonFixtures.numberFormatter()).promise();
+      t.equal(csv, csvFixtures.numberFixedDecimalsAndCustomSeparator);
+    } catch(err) {
+      t.fail(err.message);
+    }
+
+    t.end();
+  });
+
+  // Symbol
+
+  testRunner.add('should format Symbol by its name', async (t) => {
+    const data = [{ test: Symbol('test1') }, { test: Symbol('test2') }]; 
+    const input = new Readable({ objectMode: true });
+    input._read = () => {};
+    data.forEach(item => input.push(item));
+    input.push(null);
+
+    const transformOpts = { readableObjectMode: true, writableObjectMode: true };
+
+    const parser = new AsyncParser({}, transformOpts);
+
+    try {
+      const csv = await parser.fromInput(input).promise();
+      t.equal(csv, '"test"\n"test1"\n"test2"');
+    } catch(err) {
+      t.fail(err.message);
+    }
+
+    t.end();
+  });
+
+  // String Quote
+
+  testRunner.add('should use a custom quote when \'quote\' property is present', async (t) => {
+    const opts = {
+      fields: ['carModel', 'price'],
+      formatters: {
+        string: stringFormatter({ quote: '\'' })
+      }
+    };
+    const parser = new AsyncParser(opts);
+
+    try {
+      const csv = await parser.fromInput(jsonFixtures.default()).promise();
+      t.equal(csv, csvFixtures.withSimpleQuotes);
+    } catch(err) {
+      t.fail(err.message);
+    }
+
+    t.end();
+  });
+
+  testRunner.add('should be able to don\'t output quotes when setting \'quote\' to empty string', async (t) => {
+    const opts = {
+      fields: ['carModel', 'price'],
+      formatters: {
+        string: stringFormatter({ quote: '' })
+      }
+    };
+    const parser = new AsyncParser(opts);
+
+    try {
+      const csv = await parser.fromInput(jsonFixtures.default()).promise();
+      t.equal(csv, csvFixtures.withoutQuotes);
+    } catch(err) {
+      t.fail(err.message);
+    }
+
+    t.end();
+  });
+
+  testRunner.add('should escape quotes when setting \'quote\' property is present', async (t) => {
+    const opts = {
+      fields: ['carModel', 'color'],
+      formatters: {
+        string: stringFormatter({ quote: '\'' })
+      }
+    };
+    const parser = new AsyncParser(opts);
+
+    try {
+      const csv = await parser.fromInput(jsonFixtures.escapeCustomQuotes()).promise();
+      t.equal(csv, csvFixtures.escapeCustomQuotes);
+    } catch(err) {
+      t.fail(err.message);
+    }
+
+    t.end();
+  });
+
+  testRunner.add('should not escape \'"\' when setting \'quote\' set to something else', async (t) => {
+    const opts = {
+      formatters: {
+        string: stringFormatter({ quote: '\'' })
+      }
+    };
+    const parser = new AsyncParser(opts);
+
+    try {
+      const csv = await parser.fromInput(jsonFixtures.escapedQuotes()).promise();
+      t.equal(csv, csvFixtures.escapedQuotesUnescaped);
+    } catch(err) {
+      t.fail(err.message);
+    }
+
+    t.end();
+  });
+
+  // String Escaped Quote
+
+  testRunner.add('should escape quotes with double quotes', async (t) => {
+    const parser = new AsyncParser();
+    try {
+      const csv = await parser.fromInput(jsonFixtures.quotes()).promise();
+      t.equal(csv, csvFixtures.quotes);
+    } catch(err) {
+      t.fail(err.message);
+    }
+
+    t.end();
+  });
+
+  testRunner.add('should not escape quotes with double quotes, when there is a backslash in the end', async (t) => {
+    const parser = new AsyncParser();
+    try {
+      const csv = await parser.fromInput(jsonFixtures.backslashAtEnd()).promise();
+      t.equal(csv, csvFixtures.backslashAtEnd);
+    } catch(err) {
+      t.fail(err.message);
+    }
+
+    t.end();
+  });
+
+  testRunner.add('should not escape quotes with double quotes, when there is a backslash in the end, and its not the last column', async (t) => {
+    const parser = new AsyncParser();
+    try {
+      const csv = await parser.fromInput(jsonFixtures.backslashAtEndInMiddleColumn()).promise();
+      t.equal(csv, csvFixtures.backslashAtEndInMiddleColumn);
+    } catch(err) {
+      t.fail(err.message);
+    }
+
+    t.end();
+  });
+
+  testRunner.add('should escape quotes with value in \'escapedQuote\'', async (t) => {
+    const opts = {
+      fields: ['a string'],
+      formatters: {
+        string: stringFormatter({ escapedQuote: '*' })
+      }
+    };
+    const parser = new AsyncParser(opts);
+
+    try {
+      const csv = await parser.fromInput(jsonFixtures.escapedQuotes()).promise();
+      t.equal(csv, csvFixtures.escapedQuotes);
+    } catch(err) {
+      t.fail(err.message);
+    }
+
+    t.end();
+  });
+
+  testRunner.add('should escape quotes before new line with value in \'escapedQuote\'', async (t) => {
+    const opts = {
+      fields: ['a string']
+    };
+    const parser = new AsyncParser(opts);
+
+    try {
+      const csv = await parser.fromInput(jsonFixtures.backslashBeforeNewLine()).promise();
+      t.equal(csv, csvFixtures.backslashBeforeNewLine);
+    } catch(err) {
+      t.fail(err.message);
+    }
+
+    t.end();
+  });
+
+  // String Quote Only if Necessary
+
+  testRunner.add('should quote only if necessary if using stringQuoteOnlyIfNecessary formatter', async (t) => {
+    const opts = {
+      formatters: {
+        string: stringQuoteOnlyIfNecessaryFormatter()
+      }
+    };
+    const parser = new AsyncParser(opts);
+
+    try {
+      const csv = await parser.fromInput(jsonFixtures.quoteOnlyIfNecessary()).promise();
+      t.equal(csv, csvFixtures.quoteOnlyIfNecessary);
+    } catch(err) {
+      t.fail(err.message);
+    }
+
+    t.end();
+  });
+
+  // String Excel
+
+  testRunner.add('should format strings to force excel to view the values as strings', async (t) => {
+    const opts = {
+      fields: ['carModel', 'price', 'color'],
+      formatters: {
+        string: stringExcelFormatter()
+      }
+    };
+    const parser = new AsyncParser(opts);
+
+    try {
+      const csv = await parser.fromInput(jsonFixtures.default()).promise();
+      t.equal(csv, csvFixtures.excelStrings);
+    } catch(err) {
+      t.fail(err.message);
+    }
+
+    t.end();
+  });
+
+  // String Escaping and preserving values
+
+  testRunner.add('should parse JSON values with trailing backslashes', async (t) => {
+    const opts = {
+      fields: ['carModel', 'price', 'color']
+    };
+    const parser = new AsyncParser(opts);
+
+    try {
+      const csv = await parser.fromInput(jsonFixtures.trailingBackslash()).promise();
+      t.equal(csv, csvFixtures.trailingBackslash);
+    } catch(err) {
+      t.fail(err.message);
+    }
+
+    t.end();
+  });
+
+  testRunner.add('should escape " when preceeded by \\', async (t) => {
+    const parser = new AsyncParser();
+    try {
+      const csv = await parser.fromInput(jsonFixtures.escapeDoubleBackslashedEscapedQuote()).promise();
+      t.equal(csv, csvFixtures.escapeDoubleBackslashedEscapedQuote);
+    } catch(err) {
+      t.fail(err.message);
+    }
+
+    t.end();
+  });
+
+  testRunner.add('should preserve new lines in values', async (t) => {
+    const opts = {
+      eol: '\r\n'
+    };
+    const parser = new AsyncParser(opts);
+    
+    try {
+      const csv = await parser.fromInput(jsonFixtures.escapeEOL()).promise();
+      t.equal(csv, [
+        '"a string"',
+        '"with a \u2028description\\n and\na new line"',
+        '"with a \u2029\u2028description and\r\nanother new line"'
+      ].join('\r\n'));
+    } catch(err) {
+      t.fail(err.message);
+    }
+
+    t.end();
+  });
+
+  testRunner.add('should preserve tabs in values', async (t) => {
+    const parser = new AsyncParser();
+    try {
+      const csv = await parser.fromInput(jsonFixtures.escapeTab()).promise();
+      t.equal(csv, csvFixtures.escapeTab);
+    } catch(err) {
+      t.fail(err.message);
+    }
+
+    t.end();
+  });
+
+  // Headers
+
+  testRunner.add('should format headers based on the headers formatter', async (t) => {
+    const opts = {
+      fields: ['carModel', 'price', 'color', 'manual'],
+      formatters: {
+        header: stringFormatter({ quote: '' })
+      }
+    };
+  
+    const parser = new AsyncParser(opts);
+    try {
+      const csv = await parser.fromInput(jsonFixtures.default()).promise();
+      t.equal(csv, csvFixtures.customHeaderQuotes);
     } catch(err) {
       t.fail(err.message);
     }
