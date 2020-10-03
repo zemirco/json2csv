@@ -1,4 +1,4 @@
-# CLI examples
+# CLI Examples
 
 All examples use this example [input file](https://github.com/zemirco/json2csv/blob/master/test/fixtures/json/default.json).
 
@@ -42,11 +42,7 @@ $ json2csv -i input.json -c fieldsConfig.json -o out.csv
 where the file `fieldsConfig.json` contains
 
 ```json
-[
-  "carModel",
-  "price",
-  "color"
-]
+["carModel", "price", "color"]
 ```
 
 ## Read input from stdin
