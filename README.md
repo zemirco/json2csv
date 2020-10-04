@@ -9,19 +9,34 @@ Can be used as a module and from the command line.
 
 See the [CHANGELOG] for details about the latest release.
 
-Features
+# Table of contents
+1. [Features](#features)
+2. [How to install](#howToInstall)
+3. [Usage](#usage)
+    1. [CLI](#cli)
+    2. [Javascript Module](#jsModule)
+4. [json2csv Parser (Synchronous API)](#json2csvSync)
+5. [json2csv Async Parser (Streaming API)](#json2csvAsync)
+5. [json2csv Transform (Streaming API)](#json2csvTransform)
+6. [Upgrading Your Version of JSON2CSV](#upgrading)
+7. [Known Gotchas](#knownGotchas)
+8. [Contributing](#contributing)
 
-- Fast and lightweight
+
+
+## Features <a name="features"></a>
+
+- Fast and lightweight  
 - Scalable to infinitely large datasets (using stream processing)
 - Support for standard JSON as well as NDJSON
 - Advanced data selection (automatic field discovery, underscore-like selectors, custom data getters, default values for missing fields, transforms, etc.)
-- Highly customizable (supportting custom quotation marks, delimiters, eol values, etc.)
+- Highly customizable (supporting custom quotation marks, delimiters, eol values, etc.)
 - Automatic escaping (preserving new lines, quotes, etc. in them)
 - Optional headers
 - Unicode encoding support
 - Pretty printing in table format to stdout
 
-## How to install
+## How to install <a name="howToInstall"></a>
 
 You can install json2csv as a dependency using NPM.  
 Requires **Node v10** or higher.
@@ -45,9 +60,9 @@ By default, the above script will get the latest release of json2csv. You can al
 <script src="https://cdn.jsdelivr.net/npm/json2csv@4.2.1"></script>
 ```
 
-## Usage
+## Usage <a name="usage"></a>
 
-### Command Line Interface
+### Command Line Interface <a name="cli"></a>
 
 `json2csv` can be called from the command line if installed globally (using the `-g` flag).
 
@@ -89,7 +104,7 @@ Any option passed through the config file `-c` will be overriden if a specific f
 
 For more details, you can check some of our CLI usage [examples](docs/cli-examples.md) or our [test suite](test/CLI.js).
 
-## Javascript module
+## Javascript module <a name="jsModule"></a>
 
 `json2csv` can also be use programatically from you javascript codebase.
 
