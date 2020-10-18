@@ -34,7 +34,9 @@
     "lint": "eslint bin lib test",
     "test-with-coverage": "nyc --reporter=text node test | tap-spec",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
-    "deploy:docs": "docpress b && gh-pages -d _docpress",
+    "build:site": "cd site && npm run build",
+    "predeploy:docs": "npm run build:site",
+    "deploy:docs": "docpress b && gh-pages -d site/dist",
     "prepublish": "in-publish && npm run before:publish || not-in-publish",
     "before:publish": "npm test && npm run build && npm run deploy:docs",
     "release": "standard-version"
@@ -48,7 +50,6 @@
     "@babel/core": "^7.3.3",
     "@babel/preset-env": "^7.3.1",
     "coveralls": "^3.0.3",
-    "docpress": "^0.8.0",
     "eslint": "^6.1.0",
     "gh-pages": "^2.0.1",
     "in-publish": "^2.0.0",

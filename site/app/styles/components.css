@@ -1,0 +1,12 @@
+/* fix prism clashing with tailwind */
+.token.block {
+  display: inherit;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+  background: none;
+}
