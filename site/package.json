@@ -12,6 +12,7 @@
   },
   "scripts": {
     "build": "ember build",
+    "build:prod": "ember build -prod",
     "lint:hbs": "ember-template-lint .",
     "lint:js": "eslint .",
     "start": "ember serve",
@@ -45,7 +46,6 @@
     "ember-qunit": "^4.6.0",
     "ember-resolver": "^7.0.0",
     "ember-source": "~3.15.0",
-    "ember-welcome-page": "^4.0.0",
     "eslint-plugin-ember": "^7.7.1",
     "eslint-plugin-node": "^10.0.0",
     "loader.js": "^4.7.0",

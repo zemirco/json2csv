@@ -34,7 +34,7 @@
     "lint": "eslint bin lib test",
     "test-with-coverage": "nyc --reporter=text node test | tap-spec",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
-    "build:site": "cd site && npm run build",
+    "build:site": "cd site && npm run build:prod",
     "predeploy:docs": "npm run build:site",
     "deploy:docs": "gh-pages -d site/dist",
     "prepublish": "in-publish && npm run before:publish || not-in-publish",
