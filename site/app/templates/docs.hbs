@@ -1,10 +1,10 @@
-<div class="flex flex-cols">
-  <DocfyOutput @scope="docs" as |node|>
-    <ul class="py-8 px-4">
+<div class='flex flex-cols'>
+  <DocfyOutput @scope='docs' as |node|>
+    <ul class='py-8 px-4'>
       {{#each node.pages as |page|}}
         <li>
           <DocfyLink
-            class="text-blue-800 hover:text-blue-900 hover:underline"
+            class='text-blue-800 hover:text-blue-900 hover:underline'
             @to={{page.url}}
           >
             {{page.title}}
@@ -14,24 +14,23 @@
     </ul>
   </DocfyOutput>
 
-  <div class="w-full">
-    <div class="prose min-w-full p-8">
+  <div class='w-full'>
+    <div class='prose min-w-full p-8'>
       {{outlet}}
     </div>
 
-    <div class="flex justify-between mt-10">
+    <div class='flex justify-between mt-10'>
       <DocfyOutput @fromCurrentURL={{true}} as |page|>
-        {{log page}}
         {{#if page.editUrl}}
           <a
             href={{page.editUrl}}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="flex items-center"
+            target='_blank'
+            rel='noopener noreferrer'
+            class='flex items-center'
           >
-            <svg class="w-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+            <svg class='w-4 mr-2' fill='currentColor' viewBox='0 0 20 20'>
               <path
-                d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
+                d='M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z'
               ></path>
             </svg>
             Edit this page on GitHub
@@ -41,12 +40,12 @@
     </div>
 
     <DocfyPreviousAndNextPage as |previous next|>
-      <div class="flex justify-between p-8 mb-4 text-lg text-blue-800">
+      <div class='flex justify-between p-8 mb-4 text-lg text-blue-800'>
         <div>
           {{#if previous}}
             Previous:
 
-            <DocfyLink class="hover:underline" @to={{previous.url}}>
+            <DocfyLink class='hover:underline' @to={{previous.url}}>
               {{previous.title}}
             </DocfyLink>
           {{/if}}
@@ -55,7 +54,7 @@
           {{#if next}}
             Next:
 
-            <DocfyLink class="hover:underline" @to={{next.url}}>
+            <DocfyLink class='hover:underline' @to={{next.url}}>
               {{next.title}}
             </DocfyLink>
           {{/if}}

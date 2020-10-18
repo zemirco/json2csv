@@ -16,6 +16,7 @@ module.exports = {
     {
       root: path.resolve(__dirname, '../docs'),
       pattern: '**/*.md',
+      urlPrefix: 'docs',
     },
   ],
 };
