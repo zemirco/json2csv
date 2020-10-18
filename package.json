@@ -36,7 +36,7 @@
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "build:site": "cd site && npm run build",
     "predeploy:docs": "npm run build:site",
-    "deploy:docs": "docpress b && gh-pages -d site/dist",
+    "deploy:docs": "gh-pages -d site/dist",
     "prepublish": "in-publish && npm run before:publish || not-in-publish",
     "before:publish": "npm test && npm run build && npm run deploy:docs",
     "release": "standard-version"
