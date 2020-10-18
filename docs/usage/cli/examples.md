@@ -1,4 +1,8 @@
-# CLI Examples
+---
+order: 2
+---
+
+# Examples
 
 All examples use this example [input file](https://github.com/zemirco/json2csv/blob/master/test/fixtures/json/default.json).
 

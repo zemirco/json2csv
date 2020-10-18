@@ -1,4 +1,8 @@
-# JavaScript Module Examples
+---
+order: 7
+---
+
+## Examples
 
 Most of the examples in this section use the same input data:
 

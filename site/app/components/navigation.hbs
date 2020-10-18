@@ -1,0 +1,60 @@
+<ul class='py-8 px-4'>
+  {{#each @node.pages as |page|}}
+    <li class='mt-2'>
+      <DocfyLink
+        class='text-blue-800 hover:text-blue-900 hover:underline'
+        @activeClass='font-semibold'
+        @to={{page.url}}
+      >
+        {{page.title}}
+      </DocfyLink>
+    </li>
+  {{/each}}
+
+  {{#each @node.children as |child|}}
+    <li class='mt-2'>
+      <div class='pb-2'>
+        {{log child}}
+        {{child.label}}
+      </div>
+
+      <ul class='pl-6 border-l border-gray-400 dark:border-gray-700 space-y-3'>
+        {{#each child.pages as |page|}}
+          <li class='truncate'>
+            <DocfyLink
+              class='text-blue-800 hover:text-blue-900 hover:underline'
+              @activeClass='font-semibold'
+              @to={{page.url}}
+            >
+              {{page.title}}
+            </DocfyLink>
+          </li>
+        {{/each}}
+
+        {{#each child.children as |subChild|}}
+          <li>
+            <div class='pb-2'>
+              {{subChild.label}}
+            </div>
+
+            <ul
+              class='pl-6 border-l border-gray-400 dark:border-gray-700 space-y-3'
+            >
+              {{#each subChild.pages as |page|}}
+                <li class='truncate'>
+                  <DocfyLink
+                    class='text-blue-800 hover:text-blue-900 hover:underline'
+                    @activeClass='font-semibold'
+                    @to={{page.url}}
+                  >
+                    {{page.title}}
+                  </DocfyLink>
+                </li>
+              {{/each}}
+            </ul>
+          </li>
+        {{/each}}
+      </ul>
+    </li>
+  {{/each}}
+</ul>

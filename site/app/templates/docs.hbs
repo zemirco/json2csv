@@ -1,17 +1,6 @@
 <div class='flex flex-cols'>
   <DocfyOutput @scope='docs' as |node|>
-    <ul class='py-8 px-4'>
-      {{#each node.pages as |page|}}
-        <li>
-          <DocfyLink
-            class='text-blue-800 hover:text-blue-900 hover:underline'
-            @to={{page.url}}
-          >
-            {{page.title}}
-          </DocfyLink>
-        </li>
-      {{/each}}
-    </ul>
+    <Navigation @node={{node}} />
   </DocfyOutput>
 
   <div class='w-full'>

@@ -19,4 +19,9 @@ module.exports = {
       urlPrefix: 'docs',
     },
   ],
+  labels: {
+    usage: 'Usage',
+    cli: 'CLI',
+    js: 'JS',
+  },
 };
