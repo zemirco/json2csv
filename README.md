@@ -469,9 +469,9 @@ The async API takes a second options arguments that is directly passed to the un
 
 Instances of `AsyncParser` expose three objects:
 
-- _input:_ Which allows to push more data
-- _processor:_ A readable string representing the whole data processing. You can listen to all the standard events of Node.js streams.
-- _transform:_ The json2csv transform. See below for more details.
+- input:_ The readable input stream. If no input has been provided. It is a Duplex stream that allows you to push data into it.
+- transform:_ The json2csv transform. It changes if you provide an input that's not a stream. See below for more details.
+- processor:_ A readable stream representing last transform of the whole pipeline. You can listen to all the standard events of Node.js streams.
 
 ```js
 const { AsyncParser } = require('json2csv');
@@ -494,14 +494,18 @@ asyncParser.transform
   .on('line', (line) => console.log(line))
   .on('error', (err) => console.log(err));
 
+// You can push data manually
 asyncParser.input.push(data); // This data might come from an HTTP request, etc.
 asyncParser.input.push(null); // Sending `null` to a stream signal that no more data is expected and ends it.
+
+// or using the convenience method
+asyncParse.fromInput(data);
 ```
 
 `AsyncParser` also exposes some convenience methods:
 
-- `fromInput` allows you to set the input stream.
-- `throughTransform` allows you to add transforms to the stream.
+- `fromInput` allows you to set the input which can be a stream, an array or a single object.
+- `throughTransform` allows you to add transforms to the input stream.
 - `toOutput` allows you to set the output stream.
 - `promise` returns a promise that resolves when the stream ends or errors. Takes a boolean parameter to indicate if the resulting CSV should be kept in-memory and be resolved by the promise.
 
