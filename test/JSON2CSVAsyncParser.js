@@ -1,6 +1,6 @@
 'use strict';
 
-const { Readable, Transform, Writable } = require('stream');
+const { Readable} = require('stream');
 const {
   parseAsync,
   AsyncParser,
@@ -81,13 +81,9 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     };
     const transformOpts = { readableObjectMode: true, writableObjectMode: true };
     const parser = new AsyncParser(opts, transformOpts);
-    const promise = parser.promise();
-
-    inMemoryJsonFixtures.default.forEach(item => parser.input.push(item));
-    parser.input.push(null);
 
     try {
-      const csv = await promise;
+      const csv = await parser.parse(inMemoryJsonFixtures.default).promise();
       t.equal(csv, csvFixtures.ndjson);
     } catch(err) {
       t.fail(err.message);
@@ -109,7 +105,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts, transformOpts);
     
     try {
-      const csv = await parser.fromInput(input).promise();
+      const csv = await parser.parse(input).promise();
       t.equal(csv, csvFixtures.ndjson);
     } catch(err) {
       t.fail(err.message);
@@ -126,7 +122,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.ndjson()).promise();
+      const csv = await parser.parse(jsonFixtures.ndjson()).promise();
       t.equal(csv, csvFixtures.ndjson);
     } catch(err) {
       t.fail(err.message);
@@ -143,7 +139,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      await parser.fromInput(jsonFixtures.ndjsonInvalid()).promise();
+      await parser.parse(jsonFixtures.ndjsonInvalid()).promise();
       t.fail('Exception expected');
     } catch(err) {
       t.ok(err.message.includes('Invalid JSON'));
@@ -157,7 +153,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.default()).promise();
+      const csv = await parser.parse(jsonFixtures.default()).promise();
       t.ok(typeof csv === 'string');
       t.equal(csv, csvFixtures.defaultStream);
       t.deepEqual(opts, {});
@@ -171,13 +167,8 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
   testRunner.add('should error if input data is not an object', async (t) => {
     const parser = new AsyncParser();
 
-    const promise = parser.promise();
-
-    parser.input.push('"not an object"');
-    parser.input.push(null);
-
     try {
-      await promise;
+      parser.parse('"not an object"');
       t.fail('Exception expected');
     } catch(err) {
       t.equal(err.message, 'Data should not be empty or the "fields" option should be included');
@@ -193,7 +184,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      await parser.fromInput(jsonFixtures.defaultInvalid()).promise();
+      await parser.parse(jsonFixtures.defaultInvalid()).promise();
       t.fail('Exception expected');
     } catch(err) {
       t.ok(err.message.includes('Invalid JSON'));
@@ -209,7 +200,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.emptyObject()).promise();
+      const csv = await parser.parse(jsonFixtures.emptyObject()).promise();
       t.equal(csv, csvFixtures.emptyObject);
     } catch(err) {
       t.fail(err.message);
@@ -225,7 +216,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.emptyArray()).promise();
+      const csv = await parser.parse(jsonFixtures.emptyArray()).promise();
       t.equal(csv, csvFixtures.emptyObject);
     } catch(err) {
       t.fail(err.message);
@@ -239,13 +230,9 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       fields: ['carModel', 'price', 'color']
     };
     const parser = new AsyncParser(opts);
-    const promise = parser.promise();
-
-    parser.input.push('[null]');
-    parser.input.push(null);
 
     try {
-      const csv = await promise;
+      const csv = await parser.parse([null]).promise();
       t.equal(csv, csvFixtures.emptyObject);
     } catch(err) {
       t.fail(err.message);
@@ -259,7 +246,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser();
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.deepJSON()).promise();
+      const csv = await parser.parse(jsonFixtures.deepJSON()).promise();
       t.equal(csv, csvFixtures.deepJSON);
     } catch(err) {
       t.fail(err.message);
@@ -272,7 +259,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser();
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.default()).promise();
+      const csv = await parser.parse(jsonFixtures.default()).promise();
         t.ok(typeof csv === 'string');
         t.equal(csv, csvFixtures.defaultStream);
     } catch(err) {
@@ -289,7 +276,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.default()).promise();
+      const csv = await parser.parse(jsonFixtures.default()).promise();
       t.equal(csv, csvFixtures.default);
     } catch(err) {
       t.fail(err.message);
@@ -305,7 +292,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.default()).promise();
+      const csv = await parser.parse(jsonFixtures.default()).promise();
       t.equal(csv, csvFixtures.selected);
     } catch(err) {
       t.fail(err.message);
@@ -321,7 +308,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.default()).promise();
+      const csv = await parser.parse(jsonFixtures.default()).promise();
       t.equal(csv, csvFixtures.reversed);
     } catch(err) {
       t.fail(err.message);
@@ -337,7 +324,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.default()).promise();
+      const csv = await parser.parse(jsonFixtures.default()).promise();
       t.equal(csv, csvFixtures.withNotExistField);
     } catch(err) {
       t.fail(err.message);
@@ -359,7 +346,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.default()).promise();
+      const csv = await parser.parse(jsonFixtures.default()).promise();
       t.equal(csv, csvFixtures.fieldNames);
     } catch(err) {
       t.fail(err.message);
@@ -375,7 +362,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
 
     try {
       const parser = new AsyncParser(opts);
-      parser.fromInput(jsonFixtures.default()).promise();
+      parser.parse(jsonFixtures.default()).promise();
 
       t.fail('Exception expected');
     } catch(error) {
@@ -395,7 +382,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
 
     try {
       const parser = new AsyncParser(opts);
-      parser.fromInput(jsonFixtures.default()).promise();
+      parser.parse(jsonFixtures.default()).promise();
 
       t.fail('Exception expected');
     } catch(error) {
@@ -427,7 +414,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.nested()).promise();
+      const csv = await parser.parse(jsonFixtures.nested()).promise();
       t.equal(csv, csvFixtures.nested);
     } catch(err) {
       t.fail(err.message);
@@ -450,7 +437,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.functionStringifyByDefault()).promise();
+      const csv = await parser.parse(jsonFixtures.functionStringifyByDefault()).promise();
       t.equal(csv, csvFixtures.functionStringifyByDefault);
     } catch(err) {
       t.fail(err.message);
@@ -469,7 +456,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.functionStringifyByDefault()).promise();
+      const csv = await parser.parse(jsonFixtures.functionStringifyByDefault()).promise();
       t.equal(csv, csvFixtures.functionStringifyByDefault);
     } catch(err) {
       t.fail(err.message);
@@ -502,7 +489,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.fancyfields()).promise();
+      const csv = await parser.parse(jsonFixtures.fancyfields()).promise();
       t.equal(csv, csvFixtures.fancyfields);
     } catch(err) {
       t.fail(err.message);
@@ -521,7 +508,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.defaultValueEmpty()).promise();
+      const csv = await parser.parse(jsonFixtures.defaultValueEmpty()).promise();
       t.equal(csv, csvFixtures.defaultValueEmpty);
     } catch(err) {
       t.fail(err.message);
@@ -542,7 +529,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.overriddenDefaultValue()).promise();
+      const csv = await parser.parse(jsonFixtures.overriddenDefaultValue()).promise();
       t.equal(csv, csvFixtures.overriddenDefaultValue);
     } catch(err) {
       t.fail(err.message);
@@ -572,7 +559,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.overriddenDefaultValue()).promise();
+      const csv = await parser.parse(jsonFixtures.overriddenDefaultValue()).promise();
       t.equal(csv, csvFixtures.overriddenDefaultValue);
     } catch(err) {
       t.fail(err.message);
@@ -591,7 +578,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.default()).promise();
+      const csv = await parser.parse(jsonFixtures.default()).promise();
       t.equal(csv, csvFixtures.tsv);
     } catch(err) {
       t.fail(err.message);
@@ -605,7 +592,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.delimiter()).promise();
+      const csv = await parser.parse(jsonFixtures.delimiter()).promise();
       t.equal(csv, csvFixtures.delimiter);
     } catch(err) {
       t.fail(err.message);
@@ -624,7 +611,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.default()).promise();
+      const csv = await parser.parse(jsonFixtures.default()).promise();
       t.equal(csv, csvFixtures.eol);
     } catch(err) {
       t.fail(err.message);
@@ -643,7 +630,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.default()).promise();
+      const csv = await parser.parse(jsonFixtures.default()).promise();
       t.equal(csv, csvFixtures.withoutHeader);
     } catch(err) {
       t.fail(err.message);
@@ -657,7 +644,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
   testRunner.add('should not include empty rows when options.includeEmptyRows is not specified', async (t) => {
     const parser = new AsyncParser();
     try {
-      const csv = await parser.fromInput(jsonFixtures.emptyRow()).promise();
+      const csv = await parser.parse(jsonFixtures.emptyRow()).promise();
       t.equal(csv, csvFixtures.emptyRowNotIncluded);
     } catch(err) {
       t.fail(err.message);
@@ -673,7 +660,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.emptyRow()).promise();
+      const csv = await parser.parse(jsonFixtures.emptyRow()).promise();
       t.equal(csv, csvFixtures.emptyRow);
     } catch(err) {
       t.fail(err.message);
@@ -689,7 +676,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.emptyRow()).promise();
+      const csv = await parser.parse(jsonFixtures.emptyRow()).promise();
       t.equal(csv, csvFixtures.emptyRowNotIncluded);
     } catch(err) {
       t.fail(err.message);
@@ -718,7 +705,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.emptyRow()).promise();
+      const csv = await parser.parse(jsonFixtures.emptyRow()).promise();
       t.equal(csv, csvFixtures.emptyRowDefaultValues);
     } catch(err) {
       t.fail(err.message);
@@ -734,13 +721,9 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     };
 
     const parser = new AsyncParser(opts);
-    const promise = parser.promise();
-
-    parser.input.push(JSON.stringify([null]));
-    parser.input.push(null);
 
     try {
-      const csv = await promise;
+      const csv = await parser.parse([null]).promise();
       t.equal(csv, csvFixtures.emptyObject);
     } catch(err) {
       t.fail(err.message);
@@ -759,7 +742,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
     
     try {
-      const csv = await parser.fromInput(jsonFixtures.specialCharacters()).promise();
+      const csv = await parser.parse(jsonFixtures.specialCharacters()).promise();
       // Compare csv length to check if the BOM character is present
       t.equal(csv[0], '\ufeff');
       t.equal(csv.length, csvFixtures.default.length + 1);
@@ -769,145 +752,6 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
      }
 
      t.end();
-  });
-
-  // Utility methods
-
-  testRunner.add('should throw if two inputs are configured', async (t) => {
-    const parser = new AsyncParser();
-
-    try {
-      parser.fromInput(jsonFixtures.default()).fromInput(jsonFixtures.default());
-    } catch(error) {
-      t.equal(error.message, 'Async parser already has an input.');
-    }
-
-    t.end();
-  });
-
-  testRunner.add('should use custom transforms if configured', async (t) => {
-    const opts = {
-      fields: ['carModel', 'price', 'color', 'manual']
-    };
-    const myTransform = new Transform({
-      transform(chunk, encoding, callback) {
-        this.push(Buffer.from(chunk.toString('utf8').replace(/c/g, 'X')));
-        callback();
-      }
-    });
-    const parser = new AsyncParser(opts);
-
-    try {
-      const csv = await parser.fromInput(jsonFixtures.default()).throughTransform(myTransform).promise();
-      t.equal(csv, csvFixtures.default.replace(/c/g, 'X'));
-    } catch(err) {
-      t.fail(err.message);
-    }
-
-    t.end();
-  });
-
-  testRunner.add('should throw if a transform is configured after the output is configured', async (t) => {
-    const myTransform = new Transform({
-      transform(chunk, encoding, callback) {
-        this.push(Buffer.from(chunk.toString('utf8').replace(/c/g, 'X')));
-        callback();
-      }
-    });
-    const memoryOutput = new Writable({
-      write(chunk, enc, cb) {
-        const buffer = Buffer.isBuffer(chunk) ? chunk : new Buffer(chunk, enc);
-        this.inMemoryData = Buffer.concat([this.inMemoryData, buffer]);
-        cb();
-      },
-      writev(chunks, callback) { callback(); }
-    });
-    const parser = new AsyncParser();
-
-    try {
-      parser.toOutput(memoryOutput).throughTransform(myTransform);
-    } catch(error) {
-      t.equal(error.message, 'Can\'t add transforms once an output has been added.');
-    }
-
-    t.end();
-  });
-
-  testRunner.add('should use custom output if configured', async (t) => {
-    const opts = {
-      fields: ['carModel', 'price', 'color', 'manual']
-    };
-    const memoryOutput = new Writable({
-      write(chunk, enc, cb) {
-        const buffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk, enc);
-        this.inMemoryData = Buffer.concat([this.inMemoryData || Buffer.from(''), buffer]);
-        cb();
-      },
-    });
-    const parser = new AsyncParser(opts);
-    
-    try {
-      await parser.fromInput(jsonFixtures.default()).toOutput(memoryOutput).promise(false);
-      t.equal(memoryOutput.inMemoryData.toString(), csvFixtures.default);
-    } catch(err) {
-      t.fail(err.message);
-    }
-
-    t.end();
-  });
-  
-  testRunner.add('should throw if two outputs are configured', async (t) => {
-    const memoryOutput = new Writable({
-      write(chunk, enc, cb) {
-        const buffer = Buffer.isBuffer(chunk) ? chunk : new Buffer(chunk, enc);
-        this.inMemoryData = Buffer.concat([this.inMemoryData, buffer]);
-        cb();
-      },
-      writev(chunks, callback) { callback(); }
-    });
-    const parser = new AsyncParser();
-
-    try {
-      parser.toOutput(memoryOutput).toOutput(memoryOutput);
-    } catch(error) {
-      t.equal(error.message, 'Async parser already has an output.');
-    }
-
-    t.end();
-  });
-
-  testRunner.add('should not return if ret option is set to false', async (t) => {
-    const parser = new AsyncParser().fromInput(jsonFixtures.default());
-    let csv = '';
-    
-    parser.processor.on('data', chunk => (csv += chunk.toString()));
-
-    try {
-      const res = await parser.promise(false);
-      t.equal(res, undefined);
-      t.equal(csv, csvFixtures.defaultStream);
-    } catch (err) {
-      t.fail(err.message)
-    }
-    
-    t.end();
-  });
-
-  testRunner.add('should catch errors even if ret option is set to false', async (t) => {
-    const opts = {
-      fields: ['carModel', 'price', 'color', 'manual']
-    };
-
-    const parser = new AsyncParser(opts);
-
-    try {
-      await parser.fromInput(jsonFixtures.defaultInvalid()).promise(false);
-      t.fail('Exception expected');
-    } catch (err) {
-      t.ok(err.message.includes('Invalid JSON'));
-    }
-    
-    t.end();
   });
 
   // Transforms
@@ -920,7 +764,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.unwind2()).promise();
+      const csv = await parser.parse(jsonFixtures.unwind2()).promise();
       t.equal(csv, csvFixtures.unwind2);
     } catch(err) {
       t.fail(err.message);
@@ -937,7 +781,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.unwind()).promise();
+      const csv = await parser.parse(jsonFixtures.unwind()).promise();
       t.equal(csv, csvFixtures.unwind);
     } catch(err) {
       t.fail(err.message);
@@ -954,7 +798,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.unwind2()).promise();
+      const csv = await parser.parse(jsonFixtures.unwind2()).promise();
       t.equal(csv, csvFixtures.unwind2);
     } catch(err) {
       t.fail(err.message);
@@ -971,7 +815,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.unwind2()).promise();
+      const csv = await parser.parse(jsonFixtures.unwind2()).promise();
       t.equal(csv, csvFixtures.unwind2Blank);
     } catch(err) {
       t.fail(err.message);
@@ -987,7 +831,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.deepJSON()).promise();
+      const csv = await parser.parse(jsonFixtures.deepJSON()).promise();
       t.equal(csv, csvFixtures.flattenedDeepJSON);
     } catch(err) {
       t.fail(err.message);
@@ -1003,7 +847,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.flattenArrays()).promise();
+      const csv = await parser.parse(jsonFixtures.flattenArrays()).promise();
       t.equal(csv, csvFixtures.flattenedArrays);
     } catch(err) {
       t.fail(err.message);
@@ -1019,7 +863,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.deepJSON()).promise();
+      const csv = await parser.parse(jsonFixtures.deepJSON()).promise();
       t.equal(csv, csvFixtures.flattenedCustomSeparatorDeepJSON);
     } catch(err) {
       t.fail(err.message);
@@ -1035,7 +879,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.unwindAndFlatten()).promise();
+      const csv = await parser.parse(jsonFixtures.unwindAndFlatten()).promise();
       t.equal(csv, csvFixtures.unwindAndFlatten);
     } catch(err) {
       t.fail(err.message);
@@ -1057,7 +901,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.default()).promise();
+      const csv = await parser.parse(jsonFixtures.default()).promise();
       t.equal(csv, csvFixtures.defaultCustomTransform);
     } catch(err) {
       t.fail(err.message);
@@ -1081,7 +925,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.numberFormatter()).promise();
+      const csv = await parser.parse(jsonFixtures.numberFormatter()).promise();
       t.equal(csv, csvFixtures.numberFixedDecimals);
     } catch(err) {
       t.fail(err.message);
@@ -1100,7 +944,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.numberFormatter()).promise();
+      const csv = await parser.parse(jsonFixtures.numberFormatter()).promise();
       t.equal(csv, csvFixtures.numberCustomSeparator);
     } catch(err) {
       t.fail(err.message);
@@ -1119,7 +963,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.numberFormatter()).promise();
+      const csv = await parser.parse(jsonFixtures.numberFormatter()).promise();
       t.equal(csv, csvFixtures.numberFixedDecimalsAndCustomSeparator);
     } catch(err) {
       t.fail(err.message);
@@ -1142,7 +986,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser({}, transformOpts);
 
     try {
-      const csv = await parser.fromInput(input).promise();
+      const csv = await parser.parse(input).promise();
       t.equal(csv, '"test"\n"test1"\n"test2"');
     } catch(err) {
       t.fail(err.message);
@@ -1163,7 +1007,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.default()).promise();
+      const csv = await parser.parse(jsonFixtures.default()).promise();
       t.equal(csv, csvFixtures.withSimpleQuotes);
     } catch(err) {
       t.fail(err.message);
@@ -1182,7 +1026,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.default()).promise();
+      const csv = await parser.parse(jsonFixtures.default()).promise();
       t.equal(csv, csvFixtures.withoutQuotes);
     } catch(err) {
       t.fail(err.message);
@@ -1201,7 +1045,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.escapeCustomQuotes()).promise();
+      const csv = await parser.parse(jsonFixtures.escapeCustomQuotes()).promise();
       t.equal(csv, csvFixtures.escapeCustomQuotes);
     } catch(err) {
       t.fail(err.message);
@@ -1219,7 +1063,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.escapedQuotes()).promise();
+      const csv = await parser.parse(jsonFixtures.escapedQuotes()).promise();
       t.equal(csv, csvFixtures.escapedQuotesUnescaped);
     } catch(err) {
       t.fail(err.message);
@@ -1233,7 +1077,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
   testRunner.add('should escape quotes with double quotes', async (t) => {
     const parser = new AsyncParser();
     try {
-      const csv = await parser.fromInput(jsonFixtures.quotes()).promise();
+      const csv = await parser.parse(jsonFixtures.quotes()).promise();
       t.equal(csv, csvFixtures.quotes);
     } catch(err) {
       t.fail(err.message);
@@ -1245,7 +1089,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
   testRunner.add('should not escape quotes with double quotes, when there is a backslash in the end', async (t) => {
     const parser = new AsyncParser();
     try {
-      const csv = await parser.fromInput(jsonFixtures.backslashAtEnd()).promise();
+      const csv = await parser.parse(jsonFixtures.backslashAtEnd()).promise();
       t.equal(csv, csvFixtures.backslashAtEnd);
     } catch(err) {
       t.fail(err.message);
@@ -1257,7 +1101,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
   testRunner.add('should not escape quotes with double quotes, when there is a backslash in the end, and its not the last column', async (t) => {
     const parser = new AsyncParser();
     try {
-      const csv = await parser.fromInput(jsonFixtures.backslashAtEndInMiddleColumn()).promise();
+      const csv = await parser.parse(jsonFixtures.backslashAtEndInMiddleColumn()).promise();
       t.equal(csv, csvFixtures.backslashAtEndInMiddleColumn);
     } catch(err) {
       t.fail(err.message);
@@ -1276,7 +1120,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.escapedQuotes()).promise();
+      const csv = await parser.parse(jsonFixtures.escapedQuotes()).promise();
       t.equal(csv, csvFixtures.escapedQuotes);
     } catch(err) {
       t.fail(err.message);
@@ -1292,7 +1136,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.backslashBeforeNewLine()).promise();
+      const csv = await parser.parse(jsonFixtures.backslashBeforeNewLine()).promise();
       t.equal(csv, csvFixtures.backslashBeforeNewLine);
     } catch(err) {
       t.fail(err.message);
@@ -1312,7 +1156,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.quoteOnlyIfNecessary()).promise();
+      const csv = await parser.parse(jsonFixtures.quoteOnlyIfNecessary()).promise();
       t.equal(csv, csvFixtures.quoteOnlyIfNecessary);
     } catch(err) {
       t.fail(err.message);
@@ -1333,7 +1177,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.default()).promise();
+      const csv = await parser.parse(jsonFixtures.default()).promise();
       t.equal(csv, csvFixtures.excelStrings);
     } catch(err) {
       t.fail(err.message);
@@ -1351,7 +1195,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.fromInput(jsonFixtures.trailingBackslash()).promise();
+      const csv = await parser.parse(jsonFixtures.trailingBackslash()).promise();
       t.equal(csv, csvFixtures.trailingBackslash);
     } catch(err) {
       t.fail(err.message);
@@ -1363,7 +1207,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
   testRunner.add('should escape " when preceeded by \\', async (t) => {
     const parser = new AsyncParser();
     try {
-      const csv = await parser.fromInput(jsonFixtures.escapeDoubleBackslashedEscapedQuote()).promise();
+      const csv = await parser.parse(jsonFixtures.escapeDoubleBackslashedEscapedQuote()).promise();
       t.equal(csv, csvFixtures.escapeDoubleBackslashedEscapedQuote);
     } catch(err) {
       t.fail(err.message);
@@ -1379,7 +1223,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
     
     try {
-      const csv = await parser.fromInput(jsonFixtures.escapeEOL()).promise();
+      const csv = await parser.parse(jsonFixtures.escapeEOL()).promise();
       t.equal(csv, [
         '"a string"',
         '"with a \u2028description\\n and\na new line"',
@@ -1395,7 +1239,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
   testRunner.add('should preserve tabs in values', async (t) => {
     const parser = new AsyncParser();
     try {
-      const csv = await parser.fromInput(jsonFixtures.escapeTab()).promise();
+      const csv = await parser.parse(jsonFixtures.escapeTab()).promise();
       t.equal(csv, csvFixtures.escapeTab);
     } catch(err) {
       t.fail(err.message);
@@ -1416,7 +1260,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
   
     const parser = new AsyncParser(opts);
     try {
-      const csv = await parser.fromInput(jsonFixtures.default()).promise();
+      const csv = await parser.parse(jsonFixtures.default()).promise();
       t.equal(csv, csvFixtures.customHeaderQuotes);
     } catch(err) {
       t.fail(err.message);
