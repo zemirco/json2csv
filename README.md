@@ -26,7 +26,7 @@ Features
 ## How to install
 
 You can install json2csv as a dependency using NPM.  
-Requires **Node v10** or higher.
+Requires **Node v12** or higher.
 
 ```sh
 # Global so it can be called from anywhere
@@ -659,10 +659,9 @@ const csv = await json2csvParser.parse(myData).promise();
 
 If you want to wait for the stream to finish but not keep the CSV in memory you can use the `stream.finished` utility from Node's stream module.
 
-The `input`, `transform` and `processor` properties have been remove.
+Finally, the `input`, `transform` and `processor` properties have been remove.
 `input` is just your data stream.
 `transform` and `processor` are equivalent to the return of the `parse` method.
-
 
 Before you could instantiate an `AsyncParser` and push data into it. Now you can simply pass the data as the argument to the `parse` method if you have the entire dataset or you can manually create an array and push data to it.
 
