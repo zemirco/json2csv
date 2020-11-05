@@ -622,7 +622,7 @@ const csv = json2csvParser.parse(myData);
 
 #### AsyncParser
 
-Async parse have been simplified to be a class with a single `parse` method which replaces the previous `fromInput` method. `throughTransform` and `toOutput` can be replaced by `pipe` method or the newer `pipeline` utility.
+Async parser have been simplified to be a class with a single `parse` method which replaces the previous `fromInput` method. `throughTransform` and `toOutput` can be replaced by Node's standard [pipe](https://nodejs.org/api/stream.html#stream_readable_pipe_destination_options) method or the newer [pipeline](https://nodejs.org/api/stream.html#stream_stream_pipeline_source_transforms_destination_callback) utility.
 
 What used to be
 ```js
@@ -657,7 +657,7 @@ const json2csvParser = new AsyncParser();
 const csv = await json2csvParser.parse(myData).promise();
 ```
 
-If you want to wait for the stream to finish but not keep the CSV in memory you can use the `stream.finished` utility from Node's stream module.
+If you want to wait for the stream to finish but not keep the CSV in memory you can use the [stream.finished](https://nodejs.org/api/stream.html#stream_stream_finished_stream_options_callback) utility from Node's stream module.
 
 Finally, the `input`, `transform` and `processor` properties have been remove.
 `input` is just your data stream.
@@ -673,7 +673,7 @@ asyncParser.processor
   .on('end', () => console.log(csv))
   .on('error', (err) => console.error(err));
 
-myData.default.forEach(item => asyncParser.input.push(item));
+myData.forEach(item => asyncParser.input.push(item));
 asyncParser.input.push(null); // Sending `null` to a stream signal that no more data is expected and ends it.
 ```
 
@@ -699,7 +699,7 @@ asyncParser.parse(myManualInput)
   .on('end', () => console.log(csv))
   .on('error', (err) => console.error(err));
 
-myData.default.forEach(item => myManualInput.push(item)); // This is useful when the data is coming asynchronously from a request or ws for example.
+myData.forEach(item => myManualInput.push(item)); // This is useful when the data is coming asynchronously from a request or ws for example.
 myManualInput.push(null);
 ```
 
