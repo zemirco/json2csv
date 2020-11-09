@@ -621,6 +621,18 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     t.end();
   });
 
+  testRunner.add('should unwind complex objects using the unwind transform', (t) => {
+    const opts = {
+      transforms: [unwind({ paths: ['extras.items', 'extras.items.items'] }), flatten()],
+    };
+
+    const parser = new Json2csvParser(opts);
+    const csv = parser.parse(jsonFixtures.unwindComplexObject);
+
+    t.equal(csv, csvFixtures.unwindComplexObject);
+    t.end();
+  });
+
   testRunner.add('should support custom transforms', (t) => {
     const opts = {
       transforms: [row => ({
