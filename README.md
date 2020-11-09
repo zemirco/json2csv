@@ -26,7 +26,7 @@ Features
 ## How to install
 
 You can install json2csv as a dependency using NPM.  
-Requires **Node v10** or higher.
+Requires **Node v12** or higher.
 
 ```sh
 # Global so it can be called from anywhere
@@ -467,11 +467,7 @@ One very important difference between the asynchronous and the synchronous APIs 
 
 The async API takes a second options arguments that is directly passed to the underlying streams and accepts the same options as the standard [Node.js streams](https://nodejs.org/api/stream.html#stream_new_stream_duplex_options).
 
-Instances of `AsyncParser` expose three objects:
-
-- _input:_ Which allows to push more data
-- _processor:_ A readable string representing the whole data processing. You can listen to all the standard events of Node.js streams.
-- _transform:_ The json2csv transform. See below for more details.
+Instances of `AsyncParser` expose three objects expose a `parse` method similar to the sync API which takes both JSON arrays/objects and readable streams as input and returns a stream that produces the CSV.
 
 ```js
 const { AsyncParser } = require('json2csv');
@@ -483,28 +479,16 @@ const transformOpts = { highWaterMark: 8192 };
 const asyncParser = new AsyncParser(opts, transformOpts);
 
 let csv = '';
-asyncParser.processor
+asyncParser.parse(data)
   .on('data', (chunk) => (csv += chunk.toString()))
   .on('end', () => console.log(csv))
-  .on('error', (err) => console.error(err));
-
-// You can also listen for events on the conversion and see how the header or the lines are coming out.
-asyncParser.transform
+  .on('error', (err) => console.error(err))
+  // You can also listen for events on the conversion and see how the header or the lines are coming out.
   .on('header', (header) => console.log(header))
-  .on('line', (line) => console.log(line))
-  .on('error', (err) => console.log(err));
-
-asyncParser.input.push(data); // This data might come from an HTTP request, etc.
-asyncParser.input.push(null); // Sending `null` to a stream signal that no more data is expected and ends it.
+  .on('line', (line) => console.log(line));
 ```
 
-`AsyncParser` also exposes some convenience methods:
-
-- `fromInput` allows you to set the input stream.
-- `throughTransform` allows you to add transforms to the stream.
-- `toOutput` allows you to set the output stream.
-- `promise` returns a promise that resolves when the stream ends or errors. Takes a boolean parameter to indicate if the resulting CSV should be kept in-memory and be resolved by the promise.
-
+Using the async API you can transform streaming JSON into CSV and output directly to a writable stream.
 ```js
 const { createReadStream, createWriteStream } = require('fs');
 const { AsyncParser } = require('json2csv');
@@ -513,37 +497,26 @@ const fields = ['field1', 'field2', 'field3'];
 const opts = { fields };
 const transformOpts = { highWaterMark: 8192 };
 
-// Using the promise API
-const input = createReadStream(inputPath, { encoding: 'utf8' });
-const asyncParser = new JSON2CSVAsyncParser(opts, transformOpts);
-const parsingProcessor = asyncParser.fromInput(input);
-
-parsingProcessor
-  .promise()
-  .then((csv) => console.log(csv))
-  .catch((err) => console.error(err));
-
-// Using the promise API just to know when the process finnish
-// but not actually load the CSV in memory
 const input = createReadStream(inputPath, { encoding: 'utf8' });
 const output = createWriteStream(outputPath, { encoding: 'utf8' });
-const asyncParser = new JSON2CSVAsyncParser(opts, transformOpts);
-const parsingProcessor = asyncParser.fromInput(input).toOutput(output);
 
-parsingProcessor.promise(false).catch((err) => console.error(err));
+const asyncParser = new AsyncParser(opts, transformOpts);
+
+asyncParser.parse(input).pipe(output);
 ```
 
-you can also use the convenience method `parseAsync` which accept both JSON arrays/objects and readable streams and returns a promise.
+`AsyncParser` also exposes a convenience `promise` method which turns the stream into a promise and resolves the whole CSV:
 
 ```js
-const { parseAsync } = require('json2csv');
+const { AsyncParser } = require('json2csv');
 
 const fields = ['field1', 'field2', 'field3'];
 const opts = { fields };
+const transformOpts = { highWaterMark: 8192 };
 
-parseAsync(myData, opts)
-  .then((csv) => console.log(csv))
-  .catch((err) => console.error(err));
+const asyncParser = new AsyncParser(opts, transformOpts);
+
+let csv = await asyncParser.parse(data).promise();
 ```
 
 ### json2csv Transform (Streaming API)
@@ -599,6 +572,8 @@ const processor = input.pipe(json2csv).pipe(output);
 
 The CLI hasn't changed at all.
 
+#### Formatters
+
 In the JavaScript modules, `formatters` are introduced and the `quote`, `escapedQuote` and `excelStrings` options are removed.
 
 Custom `quote` and `escapedQuote` are applied by setting the properties in the `string` formatter.
@@ -643,6 +618,89 @@ const json2csvParser = new Parser({
   }
 });
 const csv = json2csvParser.parse(myData);
+```
+
+#### AsyncParser
+
+Async parser have been simplified to be a class with a single `parse` method which replaces the previous `fromInput` method. `throughTransform` and `toOutput` can be replaced by Node's standard [pipe](https://nodejs.org/api/stream.html#stream_readable_pipe_destination_options) method or the newer [pipeline](https://nodejs.org/api/stream.html#stream_stream_pipeline_source_transforms_destination_callback) utility.
+
+What used to be
+```js
+const { AsyncParser } = require('json2csv');
+const json2csvParser = new AsyncParser();
+const csv = await json2csvParser.fromInput(myData).throughTransform(myTransform).toOutput(myOutput);
+```
+
+should be replaced by
+
+```js
+const { AsyncParser } = require('json2csv');
+const json2csvParser = new AsyncParser();
+json2csvParser.parse(myData.pipe(myTransform)).pipe(myOutput);
+```
+
+The `promise` method has been kept but it doesn't take any argument as it used to. Now it always keeps the whole CSV and returns it.
+
+
+What used to be
+```js
+const { AsyncParser } = require('json2csv');
+const json2csvParser = new AsyncParser();
+const csv = await json2csvParser.fromInput(myData).promise();
+```
+
+should be replaced by
+
+```js
+const { AsyncParser } = require('json2csv');
+const json2csvParser = new AsyncParser();
+const csv = await json2csvParser.parse(myData).promise();
+```
+
+If you want to wait for the stream to finish but not keep the CSV in memory you can use the [stream.finished](https://nodejs.org/api/stream.html#stream_stream_finished_stream_options_callback) utility from Node's stream module.
+
+Finally, the `input`, `transform` and `processor` properties have been remove.
+`input` is just your data stream.
+`transform` and `processor` are equivalent to the return of the `parse` method.
+
+Before you could instantiate an `AsyncParser` and push data into it. Now you can simply pass the data as the argument to the `parse` method if you have the entire dataset or you can manually create an array and push data to it.
+
+What used to be
+
+```js
+asyncParser.processor
+  .on('data', (chunk) => (csv += chunk.toString()))
+  .on('end', () => console.log(csv))
+  .on('error', (err) => console.error(err));
+
+myData.forEach(item => asyncParser.input.push(item));
+asyncParser.input.push(null); // Sending `null` to a stream signal that no more data is expected and ends it.
+```
+
+now can be done as
+
+```js
+asyncParser.parse(myData)
+  .on('data', (chunk) => (csv += chunk.toString()))
+  .on('end', () => console.log(csv))
+  .on('error', (err) => console.error(err));
+```
+
+or done manually as
+
+```js
+const { Readable } = require('stream');
+
+const myManualInput = new Readable({ objectMode: true });
+myManualInput._read = () => {};
+
+asyncParser.parse(myManualInput)
+  .on('data', (chunk) => (csv += chunk.toString()))
+  .on('end', () => console.log(csv))
+  .on('error', (err) => console.error(err));
+
+myData.forEach(item => myManualInput.push(item)); // This is useful when the data is coming asynchronously from a request or ws for example.
+myManualInput.push(null);
 ```
 
 ### Upgrading from 4.X to 5.X
