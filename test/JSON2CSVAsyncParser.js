@@ -498,6 +498,21 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     t.end();
   });
 
+  testRunner.add('should not cache the fields option between executions', async (t) => {
+    const parser = new AsyncParser();
+
+    try {
+      const csv1 = await parser.parse({ test1: 1}).promise();
+      t.equal(csv1, '"test1"\n1');
+      const csv2 = await parser.parse({ test2: 2}).promise();
+      t.equal(csv2, '"test2"\n2');
+    } catch(err) {
+      t.fail(err.message);
+    }
+
+    t.end();
+  });
+
   // Default value
 
   testRunner.add('should output the default value as set in \'defaultValue\'', async (t) => {

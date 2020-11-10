@@ -303,6 +303,15 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     t.end();
   });
 
+  testRunner.add('should not cache the fields option between executions', (t) => {
+    const parser = new Json2csvParser();
+    const csv1 = parser.parse({ test1: 1});
+    t.equal(csv1, '"test1"\n1');
+    const csv2 = parser.parse({ test2: 2});
+    t.equal(csv2, '"test2"\n2');
+    t.end();
+  });
+
   // Default value
 
   testRunner.add('should output the default value as set in \'defaultValue\'', (t) => {
