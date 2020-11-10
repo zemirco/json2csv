@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.0.4](https://github.com/zemirco/json2csv/compare/v5.0.3...v5.0.4) (2020-11-10)
+
+
+### Bug Fixes
+
+* Fix issue with unwind and empty arrays creating an extra column ([#496](https://github.com/zemirco/json2csv/issues/496)) ([0b331fc](https://github.com/zemirco/json2csv/commit/0b331fc3ad345f8062abe60f64cb3b43dad30fb0))
+
 ### [5.0.3](https://github.com/zemirco/json2csv/compare/v5.0.2...v5.0.3) (2020-09-24)
 
 
