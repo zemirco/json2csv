@@ -9,7 +9,7 @@ Can be used as a module and from the command line.
 
 See the [CHANGELOG] for details about the latest release.
 
-> :construction: The documentation seen here is for the upcoming v6 which is a work in progress, see https://www.npmjs.com/package/json2csv for the documentation for the latest published version.
+> :construction: The documentation seen here is for the upcoming v6 which is a work in progress, see https://www.npmjs.com/package/json2csv for the documentation for the latest published version. See [v5 branch](https://github.com/zemirco/json2csv/tree/v5) for code for v5+.
 
 Features
 
