@@ -1,28 +1,33 @@
 [
-    {
-        "carModel": "BMW",
-        "price": 15000,
-        "items": [
-            {
-                "name": "airbag",
-                "color": "white"
-            }, {
-                "name": "dashboard",
-                "color": "black"
-            }
-        ]
-    }, {
-        "carModel": "Porsche",
-        "price": 30000,
-        "items": [
-            {
-                "name": "airbag",
-                "color": "gray"
-            },
-            {
-                "name": "dashboard", 
-                "color": "red"
-            }
-        ]
-    }
+  {
+    "carModel": "BMW",
+    "price": 15000,
+    "items": [
+      {
+        "name": "airbag",
+        "color": "white"
+      }, {
+        "name": "dashboard",
+        "color": "black"
+      }
+    ]
+  }, {
+    "carModel": "Porsche",
+    "price": 30000,
+    "items": [
+      {
+        "name": "airbag",
+        "color": "gray"
+      },
+      {
+        "name": "dashboard", 
+        "color": "red"
+      }
+    ]
+  },
+  {
+    "carModel": "Mercedes", 
+    "price": 20000,  
+    "items": []
+  }
 ]

@@ -1,0 +1,41 @@
+[
+  {
+    "carModel": "Porsche",
+    "price": 30000,
+    "extras": {
+      "items": [
+        {
+          "name": "airbag",
+          "items": [
+            {
+              "position": "left",
+              "color": "white"
+            }, {
+              "position": "right",
+              "color": "gray"
+            }
+          ]
+        },
+        {
+          "name": "dashboard",
+          "items": "none"
+        }
+      ]
+    }
+  }, {
+    "carModel": "BMW",
+    "price": 15000,
+    "extras": {
+      "items": [
+        {
+          "name": "airbag",
+          "color": "white",
+          "items": []
+        }, {
+          "name": "dashboard",
+          "color": "black"
+        }
+      ]
+    }
+  }
+]

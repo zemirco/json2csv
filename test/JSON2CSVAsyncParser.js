@@ -903,6 +903,22 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     t.end();
   });
 
+  testRunner.add('should unwind complex objects using the unwind transform', async (t) => {
+    const opts = {
+      fields: ["carModel", "price", "extras.items.name", "extras.items.items.position", "extras.items.items.color", "extras.items.items", "name", "color", "extras.items.color"],
+      transforms: [unwind({ paths: ['extras.items', 'extras.items.items'] }), flatten()],
+    };
+
+    const parser = new AsyncParser(opts);
+    try {
+      const csv = await parser.parse(jsonFixtures.unwindComplexObject()).promise();
+      t.equal(csv, csvFixtures.unwindComplexObject);
+    } catch(err) {
+      t.fail(err.message);
+    }
+    t.end();
+  });
+
   testRunner.add('should support custom transforms', async (t) => {
     const opts = {
       transforms: [row => ({
