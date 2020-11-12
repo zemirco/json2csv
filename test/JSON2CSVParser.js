@@ -25,6 +25,21 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     t.end();
   });
 
+  testRunner.add('should not modify the JSON object passed passed', (t) => {
+    const opts = {
+      fields: ["carModel", "price", "extras.items.name", "extras.items.items.position", "extras.items.items.color", "extras.items.items", "name", "color", "extras.items.color"],
+      transforms: [unwind({ paths: ['extras.items', 'extras.items.items'] }), flatten()],
+    };
+    const parser = new Json2csvParser(opts);
+    const originalJson = JSON.parse(JSON.stringify(jsonFixtures.unwindComplexObject));
+    const csv = parser.parse(originalJson);
+
+    t.ok(typeof csv === 'string');
+    t.equal(csv, csvFixtures.unwindComplexObject);
+    t.deepEqual(jsonFixtures.unwindComplexObject, originalJson);
+    t.end();
+  });
+
   testRunner.add('should error if input data is not an object', (t) => {
     const input = 'not an object';
     try {
