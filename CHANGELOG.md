@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.0.5](https://github.com/zemirco/json2csv/compare/v5.0.4...v5.0.5) (2020-11-16)
+
+
+### Bug Fixes
+
+* don't mutate original object in unset ([#499](https://github.com/zemirco/json2csv/issues/499)) ([6e4ea5e](https://github.com/zemirco/json2csv/commit/6e4ea5ebdc263006ca6ff45879fbb7e0bd65bef2))
+
 ### [5.0.4](https://github.com/zemirco/json2csv/compare/v5.0.3...v5.0.4) (2020-11-10)
 
 
