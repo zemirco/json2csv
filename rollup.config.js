@@ -1,7 +1,6 @@
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
-import globals from 'rollup-plugin-node-globals';
-import builtins from 'rollup-plugin-node-builtins';
+import nodePolyfills from 'rollup-plugin-node-polyfills';
 import babel from 'rollup-plugin-babel';
 import pkg from './package.json';
 
@@ -18,8 +17,7 @@ export default [
         browser: true
       }),
       commonjs(),
-      globals(),
-      builtins(),
+      nodePolyfills(),
       babel({
         exclude: ['node_modules/**'],
         babelrc: false,
