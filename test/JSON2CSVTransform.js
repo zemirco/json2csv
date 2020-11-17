@@ -1008,8 +1008,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       });
   });
 
-
-  testRunner.add('should unwind complex objects using the unwind transform', async (t) => {
+  testRunner.add('should unwind complex objects using the unwind transform', (t) => {
     const opts = {
       fields: ["carModel", "price", "extras.items.name", "extras.items.items.position", "extras.items.items.color", "extras.items.items", "name", "color", "extras.items.color"],
       transforms: [unwind({ paths: ['extras.items', 'extras.items.items'] }), flatten()],
@@ -1131,7 +1130,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
 
   // Symbol
 
-  testRunner.add('should format Symbol by its name', async (t) => {
+  testRunner.add('should format Symbol by its name', (t) => {
     const data = [{ test: Symbol('test1') }, { test: Symbol('test2') }];  
     const input = new Readable({ objectMode: true });
     input._read = () => {};
@@ -1353,7 +1352,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
 
   // String Quote Only if Necessary
 
-  testRunner.add('should quote only if necessary if using stringQuoteOnlyIfNecessary formatter', async (t) => {
+  testRunner.add('should quote only if necessary if using stringQuoteOnlyIfNecessary formatter', (t) => {
     const opts = {
       formatters: {
         string: stringQuoteOnlyIfNecessaryFormatter()
@@ -1486,7 +1485,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
 
   // Headers
 
-  testRunner.add('should format headers based on the headers formatter', async (t) => {
+  testRunner.add('should format headers based on the headers formatter', (t) => {
     const opts = {
       fields: ['carModel', 'price', 'color', 'manual'],
       formatters: {
