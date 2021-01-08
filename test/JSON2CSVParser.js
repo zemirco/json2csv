@@ -947,4 +947,12 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     t.equal(csv, csvFixtures.customHeaderQuotes);
     t.end();
   });
+
+  testRunner.add('should output array correctly', (t) => {
+    const parser = new Json2csvParser();
+    const csv = parser.parse(jsonFixtures.array);
+
+    t.equal(csv, csvFixtures.array);
+    t.end();
+  });
 };

@@ -846,4 +846,13 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
       t.end();
     });
   });
+
+  testRunner.add('should output array correctly', (t) => {
+    exec(`${cli} -i "${getFixturePath('/json/array.json')}"`, (err, stdout, stderr) => {
+      t.notOk(stderr); 
+      const csv = stdout;
+      t.equal(csv, csvFixtures.array);
+      t.end();
+    });
+  });
 };

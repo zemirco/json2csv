@@ -1299,4 +1299,16 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
 
     t.end();
   });
+
+  testRunner.add('should output array correctly', async (t) => {
+    const parser = new AsyncParser();
+    try {
+      const csv = await parser.parse(jsonFixtures.array()).promise();
+      t.equal(csv, csvFixtures.array);
+    } catch(err) {
+      t.fail(err.message);
+    }
+
+    t.end();
+  });
 };

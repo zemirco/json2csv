@@ -1508,4 +1508,22 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
         t.end();  
       });
   });
+
+
+  testRunner.add('should output array correctly', (t) => {
+    const transform = new Json2csvTransform();
+    const processor = jsonFixtures.array().pipe(transform);
+
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.equal(csv, csvFixtures.array);
+        t.end();
+      })
+      .on('error', err => {
+        t.fail(err.message);
+        t.end();  
+      });
+  });
 };
