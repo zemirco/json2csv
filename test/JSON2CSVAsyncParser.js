@@ -768,7 +768,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     t.end();
   });
 
-  // Excell
+  // Excel
 
   testRunner.add('should format strings to force excel to view the values as strings', async (t) => {
     const opts = {
