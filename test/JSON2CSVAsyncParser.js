@@ -787,6 +787,22 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     t.end();
   });
 
+  testRunner.add('should format strings to force excel to view the values as strings with escaped quotes', async (t) => {
+    const opts = {
+      excelStrings:true
+    };
+    const parser = new AsyncParser(opts);
+
+    try {
+      const csv = await parser.fromInput(jsonFixtures.quotes()).promise();
+      t.equal(csv, csvFixtures.excelStringsWithEscapedQuoted);
+    } catch(err) {
+      t.fail(err.message);
+    }
+
+    t.end();
+  });
+
   // Escaping and preserving values
 
   testRunner.add('should parse JSON values with trailing backslashes', async (t) => {

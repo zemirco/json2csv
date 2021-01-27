@@ -443,6 +443,17 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     });
   });
 
+  testRunner.add('should format strings to force excel to view the values as strings with escaped quotes', (t) => {
+    const opts = '--excel-strings';
+
+    exec(`${cli} -i "${getFixturePath('/json/quotes.json')}" ${opts}`, (err, stdout, stderr) => {
+      t.notOk(stderr); 
+      const csv = stdout;
+      t.equal(csv, csvFixtures.excelStringsWithEscapedQuoted);
+      t.end();
+    });
+  });
+
   // Escaping and preserving values
 
   testRunner.add('should parse JSON values with trailing backslashes', (t) => {

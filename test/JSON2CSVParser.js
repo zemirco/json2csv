@@ -530,6 +530,18 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     t.end();
   });
 
+  testRunner.add('should format strings to force excel to view the values as strings with escaped quotes', (t) => {
+    const opts = {
+      excelStrings:true
+    };
+
+    const parser = new Json2csvParser(opts);
+    const csv = parser.parse(jsonFixtures.quotes);
+
+    t.equal(csv, csvFixtures.excelStringsWithEscapedQuoted);
+    t.end();
+  });
+
   // Escaping and preserving values
 
   testRunner.add('should parse JSON values with trailing backslashes', (t) => {
