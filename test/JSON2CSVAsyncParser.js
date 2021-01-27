@@ -768,7 +768,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     t.end();
   });
 
-  // Excell
+  // Excel
 
   testRunner.add('should format strings to force excel to view the values as strings', async (t) => {
     const opts = {
@@ -780,6 +780,22 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     try {
       const csv = await parser.fromInput(jsonFixtures.default()).promise();
       t.equal(csv, csvFixtures.excelStrings);
+    } catch(err) {
+      t.fail(err.message);
+    }
+
+    t.end();
+  });
+
+  testRunner.add('should format strings to force excel to view the values as strings with escaped quotes', async (t) => {
+    const opts = {
+      excelStrings:true
+    };
+    const parser = new AsyncParser(opts);
+
+    try {
+      const csv = await parser.fromInput(jsonFixtures.quotes()).promise();
+      t.equal(csv, csvFixtures.excelStringsWithEscapedQuoted);
     } catch(err) {
       t.fail(err.message);
     }

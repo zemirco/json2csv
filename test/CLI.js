@@ -430,7 +430,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     });
   });
 
-  // Excell
+  // Excel
 
   testRunner.add('should format strings to force excel to view the values as strings', (t) => {
     const opts = '--fields carModel,price,color --excel-strings';
@@ -439,6 +439,17 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
       t.notOk(stderr); 
       const csv = stdout;
       t.equal(csv, csvFixtures.excelStrings);
+      t.end();
+    });
+  });
+
+  testRunner.add('should format strings to force excel to view the values as strings with escaped quotes', (t) => {
+    const opts = '--excel-strings';
+
+    exec(`${cli} -i "${getFixturePath('/json/quotes.json')}" ${opts}`, (err, stdout, stderr) => {
+      t.notOk(stderr); 
+      const csv = stdout;
+      t.equal(csv, csvFixtures.excelStringsWithEscapedQuoted);
       t.end();
     });
   });

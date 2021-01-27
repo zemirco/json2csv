@@ -842,7 +842,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       });
   });
 
-  // Excell
+  // Excel
 
   testRunner.add('should format strings to force excel to view the values as strings', (t) => {
     const opts = {
@@ -858,6 +858,27 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       .on('data', chunk => (csv += chunk.toString()))
       .on('end', () => {
         t.equal(csv, csvFixtures.excelStrings);
+        t.end();
+      })
+      .on('error', err => {
+        t.fail(err.message);
+        t.end();  
+      });
+  });
+
+  testRunner.add('should format strings to force excel to view the values as strings with escaped quotes', (t) => {
+    const opts = {
+      excelStrings:true
+    };
+
+    const transform = new Json2csvTransform(opts);
+    const processor = jsonFixtures.quotes().pipe(transform);
+
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.equal(csv, csvFixtures.excelStringsWithEscapedQuoted);
         t.end();
       })
       .on('error', err => {

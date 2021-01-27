@@ -515,7 +515,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     t.end();
   });
 
-  // Excell
+  // Excel
 
   testRunner.add('should format strings to force excel to view the values as strings', (t) => {
     const opts = {
@@ -527,6 +527,18 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     const csv = parser.parse(jsonFixtures.default);
 
     t.equal(csv, csvFixtures.excelStrings);
+    t.end();
+  });
+
+  testRunner.add('should format strings to force excel to view the values as strings with escaped quotes', (t) => {
+    const opts = {
+      excelStrings:true
+    };
+
+    const parser = new Json2csvParser(opts);
+    const csv = parser.parse(jsonFixtures.quotes);
+
+    t.equal(csv, csvFixtures.excelStringsWithEscapedQuoted);
     t.end();
   });
 
