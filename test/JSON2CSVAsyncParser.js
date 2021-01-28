@@ -1202,7 +1202,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const opts = {
       fields: ['carModel', 'price', 'color'],
       formatters: {
-        string: stringExcelFormatter()
+        string: stringExcelFormatter
       }
     };
     const parser = new AsyncParser(opts);
@@ -1216,6 +1216,25 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
 
     t.end();
   });
+
+  testRunner.add('should format strings to force excel to view the values as strings with escaped quotes', async (t) => {
+    const opts = {
+      formatters: {
+        string: stringExcelFormatter
+      }
+    };
+    const parser = new AsyncParser(opts);
+
+    try {
+      const csv = await parser.parse(jsonFixtures.quotes()).promise();
+      t.equal(csv, csvFixtures.excelStringsWithEscapedQuoted);
+    } catch(err) {
+      t.fail(err.message);
+    }
+
+    t.end();
+  });
+
 
   // String Escaping and preserving values
 

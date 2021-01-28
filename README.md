@@ -363,17 +363,11 @@ The formatter needs to be instantiated and takes an options object as arguments 
 
 Converts string data into normalized Excel style data after formatting it using the given string formatter.
 
-The formatter needs to be instantiated and takes an options object as arguments containing:
-
-- `stringFormatter` - Boolean, whether to flatten JSON objects or not. Defaults to our built-in `stringFormatter`.
+The formatter needs to be instantiated and takes no arguments.
 
 ```js
 {
-  // Uses the default string formatter
-  string: stringExcelFormatter(),
-
-  // Uses custom string formatter
-  string: stringExcelFormatter(myStringFormatter()),
+  string: stringExcelFormatter,
 }
 ```
 
@@ -614,7 +608,7 @@ should be replaced by
 const { Parser, formatter: { stringExcel: stringExcelFormatter } } = require('json2csv');
 const json2csvParser = new Parser({
   formatters: {
-    string: stringExcelFormatter(stringFormatter({ quote: '\'', escapedQuote: '\\\'' }))),
+    string: stringExcelFormatter,
   }
 });
 const csv = json2csvParser.parse(myData);
