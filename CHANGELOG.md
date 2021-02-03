@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.0.6](https://github.com/zemirco/json2csv/compare/v5.0.5...v5.0.6) (2021-02-03)
+
+
+### Bug Fixes
+
+* Escape quotes excel ([#512](https://github.com/zemirco/json2csv/issues/512)) ([ab3bf8a](https://github.com/zemirco/json2csv/commit/ab3bf8ad3ce64cff7d6149e1b70f92b71bebf6c7))
+
 ### [5.0.5](https://github.com/zemirco/json2csv/compare/v5.0.4...v5.0.5) (2020-11-16)
 
 
