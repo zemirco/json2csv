@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.0.0-alpha.0](https://github.com/zemirco/json2csv/compare/v5.0.3...v6.0.0-alpha.0) (2021-04-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* Drop support for Node < v12
+* AsyncParser API has changed, see the `Upgrading from 5.X to 6.X` section for details.
+
+* fix: consolidate the API of AsyncParser and parseAsync
+
+* feat: simplify AsyncParser
+
+* chore: drop support for node 11
+
+* refactor: improve AsyncParser parse method
+
+* docs: add links to node docs and fix few small issues
+* In the JavaScript modules, `formatters` are introduced and the `quote`, `escapedQuote` and `excelStrings` options are removed. See the migration notes in the readme. CLI hasn't changed.
+
+### Features
+
+* Introduce formatters ([#455](https://github.com/zemirco/json2csv/issues/455)) ([88ed6ee](https://github.com/zemirco/json2csv/commit/88ed6ee780b439d394235c9e8fac7e42b0d614dd))
+* use jsonparse for ND-JSON instead of the custom made implementation ([#493](https://github.com/zemirco/json2csv/issues/493)) ([55aa0c7](https://github.com/zemirco/json2csv/commit/55aa0c70374def0dafa342d2a122d077eb87d5e1))
+
+
+### Bug Fixes
+
+* consolidate the API of AsyncParser and parseAsync ([#492](https://github.com/zemirco/json2csv/issues/492)) ([bcce91f](https://github.com/zemirco/json2csv/commit/bcce91f953625bb6a3b401d839670bb3cb5ba11a))
+* issue with unwind and empty arrays creating an extra column ([#497](https://github.com/zemirco/json2csv/issues/497)) ([3b74735](https://github.com/zemirco/json2csv/commit/3b747359b086ec212a0f6ecb92ec0a40511f75c3))
+* Performance optimizations ([#491](https://github.com/zemirco/json2csv/issues/491)) ([471f5a7](https://github.com/zemirco/json2csv/commit/471f5a7a55375a06a66ce4b0438583d719d6db8f))
+* prevents Parser and AsyncParser from caching the fields option between executions causing issues and inconsistencies ([#498](https://github.com/zemirco/json2csv/issues/498)) ([4d8a81a](https://github.com/zemirco/json2csv/commit/4d8a81a3139024c31377fc62e4e39ece29e72c8c))
+* simplify stringExcel formatter and support proper escaping ([#513](https://github.com/zemirco/json2csv/issues/513)) ([50062c3](https://github.com/zemirco/json2csv/commit/50062c3e155ff2c12b1bb417085188a2156885a8))
+
 ### [5.0.3](https://github.com/zemirco/json2csv/compare/v5.0.2...v5.0.3) (2020-09-24)
 
 
