@@ -57,6 +57,28 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       });
   });
 
+  testRunner.add('should handle ndjson with small chunk size', (t) => {
+    const opts = {
+      fields: ['carModel', 'price', 'color', 'manual'],
+      ndjson: true
+    };
+
+    const transform = new Json2csvTransform(opts);
+    const processor = jsonFixtures.ndjson({ highWaterMark: 16 }).pipe(transform);
+
+    let csv = '';
+    processor
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => {
+        t.equal(csv, csvFixtures.ndjson);
+        t.end();
+      })
+      .on('error', err => {
+        t.fail(err.message);
+        t.end();  
+      });
+  });
+
   testRunner.add('should error on invalid ndjson input data', (t) => {
     const opts = {
       fields: ['carModel', 'price', 'color', 'manual'],

@@ -131,6 +131,23 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     t.end();
   });
 
+  testRunner.add('should handle ndjson with small chunk size', async (t) => {
+    const opts = {
+      fields: ['carModel', 'price', 'color', 'manual'],
+      ndjson: true
+    };
+    const parser = new AsyncParser(opts, { highWaterMark: 16 });
+
+    try {
+      await parser.parse(jsonFixtures.ndjsonInvalid()).promise();
+      t.fail('Exception expected');
+    } catch(err) {
+      t.ok(err.message.includes('Invalid JSON'));
+    }
+
+    t.end();
+  });
+
   testRunner.add('should error on invalid ndjson input data', async (t) => {
     const opts = {
       fields: ['carModel', 'price', 'color', 'manual'],
