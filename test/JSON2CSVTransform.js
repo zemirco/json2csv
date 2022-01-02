@@ -1010,7 +1010,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
 
   testRunner.add('should unwind complex objects using the unwind transform', (t) => {
     const opts = {
-      fields: ["carModel", "price", "extras.items.name", "extras.items.items.position", "extras.items.items.color", "extras.items.items", "name", "color", "extras.items.color"],
+      fields: ["carModel", "price", "extras.items.name", "extras.items.items.position", "extras.items.items.color", "extras.items.color"],
       transforms: [unwind({ paths: ['extras.items', 'extras.items.items'] }), flatten()],
     };
 
