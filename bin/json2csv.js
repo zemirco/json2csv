@@ -171,7 +171,8 @@ async function processStream(config, opts) {
       eol: config.eol,
       header: config.header,
       includeEmptyRows: config.includeEmptyRows,
-      withBOM: config.withBom
+      withBOM: config.withBom,
+      ndjson: config.ndjson
     };
 
     await (config.streaming ? processStream : processInMemory)(config, opts);
