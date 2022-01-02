@@ -93,7 +93,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       t.end();
     });
     processor.on('error', (err) => {
-      t.ok(err.message.includes('Invalid JSON'));
+      t.equal(err.message, 'Unexpected SEPARATOR ("\\n") in state COMMA');
       t.end();
     });
   });
@@ -150,7 +150,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       t.end();
     });
     processor.on('error', (err) => {
-      t.ok(err.message.includes('Invalid JSON'));
+      t.ok(err.message.includes('Unexpected LEFT_BRACE ("{") in state KEY'));
       t.end();
     });
   });

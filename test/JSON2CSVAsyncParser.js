@@ -159,7 +159,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       await parser.parse(jsonFixtures.ndjsonInvalid()).promise();
       t.fail('Exception expected');
     } catch(err) {
-      t.ok(err.message.includes('Invalid JSON'));
+      t.equal(err.message, 'Unexpected SEPARATOR ("\\n") in state COMMA');
     }
 
     t.end();
@@ -204,7 +204,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       await parser.parse(jsonFixtures.defaultInvalid()).promise();
       t.fail('Exception expected');
     } catch(err) {
-      t.ok(err.message.includes('Invalid JSON'));
+      t.ok(err.message.includes('Unexpected LEFT_BRACE ("{") in state KEY'));
     }
 
     t.end();
