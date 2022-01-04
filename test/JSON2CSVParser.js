@@ -25,9 +25,8 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     t.end();
   });
 
-  testRunner.add('should not modify the JSON object passed passed', (t) => {
+  testRunner.add('should not modify the JSON object passed', (t) => {
     const opts = {
-      fields: ["carModel", "price", "extras.items.name", "extras.items.items.position", "extras.items.items.color", "extras.items.items", "name", "color", "extras.items.color"],
       transforms: [unwind({ paths: ['extras.items', 'extras.items.items'] }), flatten()],
     };
     const parser = new Json2csvParser(opts);
