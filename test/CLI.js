@@ -688,7 +688,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
 
 
   testRunner.add('should unwind complex objects using the unwind transform', (t) => {
-    const opts = '--fields carModel,price,extras.items.name,extras.items.items.position,extras.items.items.color,extras.items.items,name,color,extras.items.color'
+    const opts = '--fields carModel,price,extras.items.name,extras.items.items.position,extras.items.items.color,extras.items.color'
       + ' --unwind extras.items,extras.items.items --flatten-objects --flatten-arrays';
 
     exec(`${cli} -i "${getFixturePath('/json/unwindComplexObject.json')}" ${opts}`, (err, stdout, stderr) => {
