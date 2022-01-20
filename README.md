@@ -70,6 +70,7 @@ Options:
   -a, --include-empty-rows            Includes empty rows in the resulting CSV output.
   -b, --with-bom                      Includes BOM character at the beginning of the CSV.
   -p, --pretty                        Print output as a pretty table. Use only when printing to console.
+  -l, --locale                        Locale to use for numbers formatting, Defaults to no locale formatting.
   --unwind [paths]                    Creates multiple rows from a single JSON document similar to MongoDB unwind.
   --unwind-blank                      When unwinding, blank out instead of repeating data. Defaults to false. (default: false)
   --flatten-objects                   Flatten nested objects. Defaults to false. (default: false)
@@ -183,6 +184,7 @@ The programatic APIs take a configuration object very equivalent to the CLI opti
 - `header` - Boolean, determines whether or not CSV file will contain a title column. Defaults to `true` if not specified.
 - `includeEmptyRows` - Boolean, includes empty rows. Defaults to `false`.
 - `withBOM` - Boolean, with BOM character. Defaults to `false`.
+- `locale` - String, locale to use for numbers formatting, Defaults to no locale formatting. 
 
 ### json2csv parser (Synchronous API)
 

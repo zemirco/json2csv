@@ -853,4 +853,15 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
       t.end();
     });
   });
+
+  testRunner.add('should format number to locale settings', (t) => {
+    const opts = '--fields carModel,price,color,transmission --delimiter ";" --locale it';
+
+    exec(`${cli} -i "${getFixturePath('/json/numberLocaleFormatting.json')}" ${opts}`, (err, stdout, stderr) => {
+      t.notOk(stderr);
+      const csv = stdout;
+      t.equal(csv, csvFixtures.numberLocaleFormatting);
+      t.end();
+    });
+  });
 };

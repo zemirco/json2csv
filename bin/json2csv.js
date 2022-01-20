@@ -37,6 +37,7 @@ program
   .option('-a, --include-empty-rows', 'Includes empty rows in the resulting CSV output.')
   .option('-b, --with-bom', 'Includes BOM character at the beginning of the CSV.')
   .option('-p, --pretty', 'Print output as a pretty table. Use only when printing to console.')
+  .option('-l, --locale <locale>', 'Locale to use for numbers formatting, Defaults to no locale formatting.')
   // Built-in transforms
   .option('--unwind [paths]', 'Creates multiple rows from a single JSON document similar to MongoDB unwind.')
   .option('--unwind-blank', 'When unwinding, blank out instead of repeating data. Defaults to false.', false)
@@ -163,7 +164,8 @@ async function processStream(config, opts) {
       excelStrings: config.excelStrings,
       header: config.header,
       includeEmptyRows: config.includeEmptyRows,
-      withBOM: config.withBom
+      withBOM: config.withBom,
+      locale: config.locale
     };
 
     await (config.streaming ? processStream : processInMemory)(config, opts);

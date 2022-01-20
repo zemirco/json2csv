@@ -835,4 +835,18 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     t.equal(csv, csvFixtures.defaultCustomTransform);
     t.end();
   });
+
+  testRunner.add('should format number to locale settings', (t) => {
+    const opts = {
+      delimiter: ";",
+      locale: "it"
+    };
+
+    const parser = new Json2csvParser(opts);
+    const csv = parser.parse(jsonFixtures.numberLocaleFormatting);
+
+    t.equal(csv, csvFixtures.numberLocaleFormatting);
+    t.end();
+  });
+
 };
