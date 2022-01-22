@@ -44,13 +44,13 @@ async function loadAllFixtures() {
 }
 
 async function setupTests([jsonFixtures, jsonFixturesStreams, csvFixtures]) {
-  // CLI(testRunner, jsonFixtures, csvFixtures);
-  // JSON2CSVParser(testRunner, jsonFixtures, csvFixtures);
-  // JSON2CSVAsyncParser(testRunner, jsonFixturesStreams, csvFixtures);
+  CLI(testRunner, jsonFixtures, csvFixtures);
+  JSON2CSVParser(testRunner, jsonFixtures, csvFixtures);
+  JSON2CSVAsyncParser(testRunner, jsonFixturesStreams, csvFixtures);
   JSON2CSVAsyncParserInMemory(testRunner, jsonFixtures, csvFixtures);
-  // JSON2CSVStreamParser(testRunner, jsonFixturesStreams, csvFixtures);
-  // JSON2CSVTransform(testRunner, jsonFixturesStreams, csvFixtures);
-  // parseNdjson(testRunner, jsonFixtures);
+  JSON2CSVStreamParser(testRunner, jsonFixturesStreams, csvFixtures);
+  JSON2CSVTransform(testRunner, jsonFixturesStreams, csvFixtures);
+  parseNdjson(testRunner, jsonFixtures);
 }
 
 loadAllFixtures()
