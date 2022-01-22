@@ -243,13 +243,17 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
   });
 
   testRunner.add('should hanlde array with nulls', async (t) => {
+    const input = new Readable();
+    input._read = () => {};
+    input.push('[null]');
+    input.push(null);
     const opts = {
       fields: ['carModel', 'price', 'color']
     };
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.parse([null]).promise();
+      const csv = await parser.parse(input).promise();
       t.equal(csv, csvFixtures.emptyObject);
     } catch(err) {
       t.fail(err.message);
@@ -747,6 +751,10 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
   });
 
   testRunner.add('should parse data:[null] to csv with only column title, despite options.includeEmptyRows', async (t) => {
+    const input = new Readable();
+    input._read = () => {};
+    input.push('[null]');
+    input.push(null);
     const opts = {
       fields: ['carModel', 'price', 'color'],
       includeEmptyRows: true,
@@ -755,7 +763,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
     const parser = new AsyncParser(opts);
 
     try {
-      const csv = await parser.parse([null]).promise();
+      const csv = await parser.parse(input).promise();
       t.equal(csv, csvFixtures.emptyObject);
     } catch(err) {
       t.fail(err.message);
@@ -1251,7 +1259,6 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
 
     t.end();
   });
-
 
   // String Escaping and preserving values
 
