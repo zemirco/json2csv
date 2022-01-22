@@ -433,7 +433,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
       t.end();
     });
 
-    test.stdin.write(JSON.stringify(jsonFixtures.default));
+    test.stdin.write(JSON.stringify(jsonFixtures.default()));
     test.stdin.end();
   });
 
@@ -455,7 +455,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
       t.end();
     });
 
-    test.stdin.write(JSON.stringify(jsonFixtures.default));
+    test.stdin.write(JSON.stringify(jsonFixtures.default()));
     test.stdin.end();
   });
 

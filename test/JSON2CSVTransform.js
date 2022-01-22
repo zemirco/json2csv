@@ -1,348 +1,235 @@
 'use strict';
 
-const { Readable } = require('stream');
 const {
-  Transform: Json2csvTransform,
+  Transform: Parser,
   transforms: { flatten, unwind },
   formatters: { number: numberFormatter, string: stringFormatter, stringExcel: stringExcelFormatter, stringQuoteOnlyIfNecessary: stringQuoteOnlyIfNecessaryFormatter },
 } = require('../lib/json2csv');
 
-module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) => {
-  testRunner.add('should handle object mode', (t) => {
-    const input = new Readable({ objectMode: true });
-    input._read = () => {};
-    inMemoryJsonFixtures.default.forEach(item => input.push(item));
-    input.push(null);
+function parseInput(transform, nodeStream) {
+  return new Promise((resolve, reject) => {
+    let csv = '';
 
+    nodeStream
+      .on('error', err => reject(err))
+      .pipe(transform)
+      .on('data', chunk => (csv += chunk.toString()))
+      .on('end', () => resolve(csv))
+      .on('error', err => reject(err));
+  });
+}
+
+module.exports = (testRunner, jsonFixtures, csvFixtures) => {
+  testRunner.add('should handle object mode', async (t) => {
     const opts = {
       fields: ['carModel', 'price', 'color', 'manual']
     };
     const transformOpts = { objectMode: true };
 
-    const transform = new Json2csvTransform(opts, transformOpts);
-    const processor = input.pipe(transform);
+    const parser = new Parser(opts, transformOpts);
+    const csv = await parseInput(parser, jsonFixtures.default({ objectMode: true }));
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.ndjson);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.ndjson);
   });
 
-  testRunner.add('should handle ndjson', (t) => {
+  testRunner.add('should handle ndjson', async (t) => {
     const opts = {
       fields: ['carModel', 'price', 'color', 'manual'],
       ndjson: true
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.ndjson().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.ndjson());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.ndjson);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.ndjson);
   });
 
-  testRunner.add('should handle ndjson with small chunk size', (t) => {
+  testRunner.add('should error if ndjson input data is empty and fields are not set', async (t) => {
     const opts = {
-      fields: ['carModel', 'price', 'color', 'manual'],
       ndjson: true
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.ndjson({ highWaterMark: 16 }).pipe(transform);
+    try {
+      const parser = new Parser(opts);
+      await parseInput(parser, jsonFixtures.empty());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.ndjson);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
-  });
-
-  testRunner.add('should error on invalid ndjson input data', (t) => {
-    const opts = {
-      fields: ['carModel', 'price', 'color', 'manual'],
-      ndjson: true
-    };
-
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.ndjsonInvalid().pipe(transform);
-    
-    processor.on('finish', () => {
       t.fail('Exception expected');
-      t.end();
-    });
-    processor.on('error', (err) => {
-      t.equal(err.message, 'Unexpected SEPARATOR ("\\n") in state COMMA');
-      t.end();
-    });
-  });
-
-  testRunner.add('should not modify the opts passed', (t) => {
-    const opts = {};
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.default().pipe(transform);
-
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.ok(typeof csv === 'string');
-        t.equal(csv, csvFixtures.defaultStream);
-        t.deepEqual(opts, {});
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
-  });
-
-  testRunner.add('should error if input data is not an object', (t) => {
-    const input = new Readable();
-    input._read = () => {};
-    input.push('"not an object"');
-    input.push(null);
-
-    const transform = new Json2csvTransform();
-    const processor = input.pipe(transform);
-    
-    processor.on('finish', () => {
-      t.fail('Exception expected');
-      t.end();
-    });
-    processor.on('error', (err) => {
+    } catch (err) {
       t.equal(err.message, 'Data should not be empty or the "fields" option should be included');
-      t.end();
-    });
+    }
   });
 
-  testRunner.add('should error on invalid json input data', (t) => {
+  testRunner.add('should handle ndjson with small chunk size', async (t) => {
     const opts = {
-      fields: ['carModel', 'price', 'color', 'manual']
+      fields: ['carModel', 'price', 'color', 'manual'],
+      ndjson: true
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.defaultInvalid().pipe(transform);
-    
-    processor.on('finish', () => {
+    try {
+      const parser = new Parser(opts, { highWaterMark: 16 });
+      await parseInput(parser, jsonFixtures.ndjsonInvalid());
+
       t.fail('Exception expected');
-      t.end();
-    });
-    processor.on('error', (err) => {
-      t.ok(err.message.includes('Unexpected LEFT_BRACE ("{") in state KEY'));
-      t.end();
-    });
+    } catch(err) {
+      t.equal(err.message, 'Unexpected SEPARATOR ("\\n") in state COMMA');
+    }
   });
 
-  testRunner.add('should handle empty object', (t) => {
+  testRunner.add('should error on invalid ndjson input data', async (t) => {
     const opts = {
-      fields: ['carModel', 'price', 'color']
+      fields: ['carModel', 'price', 'color', 'manual'],
+      ndjson: true
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.emptyObject().pipe(transform);
+    try {
+      const parser = new Parser(opts);
+      await parseInput(parser, jsonFixtures.ndjsonInvalid());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.emptyObject);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+      t.fail('Exception expected');
+    } catch (err) {
+      t.equal(err.message, 'Unexpected SEPARATOR ("\\n") in state COMMA');
+    }
   });
 
-  testRunner.add('should handle empty array', (t) => {
-    const opts = {
-      fields: ['carModel', 'price', 'color']
-    };
+  testRunner.add('should not modify the opts passed', async (t) => {
+    const opts = {};
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.default());
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.emptyArray().pipe(transform);
-
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.emptyObject);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.ok(typeof csv === 'string');
+    t.equal(csv, csvFixtures.defaultStream);
+    t.deepEqual(opts, {});
   });
 
-  testRunner.add('should hanlde array with nulls', (t) => {
-    const input = new Readable();
-    input._read = () => {};
-    input.push('[null]');
-    input.push(null);
-    const opts = {
-      fields: ['carModel', 'price', 'color']
-    };
+  testRunner.add('should error if input data is empty and fields are not set', async (t) => {
+    try {
+      const parser = new Parser();
+      await parseInput(parser, jsonFixtures.empty());
 
-    const transform = new Json2csvTransform(opts);
-    const processor = input.pipe(transform);
-
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.emptyObject);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+      t.fail('Exception expected');
+    } catch (err) {
+      t.equal(err.message, 'Data should not be empty or the "fields" option should be included');
+    }
   });
 
-  testRunner.add('should handle deep JSON objects', (t) => {
-    const transform = new Json2csvTransform();
-    const processor = jsonFixtures.deepJSON().pipe(transform);
+  testRunner.add('should error if input data is not an object', async (t) => {
+    try {
+      const parser = new Parser();
+      await parseInput(parser, jsonFixtures.notAnObject());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.deepJSON);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+      t.fail('Exception expected');
+    } catch (err) {
+      t.equal(err.message, 'Data should be a JSON object or array');
+    }
   });
 
-  testRunner.add('should parse json to csv and infer the fields automatically ', (t) => {
-    const transform = new Json2csvTransform();
-    const processor = jsonFixtures.default().pipe(transform);
-
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.ok(typeof csv === 'string');
-        t.equal(csv, csvFixtures.defaultStream);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
-  });
-
-  testRunner.add('should parse json to csv using custom fields', (t) => {
+  testRunner.add('should error if input data is not valid json', async (t) => {
     const opts = {
       fields: ['carModel', 'price', 'color', 'manual']
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.default().pipe(transform);
+    try {
+      const parser = new Parser(opts);
+      await parseInput(parser, jsonFixtures.defaultInvalid());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.default);
-        t.end();
-  
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+      t.fail('Exception expected');
+    } catch (err) {
+      t.ok(err.message.includes('Unexpected LEFT_BRACE ("{") in state KEY'));
+    }
   });
 
-  testRunner.add('should output only selected fields', (t) => {
+  testRunner.add('should handle empty object', async (t) => {
+    const opts = {
+      fields: ['carModel', 'price', 'color']
+    };
+
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.emptyObject());
+
+    t.equal(csv, csvFixtures.emptyObject);
+  });
+
+  testRunner.add('should handle empty array', async (t) => {
+    const opts = {
+      fields: ['carModel', 'price', 'color']
+    };
+
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.emptyArray());
+
+    t.equal(csv, csvFixtures.emptyObject);
+  });
+
+  testRunner.add('should hanlde array with nulls', async (t) => {
+    const opts = {
+      fields: ['carModel', 'price', 'color']
+    };
+
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.arrayWithNull());
+
+    t.equal(csv, csvFixtures.emptyObject);
+  });
+
+  testRunner.add('should handle deep JSON objects', async (t) => {
+    const parser = new Parser();
+    const csv = await parseInput(parser, jsonFixtures.deepJSON());
+
+    t.equal(csv, csvFixtures.deepJSON);
+  });
+
+  testRunner.add('should parse json to csv and infer the fields automatically ', async (t) => {
+    const parser = new Parser();
+    const csv = await parseInput(parser, jsonFixtures.default());
+
+    t.equal(csv, csvFixtures.defaultStream);
+  });
+
+  testRunner.add('should parse json to csv using custom fields', async (t) => {
+    const opts = {
+      fields: ['carModel', 'price', 'color', 'manual']
+    };
+
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.default());
+
+    t.equal(csv, csvFixtures.default);
+  });
+
+  testRunner.add('should output only selected fields', async (t) => {
     const opts = {
       fields: ['carModel', 'price']
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.default().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.default());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.selected);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.selected);
   });
 
-  testRunner.add('should output fields in the order provided', (t) => {
+  testRunner.add('should output fields in the order provided', async (t) => {
     const opts = {
       fields: ['price', 'carModel']
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.default().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.default());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.reversed);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.reversed);
   });
 
-  testRunner.add('should output empty value for non-existing fields', (t) => {
+  testRunner.add('should output empty value for non-existing fields', async (t) => {
     const opts = {
       fields: ['first not exist field', 'carModel', 'price', 'not exist field', 'color']
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.default().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.default());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.withNotExistField);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.withNotExistField);
   });
 
-  testRunner.add('should name columns as specified in \'fields\' property', (t) => {
+  testRunner.add('should name columns as specified in \'fields\' property', async (t) => {
     const opts = {
       fields: [{
         label: 'Car Model',
@@ -353,60 +240,46 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       }]
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.default().pipe(transform);
-    
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.fieldNames);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.default());
+
+    t.equal(csv, csvFixtures.fieldNames);
   });
 
-
-
-  testRunner.add('should error on invalid \'fields\' property', (t) => {
+  testRunner.add('should error on invalid \'fields\' property', async (t) => {
     const opts = {
       fields: [ { value: 'price' }, () => {} ]
     };
 
     try {
-      const transform = new Json2csvTransform(opts);
-      jsonFixtures.default().pipe(transform);
+      const parser = new Parser(opts);
+      await parseInput(parser, jsonFixtures.default());
 
       t.fail('Exception expected');
     } catch(error) {
       t.equal(error.message, `Invalid field info option. ${JSON.stringify(opts.fields[1])}`);
     }
-    t.end();
   });
 
-  testRunner.add('should error on invalid \'fields.value\' property', (t) => {
+  testRunner.add('should error on invalid \'fields.value\' property', async (t) => {
     const opts = {
       fields: [
-        { value: row => row.price }, 
+        { value: row => row.price },
         { label: 'Price USD', value: [] }
       ]
     };
 
     try {
-      const transform = new Json2csvTransform(opts);
-      jsonFixtures.default().pipe(transform);
+      const parser = new Parser(opts);
+      await parseInput(parser, jsonFixtures.default());
 
       t.fail('Exception expected');
     } catch(error) {
       t.equal(error.message, `Invalid field info option. ${JSON.stringify(opts.fields[1])}`);
     }
-    t.end();
   });
 
-  testRunner.add('should support nested properties selectors', (t) => {
+  testRunner.add('should support nested properties selectors', async (t) => {
     const opts = {
       fields: [{
         label: 'Make',
@@ -426,23 +299,13 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       }]
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.nested().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.nested());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.nested);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.nested);
   });
 
-  testRunner.add('field.value function should receive a valid field object', (t) => {
+  testRunner.add('field.value function should receive a valid field object', async (t) => {
     const opts = {
       fields: [{
         label: 'Value1',
@@ -454,23 +317,13 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       }]
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.functionStringifyByDefault().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.functionStringifyByDefault());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.functionStringifyByDefault);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.functionStringifyByDefault);
   });
 
-  testRunner.add('field.value function should stringify results by default', (t) => {
+  testRunner.add('field.value function should stringify results by default', async (t) => {
     const opts = {
       fields: [{
         label: 'Value1',
@@ -478,23 +331,13 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       }]
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.functionStringifyByDefault().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.functionStringifyByDefault());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.functionStringifyByDefault);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.functionStringifyByDefault);
   });
 
-  testRunner.add('should process different combinations in fields option', (t) => {
+  testRunner.add('should process different combinations in fields option', async (t) => {
     const opts = {
       fields: [{
         label: 'PATH1',
@@ -515,47 +358,27 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       defaultValue: 'NULL'
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.fancyfields().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.fancyfields());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.fancyfields);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.fancyfields);
   });
 
   // Default value
 
-  testRunner.add('should output the default value as set in \'defaultValue\'', (t) => {
+  testRunner.add('should output the default value as set in \'defaultValue\'', async (t) => {
     const opts = {
       fields: ['carModel', 'price'],
       defaultValue: ''
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.defaultValueEmpty().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.defaultValueEmpty());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.defaultValueEmpty);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.defaultValueEmpty);
   });
 
-  testRunner.add('should override \'options.defaultValue\' with \'field.defaultValue\'', (t) => {
+  testRunner.add('should override \'options.defaultValue\' with \'field.defaultValue\'', async (t) => {
     const opts = {
       fields: [
         { value: 'carModel' },
@@ -565,23 +388,13 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       defaultValue: ''
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.overriddenDefaultValue().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.overriddenDefaultValue());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.overriddenDefaultValue);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.overriddenDefaultValue);
   });
 
-  testRunner.add('should use \'options.defaultValue\' when no \'field.defaultValue\'', (t) => {
+  testRunner.add('should use \'options.defaultValue\' when no \'field.defaultValue\'', async (t) => {
     const opts = {
       fields: [
         {
@@ -600,175 +413,95 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       defaultValue: ''
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.overriddenDefaultValue().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.overriddenDefaultValue());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.overriddenDefaultValue);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.overriddenDefaultValue);
   });
 
   // Delimiter
 
-  testRunner.add('should use a custom delimiter when \'delimiter\' property is defined', (t) => {
+  testRunner.add('should use a custom delimiter when \'delimiter\' property is defined', async (t) => {
     const opts = {
       fields: ['carModel', 'price', 'color'],
       delimiter: '\t'
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.default().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.default());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.tsv);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.tsv);
   });
 
-  testRunner.add('should remove last delimiter |@|', (t) => {
+  testRunner.add('should remove last delimiter |@|', async (t) => {
     const opts = { delimiter: '|@|' };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.delimiter().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.delimiter());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.delimiter);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.delimiter);
   });
 
   // EOL
 
-  testRunner.add('should use a custom eol character when \'eol\' property is present', (t) => {
+  testRunner.add('should use a custom eol character when \'eol\' property is present', async (t) => {
     const opts = {
       fields: ['carModel', 'price', 'color'],
       eol: '\r\n'
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.default().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.default());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.eol);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.eol);
   });
 
   // Header
 
-  testRunner.add('should parse json to csv without column title', (t) => {
+  testRunner.add('should parse json to csv without column title', async (t) => {
     const opts = {
       header: false,
       fields: ['carModel', 'price', 'color', 'manual']
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.default().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.default());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.withoutHeader);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.withoutHeader);
   });
 
   // Include empty rows
 
-  testRunner.add('should not include empty rows when options.includeEmptyRows is not specified', (t) => {
-    const transform = new Json2csvTransform();
-    const processor = jsonFixtures.emptyRow().pipe(transform);
+  testRunner.add('should not include empty rows when options.includeEmptyRows is not specified', async (t) => {
+    const parser = new Parser();
+    const csv = await parseInput(parser, jsonFixtures.emptyRow());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.emptyRowNotIncluded);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.emptyRowNotIncluded);
   });
 
-  testRunner.add('should include empty rows when options.includeEmptyRows is true', (t) => {
+  testRunner.add('should include empty rows when options.includeEmptyRows is true', async (t) => {
     const opts = {
       includeEmptyRows: true
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.emptyRow().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.emptyRow());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.emptyRow);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.emptyRow);
   });
 
-  testRunner.add('should not include empty rows when options.includeEmptyRows is false', (t) => {
+  testRunner.add('should not include empty rows when options.includeEmptyRows is false', async (t) => {
     const opts = {
       includeEmptyRows: false,
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.emptyRow().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.emptyRow());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.emptyRowNotIncluded);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.emptyRowNotIncluded);
   });
 
-  testRunner.add('should include empty rows when options.includeEmptyRows is true, with default values', (t) => {
+  testRunner.add('should include empty rows when options.includeEmptyRows is true, with default values', async (t) => {
     const opts = {
       fields: [
         {
@@ -786,273 +519,148 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       includeEmptyRows: true,
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.emptyRow().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.emptyRow());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.emptyRowDefaultValues);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.emptyRowDefaultValues);
   });
 
-  testRunner.add('should parse data:[null] to csv with only column title, despite options.includeEmptyRows', (t) => {
-    const input = new Readable();
-    input._read = () => {};
-    input.push(JSON.stringify([null]));
-    input.push(null);
-
+  testRunner.add('should parse data:[null] to csv with only column title, despite options.includeEmptyRows', async (t) => {
     const opts = {
       fields: ['carModel', 'price', 'color'],
       includeEmptyRows: true,
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = input.pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.arrayWithNull());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.emptyObject);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.emptyObject);
   });
 
   // BOM
 
-  testRunner.add('should add BOM character', (t) => {
+  testRunner.add('should add BOM character', async (t) => {
     const opts = {
       withBOM: true,
       fields: ['carModel', 'price', 'color', 'manual']
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.specialCharacters().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.specialCharacters());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
     // Compare csv length to check if the BOM character is present
-        t.equal(csv[0], '\ufeff');
-        t.equal(csv.length, csvFixtures.default.length + 1);
-        t.equal(csv.length, csvFixtures.withBOM.length);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv[0], '\ufeff');
+    t.equal(csv.length, csvFixtures.default.length + 1);
+    t.equal(csv.length, csvFixtures.withBOM.length);
   });
 
-  // Transform
+  // Transforms
 
-  testRunner.add('should unwind all unwindable fields using the unwind transform', (t) => {
+  testRunner.add('should unwind all unwindable fields using the unwind transform', async (t) => {
     const opts = {
       fields: ['carModel', 'price', 'extras.items.name', 'extras.items.color', 'extras.items.items.position', 'extras.items.items.color'],
       transforms: [unwind()],
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.unwind2().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.unwind2());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.unwind2);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.unwind2);
   });
 
-  testRunner.add('should support unwinding specific fields using the unwind transform', (t) => {
+  testRunner.add('should support unwinding specific fields using the unwind transform', async (t) => {
     const opts = {
       fields: ['carModel', 'price', 'colors'],
       transforms: [unwind({ paths: ['colors'] })],
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.unwind().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.unwind());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.unwind);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.unwind);
   });
 
-  testRunner.add('should support multi-level unwind using the unwind transform', (t) => {
+  testRunner.add('should support multi-level unwind using the unwind transform', async (t) => {
     const opts = {
       fields: ['carModel', 'price', 'extras.items.name', 'extras.items.color', 'extras.items.items.position', 'extras.items.items.color'],
       transforms: [unwind({ paths: ['extras.items', 'extras.items.items'] })],
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.unwind2().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.unwind2());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.unwind2);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.unwind2);
   });
 
-  testRunner.add('should support unwind and blank out repeated data using the unwind transform', (t) => {
+  testRunner.add('should support unwind and blank out repeated data using the unwind transform', async (t) => {
     const opts = {
       fields: ['carModel', 'price', 'extras.items.name', 'extras.items.color', 'extras.items.items.position', 'extras.items.items.color'],
       transforms: [unwind({ paths: ['extras.items', 'extras.items.items'], blankOut: true })],
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.unwind2().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.unwind2());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.unwind2Blank);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.unwind2Blank);
   });
 
-  testRunner.add('should support flattening deep JSON using the flatten transform', (t) => {
+  testRunner.add('should support flattening deep JSON using the flatten transform', async (t) => {
     const opts = {
       transforms: [flatten()],
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.deepJSON().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.deepJSON());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.flattenedDeepJSON);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.flattenedDeepJSON);
   });
 
-  testRunner.add('should support flattening JSON with nested arrays using the flatten transform', (t) => {
+  testRunner.add('should support flattening JSON with nested arrays using the flatten transform', async (t) => {
     const opts = {
       transforms: [flatten({ arrays: true })],
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.flattenArrays().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.flattenArrays());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.flattenedArrays);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.flattenedArrays);
   });
 
-  testRunner.add('should support custom flatten separator using the flatten transform', (t) => {
+  testRunner.add('should support custom flatten separator using the flatten transform', async (t) => {
     const opts = {
       transforms: [flatten({ separator: '__' })],
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.deepJSON().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.deepJSON());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.flattenedCustomSeparatorDeepJSON);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.flattenedCustomSeparatorDeepJSON);
   });
 
-  testRunner.add('should support multiple transforms and honor the order in which they are declared', (t) => {
+  testRunner.add('should support multiple transforms and honor the order in which they are declared', async (t) => {
     const opts = {
       transforms: [unwind({ paths: ['items'] }), flatten()],
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.unwindAndFlatten().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.unwindAndFlatten());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.unwindAndFlatten);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.unwindAndFlatten);
   });
 
-  testRunner.add('should unwind complex objects using the unwind transform', (t) => {
+  testRunner.add('should unwind complex objects using the unwind transform', async (t) => {
     const opts = {
       fields: ["carModel", "price", "extras.items.name", "extras.items.items.position", "extras.items.items.color", "extras.items.color"],
       transforms: [unwind({ paths: ['extras.items', 'extras.items.items'] }), flatten()],
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.unwindComplexObject().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.unwindComplexObject());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.unwindComplexObject);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.unwindComplexObject);
   });
 
-  testRunner.add('should support custom transforms', (t) => {
+  testRunner.add('should support custom transforms', async (t) => {
     const opts = {
       transforms: [row => ({
         model: row.carModel,
@@ -1062,124 +670,68 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       })],
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.default().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.default());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.defaultCustomTransform);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.defaultCustomTransform);
   });
 
   // Formatters
 
   // Number
 
-  testRunner.add('should used a custom separator when \'decimals\' is passed to the number formatter', (t) => {
+  testRunner.add('should used a custom separator when \'decimals\' is passed to the number formatter', async (t) => {
     const opts = {
       formatters: {
         number: numberFormatter({ decimals: 2 })
       }
     };
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.numberFormatter().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.numberFormatter());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.numberFixedDecimals);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.numberFixedDecimals);
   });
 
-  testRunner.add('should used a custom separator when \'separator\' is passed to the number formatter', (t) => {
+  testRunner.add('should used a custom separator when \'separator\' is passed to the number formatter', async (t) => {
     const opts = {
       delimiter: ';',
       formatters: {
         number: numberFormatter({ separator: ',' })
       }
     };
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.numberFormatter().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.numberFormatter());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.numberCustomSeparator);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.numberCustomSeparator);
   });
 
-  testRunner.add('should used a custom separator and fixed number of decimals when \'separator\' and \'decimals\' are passed to the number formatter', (t) => {
+  testRunner.add('should used a custom separator and fixed number of decimals when \'separator\' and \'decimals\' are passed to the number formatter', async (t) => {
     const opts = {
       delimiter: ';',
       formatters: {
         number: numberFormatter({ separator: ',', decimals: 2 })
       }
     };
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.numberFormatter().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.numberFormatter());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.numberFixedDecimalsAndCustomSeparator);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.numberFixedDecimalsAndCustomSeparator);
   });
 
   // Symbol
 
-  testRunner.add('should format Symbol by its name', (t) => {
-    const data = [{ test: Symbol('test1') }, { test: Symbol('test2') }];  
-    const input = new Readable({ objectMode: true });
-    input._read = () => {};
-    data.forEach(item => input.push(item));
-    input.push(null);
+  testRunner.add('should format Symbol by its name', async (t) => {
+    const transformOpts = { objectMode: true };
 
-    const transformOpts = { readableObjectMode: true, writableObjectMode: true };
+    const parser = new Parser({}, transformOpts);
+    const csv = await parseInput(parser, jsonFixtures.symbol({ objectMode: true }));
 
-    const transform = new Json2csvTransform({}, transformOpts);
-    const processor = input.pipe(transform);
-
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, '"test"\n"test1"\n"test2"');
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.symbol);
   });
 
   // String Quote
 
-  testRunner.add('should use a custom quote when \'quote\' property is present', (t) => {
+  testRunner.add('should use a custom quote when \'quote\' property is present', async (t) => {
     const opts = {
       fields: ['carModel', 'price'],
       formatters: {
@@ -1187,23 +739,13 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       }
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.default().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.default());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.withSimpleQuotes);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.withSimpleQuotes);
   });
 
-  testRunner.add('should be able to don\'t output quotes when setting \'quote\' to empty string', (t) => {
+  testRunner.add('should be able to don\'t output quotes when setting \'quote\' to empty string', async (t) => {
     const opts = {
       fields: ['carModel', 'price'],
       formatters: {
@@ -1211,23 +753,13 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       }
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.default().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.default());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.withoutQuotes);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.withoutQuotes);
   });
 
-  testRunner.add('should escape quotes when setting \'quote\' property is present', (t) => {
+  testRunner.add('should escape quotes when setting \'quote\' property is present', async (t) => {
     const opts = {
       fields: ['carModel', 'color'],
       formatters: {
@@ -1235,99 +767,49 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       }
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.escapeCustomQuotes().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.escapeCustomQuotes());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.escapeCustomQuotes);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.escapeCustomQuotes);
   });
 
-  testRunner.add('should not escape \'"\' when setting \'quote\' set to something else', (t) => {
+  testRunner.add('should not escape \'"\' when setting \'quote\' set to something else', async (t) => {
     const opts = {
       formatters: {
         string: stringFormatter({ quote: '\'' })
       }
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.escapedQuotes().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.escapedQuotes());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.escapedQuotesUnescaped);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.escapedQuotesUnescaped);
   });
 
   // String Escaped Quote
 
-  testRunner.add('should escape quotes with double quotes', (t) => {
-    const transform = new Json2csvTransform();
-    const processor = jsonFixtures.quotes().pipe(transform);
+  testRunner.add('should escape quotes with double quotes', async (t) => {
+    const parser = new Parser();
+    const csv = await parseInput(parser, jsonFixtures.quotes());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.quotes);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.quotes);
   });
 
-  testRunner.add('should not escape quotes with double quotes, when there is a backslash in the end', (t) => {
-    const transform = new Json2csvTransform();
-    const processor = jsonFixtures.backslashAtEnd().pipe(transform);
+  testRunner.add('should not escape quotes with double quotes, when there is a backslash in the end', async (t) => {
+    const parser = new Parser();
+    const csv = await parseInput(parser, jsonFixtures.backslashAtEnd());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.backslashAtEnd);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.backslashAtEnd);
   });
 
-  testRunner.add('should not escape quotes with double quotes, when there is a backslash in the end, and its not the last column', (t) => {
-    const transform = new Json2csvTransform();
-    const processor = jsonFixtures.backslashAtEndInMiddleColumn().pipe(transform);
+  testRunner.add('should not escape quotes with double quotes, when there is a backslash in the end, and its not the last column', async (t) => {
+    const parser = new Parser();
+    const csv = await parseInput(parser, jsonFixtures.backslashAtEndInMiddleColumn());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.backslashAtEndInMiddleColumn);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.backslashAtEndInMiddleColumn);
   });
 
-  testRunner.add('should escape quotes with value in \'escapedQuote\'', (t) => {
+  testRunner.add('should escape quotes with value in \'escapedQuote\'', async (t) => {
     const opts = {
       fields: ['a string'],
       formatters: {
@@ -1335,71 +817,41 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       }
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.escapedQuotes().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.escapedQuotes());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.escapedQuotes);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.escapedQuotes);
   });
 
-  testRunner.add('should escape quotes before new line with value in \'escapedQuote\'', (t) => {
+  testRunner.add('should escape quotes before new line with value in \'escapedQuote\'', async (t) => {
     const opts = {
       fields: ['a string']
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.backslashBeforeNewLine().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.backslashBeforeNewLine());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.backslashBeforeNewLine);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.backslashBeforeNewLine);
   });
 
   // String Quote Only if Necessary
 
-  testRunner.add('should quote only if necessary if using stringQuoteOnlyIfNecessary formatter', (t) => {
+  testRunner.add('should quote only if necessary if using stringQuoteOnlyIfNecessary formatter', async (t) => {
     const opts = {
       formatters: {
         string: stringQuoteOnlyIfNecessaryFormatter()
       }
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.quoteOnlyIfNecessary().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.quoteOnlyIfNecessary());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.quoteOnlyIfNecessary);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.quoteOnlyIfNecessary);
   });
 
   // String Excel
 
-  testRunner.add('should format strings to force excel to view the values as strings', (t) => {
+  testRunner.add('should format strings to force excel to view the values as strings', async (t) => {
     const opts = {
       fields: ['carModel', 'price', 'color'],
       formatters: {
@@ -1407,131 +859,72 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       }
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.default().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.default());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.excelStrings);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.excelStrings);
   });
 
-  testRunner.add('should format strings to force excel to view the values as strings with escaped quotes', (t) => {
+  testRunner.add('should format strings to force excel to view the values as strings with escaped quotes', async (t) => {
     const opts = {
       formatters: {
         string: stringExcelFormatter
       }
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.quotes().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.quotes());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.excelStringsWithEscapedQuoted);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.excelStringsWithEscapedQuoted);
   });
-
 
   // String Escaping and preserving values
 
-  testRunner.add('should parse JSON values with trailing backslashes', (t) => {
+  testRunner.add('should parse JSON values with trailing backslashes', async (t) => {
     const opts = {
       fields: ['carModel', 'price', 'color']
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.trailingBackslash().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.trailingBackslash());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.trailingBackslash);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.trailingBackslash);
   });
 
-  testRunner.add('should escape " when preceeded by \\', (t) => {
-    const transform = new Json2csvTransform();
-    const processor = jsonFixtures.escapeDoubleBackslashedEscapedQuote().pipe(transform);
+  testRunner.add('should escape " when preceeded by \\', async (t) => {
+    const parser = new Parser();
+    const csv = await parseInput(parser, jsonFixtures.escapeDoubleBackslashedEscapedQuote());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.escapeDoubleBackslashedEscapedQuote);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.escapeDoubleBackslashedEscapedQuote);
   });
 
-  testRunner.add('should preserve new lines in values', (t) => {
+  testRunner.add('should preserve new lines in values', async (t) => {
     const opts = {
       eol: '\r\n'
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.escapeEOL().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.escapeEOL());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, [
+
+    t.equal(csv, [
       '"a string"',
       '"with a \u2028description\\n and\na new line"',
       '"with a \u2029\u2028description and\r\nanother new line"'
     ].join('\r\n'));
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+
   });
 
-  testRunner.add('should preserve tabs in values', (t) => {
-    const transform = new Json2csvTransform();
-    const processor = jsonFixtures.escapeTab().pipe(transform);
+  testRunner.add('should preserve tabs in values', async (t) => {
+    const parser = new Parser();
+    const csv = await parseInput(parser, jsonFixtures.escapeTab());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.escapeTab);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.escapeTab);
   });
 
   // Headers
 
-  testRunner.add('should format headers based on the headers formatter', (t) => {
+  testRunner.add('should format headers based on the headers formatter', async (t) => {
     const opts = {
       fields: ['carModel', 'price', 'color', 'manual'],
       formatters: {
@@ -1539,19 +932,9 @@ module.exports = (testRunner, jsonFixtures, csvFixtures, inMemoryJsonFixtures) =
       }
     };
 
-    const transform = new Json2csvTransform(opts);
-    const processor = jsonFixtures.default().pipe(transform);
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.default());
 
-    let csv = '';
-    processor
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => {
-        t.equal(csv, csvFixtures.customHeaderQuotes);
-        t.end();
-      })
-      .on('error', err => {
-        t.fail(err.message);
-        t.end();  
-      });
+    t.equal(csv, csvFixtures.customHeaderQuotes);
   });
 };

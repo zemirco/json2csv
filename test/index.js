@@ -5,6 +5,7 @@ const loadFixtures = require('./helpers/loadFixtures');
 const CLI = require('./CLI');
 const JSON2CSVParser = require('./JSON2CSVParser');
 const JSON2CSVAsyncParser = require('./JSON2CSVAsyncParser');
+const JSON2CSVAsyncParserInMemory = require('./JSON2CSVAsyncParserInMemory');
 const JSON2CSVStreamParser = require('./JSON2CSVStreamParser');
 const JSON2CSVTransform = require('./JSON2CSVTransform');
 const parseNdjson = require('./parseNdjson');
@@ -43,12 +44,13 @@ async function loadAllFixtures() {
 }
 
 async function setupTests([jsonFixtures, jsonFixturesStreams, csvFixtures]) {
-  CLI(testRunner, jsonFixtures, csvFixtures);
-  JSON2CSVParser(testRunner, jsonFixtures, csvFixtures);
-  JSON2CSVAsyncParser(testRunner, jsonFixturesStreams, csvFixtures, jsonFixtures);
-  JSON2CSVStreamParser(testRunner, jsonFixturesStreams, csvFixtures);
-  JSON2CSVTransform(testRunner, jsonFixturesStreams, csvFixtures, jsonFixtures);
-  parseNdjson(testRunner, jsonFixtures);
+  // CLI(testRunner, jsonFixtures, csvFixtures);
+  // JSON2CSVParser(testRunner, jsonFixtures, csvFixtures);
+  // JSON2CSVAsyncParser(testRunner, jsonFixturesStreams, csvFixtures);
+  JSON2CSVAsyncParserInMemory(testRunner, jsonFixtures, csvFixtures);
+  // JSON2CSVStreamParser(testRunner, jsonFixturesStreams, csvFixtures);
+  // JSON2CSVTransform(testRunner, jsonFixturesStreams, csvFixtures);
+  // parseNdjson(testRunner, jsonFixtures);
 }
 
 loadAllFixtures()
