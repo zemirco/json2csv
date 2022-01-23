@@ -1,18 +1,11 @@
 'use strict';
 
-const { promisify } = require('util');
-const { readFile, mkdir, exists, readdir, lstat, unlink, rmdir } = require('fs');
+const { mkdir, rm, readFile } = require('fs').promises;
 const { join: joinPath } = require('path');
 const { exec } = require('child_process');
+const { promisify } = require('util');
 
 const execAsync = promisify(exec);
-const readFileAsync = promisify(readFile);
-const mkdirAsync = promisify(mkdir);
-const existsAsync = promisify(exists);
-const readdirAsync = promisify(readdir);
-const lstatAsync = promisify(lstat);
-const unlinkAsync = promisify(unlink);
-const rmdirAsync = promisify(rmdir);
 
 const cli = `node "${joinPath(process.cwd(), './bin/json2csv.js')}"`;
 
@@ -22,30 +15,14 @@ const getFixturePath = fixture => joinPath('./test/fixtures', fixture);
 module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   testRunner.addBefore(async () => {
     try {
-      await mkdirAsync(resultsPath);
+      await mkdir(resultsPath);
     } catch(err) {
       if (err.code !== 'EEXIST') throw err;
     }
   });
 
   testRunner.addAfter(async () => {
-    const deleteFolderRecursive = async (folderPath) => {
-      if (!(await existsAsync(folderPath))) return;
-      const files = await readdirAsync(folderPath);
-      await Promise.all(files
-        .map(file => joinPath(folderPath, file))
-        .map(async (filePath) => {
-          if ((await lstatAsync(filePath)).isDirectory()) { // recurse
-            await deleteFolderRecursive(filePath);
-          } else { // delete file
-            await unlinkAsync(filePath);
-          }
-        })
-      );
-      await rmdirAsync(folderPath);
-    };
-
-    deleteFolderRecursive(resultsPath);
+    rm(resultsPath, { recursive: true });
   });
 
   testRunner.add('should handle ndjson', async (t) => {
@@ -442,7 +419,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
 
     await execAsync(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`);
 
-    const csv = await readFileAsync(outputPath, 'utf-8');
+    const csv = await readFile(outputPath, 'utf-8');
     t.equal(csv, csvFixtures.default);
   });
 
@@ -452,7 +429,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
 
     await execAsync(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`);
 
-    const csv = await readFileAsync(outputPath, 'utf-8');
+    const csv = await readFile(outputPath, 'utf-8');
     t.equal(csv, csvFixtures.default);
   });
 
