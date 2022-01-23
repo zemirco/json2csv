@@ -136,7 +136,22 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
 
       t.fail('Exception expected');
     } catch (err) {
-      t.ok(err.message.includes('Unexpected LEFT_BRACE ("{") in state KEY'));
+      t.equal(err.message, 'Unexpected LEFT_BRACE ("{") in state KEY');
+    }
+  });
+
+  testRunner.add('should error if input data is not valid json and doesn\'t emit the first token', async (t) => {
+    const opts = {
+      fields: ['carModel', 'price', 'color', 'manual']
+    };
+
+    try {
+      const parser = new Parser(opts);
+      await parseInput(parser, jsonFixtures.invalidNoToken());
+
+      t.fail('Exception expected');
+    } catch (err) {
+      t.equal(err.message, 'Data should be a JSON object or array');
     }
   });
 
