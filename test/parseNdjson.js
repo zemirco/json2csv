@@ -7,6 +7,5 @@ module.exports = (testRunner, jsonFixtures) => {
     const parsed = parsendjson(jsonFixtures.ndjson());
 
     t.equal(parsed.length, 4, 'parsed input has correct length');
-    t.end();
   });
 };

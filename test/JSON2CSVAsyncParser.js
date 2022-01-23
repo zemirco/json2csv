@@ -98,7 +98,6 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     const parser = new Parser(opts);
     const csv = await parseInput(parser, jsonFixtures.default());
 
-    t.ok(typeof csv === 'string');
     t.equal(csv, csvFixtures.defaultStream);
     t.deepEqual(opts, {});
   });
