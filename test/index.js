@@ -26,7 +26,13 @@ const testRunner = {
   async run() {
     try {
       await Promise.all(testRunner.before.map(before => before()));
-      this.tests.forEach(args => tape(args.name, args.test));
+      this.tests.forEach(({ name, test }) => tape(name, async (t) => {
+        try {
+          await test(t);
+        } catch (err) {
+          t.fail(err);
+        }
+      }));
       this.after.forEach(after => tape.onFinish(after));
     } catch (err) {
       // eslint-disable-next-line no-console

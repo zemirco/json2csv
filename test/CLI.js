@@ -5,6 +5,7 @@ const { readFile, mkdir, exists, readdir, lstat, unlink, rmdir } = require('fs')
 const { join: joinPath } = require('path');
 const { exec } = require('child_process');
 
+const execAsync = promisify(exec);
 const readFileAsync = promisify(readFile);
 const mkdirAsync = promisify(mkdir);
 const existsAsync = promisify(exists);
@@ -47,63 +48,69 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     deleteFolderRecursive(resultsPath);
   });
 
-  testRunner.add('should handle ndjson', (t) => {
+  testRunner.add('should handle ndjson', async (t) => {
     const opts = '--fields carModel,price,color,manual --ndjson';
 
-    exec(`${cli} -i "${getFixturePath('/json/ndjson.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr);
-      const csv = stdout;
-      t.equal(csv, csvFixtures.ndjson);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/ndjson.json')}" ${opts}`);
+
+    t.equal(csv, csvFixtures.ndjson);
   });
 
-  testRunner.add('should error on invalid ndjson input path without streaming', (t) => {
+  testRunner.add('should error on invalid ndjson input path without streaming', async (t) => {
     const opts = '--fields carModel,price,color,manual --ndjson --no-streaming';
+    
+    try {
+      await execAsync(`${cli} -i "${getFixturePath('/json2/ndjsonInvalid.json')}" ${opts}`);
 
-    exec(`${cli} -i "${getFixturePath('/json2/ndjsonInvalid.json')}" ${opts}`, (err, stdout, stderr) => {   
-      t.ok(stderr.includes('Invalid input file.'));
-      t.end();
-    });
+      t.fail('Exception expected.');  
+    } catch (err) {
+      t.ok(err.message.includes('Invalid input file.'));
+    }
   });
 
-  testRunner.add('should error on invalid ndjson input data', (t) => {
+  testRunner.add('should error on invalid ndjson input data', async (t) => {
     const opts = '--fields carModel,price,color,manual --ndjson';
 
-    exec(`${cli} -i "${getFixturePath('/json/ndjsonInvalid.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.ok(stderr.includes('Unexpected SEPARATOR ("\\n") in state COMMA'));
-      t.end();
-    });
+    try {
+      await execAsync(`${cli} -i "${getFixturePath('/json/ndjsonInvalid.json')}" ${opts}`);
+
+      t.fail('Exception expected.');  
+    } catch (err) {
+      t.ok(err.message.includes('Unexpected SEPARATOR ("\\n") in state COMMA'));
+    }
   });
 
-  testRunner.add('should handle ndjson without streaming', (t) => {
+  testRunner.add('should handle ndjson without streaming', async (t) => {
     const opts = '--fields carModel,price,color,manual --ndjson --no-streaming';
 
-    exec(`${cli} -i "${getFixturePath('/json/ndjson.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr);
-      const csv = stdout;
-      t.equal(csv, csvFixtures.ndjson + '\n'); // console.log append the new line
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/ndjson.json')}" ${opts}`);
+
+    t.equal(csv, csvFixtures.ndjson + '\n'); // console.log append the new line
   });
 
-  testRunner.add('should error on invalid input file path', (t) => {
-    exec(`${cli} -i "${getFixturePath('/json2/default.json')}"`, (err, stdout, stderr) => {
-      t.ok(stderr.includes('Invalid input file.'));
-      t.end();
-    });
+  testRunner.add('should error on invalid input file path', async (t) => {
+    try {
+      await execAsync(`${cli} -i "${getFixturePath('/json2/default.json')}"`);
+
+      t.fail('Exception expected.');  
+    } catch (err) {
+      t.ok(err.message.includes('Invalid input file.'));
+    }
   });
 
-  testRunner.add('should error on invalid input file path without streaming', (t) => {
+  testRunner.add('should error on invalid input file path without streaming', async (t) => {
     const opts = '--no-streaming';
 
-    exec(`${cli} -i "${getFixturePath('/json2/default.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.ok(stderr.includes('Invalid input file.'));
-      t.end();
-    });
+    try {
+      await execAsync(`${cli} -i "${getFixturePath('/json2/default.json')}" ${opts}`);
+
+      t.fail('Exception expected.');  
+    } catch (err) {
+      t.ok(err.message.includes('Invalid input file.'));
+    }
   });
 
-  // testRunner.add('should error if input data is not an object', (t) => {
+  // testRunner.add('should error if input data is not an object', async (t) => {
   //   const input = new Readable();
   //   input._read = () => {};
   //   input.push(JSON.stringify('not an object'));
@@ -119,7 +126,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   //     t.end();
   // });
 
-  // testRunner.add('should handle empty object', (t) => {
+  // testRunner.add('should handle empty object', async (t) => {
   //   const input = new Readable();
   //   input._read = () => {};
   //   input.push(JSON.stringify({}));
@@ -129,268 +136,204 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   //   };
 
   //   const parser = new Json2csvParser(opts);
-  //   exec(`${cli} -i ${input}`, (err, stdout, stderr) => {
-  //     const csv = stdout;
+  //   const { stdout: csv } = await execAsync(`${cli} -i ${input}`);
   //     t.equal(csv, '"carModel","price","color"');
   //     t.end();
   // });
 
-  testRunner.add('should handle deep JSON objects', (t) => {
-    exec(`${cli} -i "${getFixturePath('/json/deepJSON.json')}"`, (err, stdout, stderr) => {
-      t.notOk(stderr);
-      const csv = stdout;
-      t.equal(csv, csvFixtures.deepJSON);
-      t.end();
-    });
+  testRunner.add('should handle deep JSON objects', async (t) => {
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/deepJSON.json')}"`);
+    t.equal(csv, csvFixtures.deepJSON);
   });
 
-  testRunner.add('should handle deep JSON objects without streaming', (t) => {
+  testRunner.add('should handle deep JSON objects without streaming', async (t) => {
     const opts = '--no-streaming';
 
-    exec(`${cli} -i "${getFixturePath('/json/deepJSON.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr);
-      const csv = stdout;
-      t.equal(csv, csvFixtures.deepJSON + '\n'); // console.log append the new line
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/deepJSON.json')}" ${opts}`);
+    t.equal(csv, csvFixtures.deepJSON + '\n'); // console.log append the new line
   });
 
-  // testRunner.add('should parse json to csv and infer the fields automatically ', (t) => {
-  //   exec(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`, (err, stdout, stderr) => {
-  //     const csv = stdout;
+  // testRunner.add('should parse json to csv and infer the fields automatically ', async (t) => {
+  //   const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`);
   //     t.ok(typeof csv === 'string');
   //     t.equal(csv, csvFixtures.default);
   //     t.end();
   //   });
   // });
 
-  testRunner.add('should error on invalid fields config file path', (t) => {
+  testRunner.add('should error on invalid fields config file path', async (t) => {
     const opts = `--config "${getFixturePath('/fields2/fieldNames.json')}"`;
 
-    exec(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.ok(stderr.indexOf('Invalid config file.') !== -1);
-      t.end();
-    });
+    try {
+      await execAsync(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`);
+
+      t.fail('Exception expected.');  
+    } catch (err) {
+      t.ok(err.message.includes('Invalid config file.'));
+    }
   });
 
-  testRunner.add('should parse json to csv using custom fields', (t) => {
+  testRunner.add('should parse json to csv using custom fields', async (t) => {
     const opts = '--fields carModel,price,color,manual';
 
-    exec(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr);
-      const csv = stdout;
-      t.equal(csv, csvFixtures.default);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`);
+  
+    t.equal(csv, csvFixtures.default);
   });
 
-  testRunner.add('should output only selected fields', (t) => {
+  testRunner.add('should output only selected fields', async (t) => {
     const opts = '--fields carModel,price';
 
-    exec(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr);
-      const csv = stdout;
-      t.equal(csv, csvFixtures.selected);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`);
+  
+    t.equal(csv, csvFixtures.selected);
   });
 
-  testRunner.add('should output fields in the order provided', (t) => {
+  testRunner.add('should output fields in the order provided', async (t) => {
     const opts = '--fields price,carModel';
 
-    exec(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr);
-      const csv = stdout;
-      t.equal(csv, csvFixtures.reversed);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`);
+
+    t.equal(csv, csvFixtures.reversed);
   });
 
-  testRunner.add('should output empty value for non-existing fields', (t) => {
+  testRunner.add('should output empty value for non-existing fields', async (t) => {
     const opts = '--fields "first not exist field",carModel,price,"not exist field",color';
 
-    exec(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr);
-      const csv = stdout;
-      t.equal(csv, csvFixtures.withNotExistField);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`);
+
+    t.equal(csv, csvFixtures.withNotExistField);
   });
 
-  testRunner.add('should name columns as specified in \'fields\' property', (t) => {
+  testRunner.add('should name columns as specified in \'fields\' property', async (t) => {
     const opts = `--config "${getFixturePath('/fields/fieldNames.json')}"`;
 
-    exec(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr);
-      const csv = stdout;
-      t.equal(csv, csvFixtures.fieldNames);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`);
+
+    t.equal(csv, csvFixtures.fieldNames);
   });
 
-  testRunner.add('should support nested properties selectors', (t) => {
+  testRunner.add('should support nested properties selectors', async (t) => {
     const opts = `--config "${getFixturePath('/fields/nested.json')}"`;
 
-    exec(`${cli} -i "${getFixturePath('/json/nested.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr);
-      const csv = stdout;
-      t.equal(csv, csvFixtures.nested);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/nested.json')}" ${opts}`);
+
+    t.equal(csv, csvFixtures.nested);
   });
 
-  testRunner.add('field.value function should receive a valid field object', (t) => {
+  testRunner.add('field.value function should receive a valid field object', async (t) => {
     const opts = `--config "${getFixturePath('/fields/functionWithCheck.js')}"`;
 
-    exec(`${cli} -i "${getFixturePath('/json/functionStringifyByDefault.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr);
-      const csv = stdout;
-      t.equal(csv, csvFixtures.functionStringifyByDefault);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/functionStringifyByDefault.json')}" ${opts}`);
+
+    t.equal(csv, csvFixtures.functionStringifyByDefault);
   });
 
-  testRunner.add('field.value function should stringify results by default', (t) => {
+  testRunner.add('field.value function should stringify results by default', async (t) => {
     const opts = `--config "${getFixturePath('/fields/functionStringifyByDefault.js')}"`;
 
-    exec(`${cli} -i "${getFixturePath('/json/functionStringifyByDefault.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr);
-      const csv = stdout;
-      t.equal(csv, csvFixtures.functionStringifyByDefault);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/functionStringifyByDefault.json')}" ${opts}`);
+
+    t.equal(csv, csvFixtures.functionStringifyByDefault);
   });
 
-  testRunner.add('should process different combinations in fields option', (t) => {
+  testRunner.add('should process different combinations in fields option', async (t) => {
     const opts = `--config "${getFixturePath('/fields/fancyfields.js')}" --default-value NULL`;
 
-    exec(`${cli} -i "${getFixturePath('/json/fancyfields.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr);
-      const csv = stdout;
-      t.equal(csv, csvFixtures.fancyfields);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/fancyfields.json')}" ${opts}`);
+
+    t.equal(csv, csvFixtures.fancyfields);
   });
 
   // Default value
 
-  testRunner.add('should output the default value as set in \'defaultValue\'', (t) => {
+  testRunner.add('should output the default value as set in \'defaultValue\'', async (t) => {
     const opts = '--fields carModel,price --default-value ""';
 
-    exec(`${cli} -i "${getFixturePath('/json/defaultValueEmpty.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr); 
-      const csv = stdout;
-      t.equal(csv, csvFixtures.defaultValueEmpty);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/defaultValueEmpty.json')}" ${opts}`);
+
+    t.equal(csv, csvFixtures.defaultValueEmpty);
   });
 
-  testRunner.add('should override \'options.defaultValue\' with \'field.defaultValue\'', (t) => {
+  testRunner.add('should override \'options.defaultValue\' with \'field.defaultValue\'', async (t) => {
     const opts = `--config "${getFixturePath('/fields/overriddenDefaultValue.json')}" --default-value ""`;
 
-    exec(`${cli} -i "${getFixturePath('/json/overriddenDefaultValue.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr);
-      const csv = stdout;
-      t.equal(csv, csvFixtures.overriddenDefaultValue);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/overriddenDefaultValue.json')}" ${opts}`);
+
+    t.equal(csv, csvFixtures.overriddenDefaultValue);
   });
 
-  testRunner.add('should use \'options.defaultValue\' when no \'field.defaultValue\'', (t) => {
+  testRunner.add('should use \'options.defaultValue\' when no \'field.defaultValue\'', async (t) => {
     const opts = `--config "${getFixturePath('/fields/overriddenDefaultValue2.js')}" --default-value ""`;
 
-    exec(`${cli} -i "${getFixturePath('/json/overriddenDefaultValue.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr);
-      const csv = stdout;
-      t.equal(csv, csvFixtures.overriddenDefaultValue);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/overriddenDefaultValue.json')}" ${opts}`);
+
+    t.equal(csv, csvFixtures.overriddenDefaultValue);
   });
 
   // Delimiter
 
-  testRunner.add('should use a custom delimiter when \'delimiter\' property is defined', (t) => {
+  testRunner.add('should use a custom delimiter when \'delimiter\' property is defined', async (t) => {
     const opts = '--fields carModel,price,color --delimiter "\t"';
 
-    exec(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr); 
-      const csv = stdout;
-      t.equal(csv, csvFixtures.tsv);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`);
+
+    t.equal(csv, csvFixtures.tsv);
   });
 
-  testRunner.add('should remove last delimiter |@|', (t) => {
+  testRunner.add('should remove last delimiter |@|', async (t) => {
     const opts = '--delimiter "|@|"';
 
-    exec(`${cli} -i "${getFixturePath('/json/delimiter.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr); 
-      const csv = stdout;
-      t.equal(csv, csvFixtures.delimiter);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/delimiter.json')}" ${opts}`);
+
+    t.equal(csv, csvFixtures.delimiter);
   });
 
   // EOL
 
-  testRunner.add('should use a custom eol character when \'eol\' property is present', (t) => {
+  testRunner.add('should use a custom eol character when \'eol\' property is present', async (t) => {
     const opts = '--fields carModel,price,color --eol "\r\n"';
 
-    exec(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr); 
-      const csv = stdout;
-      t.equal(csv, csvFixtures.eol);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`);
+ 
+    t.equal(csv, csvFixtures.eol);
   });
 
   // Header
 
-  testRunner.add('should parse json to csv without column title', (t) => {
+  testRunner.add('should parse json to csv without column title', async (t) => {
     const opts = '--fields carModel,price,color,manual --no-header';
 
-    exec(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr); 
-      const csv = stdout;
-      t.equal(csv, csvFixtures.withoutHeader);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`);
+
+    t.equal(csv, csvFixtures.withoutHeader);
   });
 
   // Include empty rows
 
-  testRunner.add('should not include empty rows when options.includeEmptyRows is not specified', (t) => {
-    exec(`${cli} -i "${getFixturePath('/json/emptyRow.json')}"`, (err, stdout, stderr) => {
-      t.notOk(stderr); 
-      const csv = stdout;
-      t.equal(csv, csvFixtures.emptyRowNotIncluded);
-      t.end();
-    });
+  testRunner.add('should not include empty rows when options.includeEmptyRows is not specified', async (t) => {
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/emptyRow.json')}"`);
+
+    t.equal(csv, csvFixtures.emptyRowNotIncluded);
   });
 
-  testRunner.add('should include empty rows when options.includeEmptyRows is true', (t) => {
+  testRunner.add('should include empty rows when options.includeEmptyRows is true', async (t) => {
     const opts = '--include-empty-rows';
 
-    exec(`${cli} -i "${getFixturePath('/json/emptyRow.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr); 
-      const csv = stdout;
-      t.equal(csv, csvFixtures.emptyRow);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/emptyRow.json')}" ${opts}`);
+
+    t.equal(csv, csvFixtures.emptyRow);
   });
 
-  testRunner.add('should include empty rows when options.includeEmptyRows is true, with default values', (t) => {
+  testRunner.add('should include empty rows when options.includeEmptyRows is true, with default values', async (t) => {
     const opts = `--config "${getFixturePath('/fields/emptyRowDefaultValues.json')}" --default-value NULL --include-empty-rows`;
 
-    exec(`${cli} -i "${getFixturePath('/json/emptyRow.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr);
-      const csv = stdout;
-      t.equal(csv, csvFixtures.emptyRowDefaultValues);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/emptyRow.json')}" ${opts}`);
+
+    t.equal(csv, csvFixtures.emptyRowDefaultValues);
   });
 
-  // testRunner.add('should parse data:[null] to csv with only column title, despite options.includeEmptyRows', (t) => {
+  // testRunner.add('should parse data:[null] to csv with only column title, despite options.includeEmptyRows', async (t) => {
   //   const input = new Readable();
   //   input._read = () => {};
   //   input.push(JSON.stringify([null]));
@@ -400,8 +343,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   //     includeEmptyRows: true,
   //   };
 
-  //   exec(cli + '-i input', (err, stdout, stderr) => {
-  //     const csv = stdout;
+  //   const { stdout: csv } = await execAsync(cli + '-i input');
   //     t.equal(csv, '"carModel","price","color"');
   //     t.end();
   //   });
@@ -409,452 +351,365 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
 
   // BOM
 
-  testRunner.add('should add BOM character', (t) => {
+  testRunner.add('should add BOM character', async (t) => {
     const opts = '--fields carModel,price,color,manual --with-bom';
 
-    exec(`${cli} -i "${getFixturePath('/json/specialCharacters.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr); 
-      const csv = stdout;
-      // Compare csv length to check if the BOM character is present
-      t.equal(csv[0], '\ufeff');
-      t.equal(csv.length, csvFixtures.default.length + 1);
-      t.equal(csv.length, csvFixtures.withBOM.length);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/specialCharacters.json')}" ${opts}`);
+
+    // Compare csv length to check if the BOM character is present
+    t.equal(csv[0], '\ufeff');
+    t.equal(csv.length, csvFixtures.default.length + 1);
+    t.equal(csv.length, csvFixtures.withBOM.length);
   });
 
   // Get input from stdin
 
-  testRunner.add('should get input from stdin and process as stream', (t) => {
-    const test = exec(cli, (err, stdout, stderr) => {
-      t.notOk(stderr); 
-      const csv = stdout;
-      t.equal(csv, csvFixtures.defaultStream);
-      t.end();
-    });
+  testRunner.add('should get input from stdin and process as stream', async (t) => {
+    const execution = execAsync(cli);
 
-    test.stdin.write(JSON.stringify(jsonFixtures.default()));
-    test.stdin.end();
+    execution.child.stdin.write(JSON.stringify(jsonFixtures.default()));
+    execution.child.stdin.end();
+
+    const { stdout: csv } = await execution;
+    
+    t.equal(csv, csvFixtures.defaultStream);
   });
 
-  testRunner.add('should error if stdin data is not valid', (t) => {
-    const test = exec(cli, (err, stdout, stderr) => {
-      t.ok(stderr.includes('Error: Parser ended in mid-parsing (state: KEY). Either not all the data was received or the data was invalid.'));
-      t.end();
-    });
+  testRunner.add('should error if stdin data is not valid', async (t) => {
+    const execution = execAsync(cli);
 
-    test.stdin.write('{ "b": 1,');
-    test.stdin.end();
+    execution.child.stdin.write('{ "b": 1,');
+    execution.child.stdin.end();
+
+    try {
+      await execution;
+
+      t.fail('Exception expected.');  
+    } catch (err) {
+      t.ok(err.message.includes('Error: Parser ended in mid-parsing (state: KEY). Either not all the data was received or the data was invalid.'));
+    }
   });
 
-  testRunner.add('should get input from stdin with -s flag', (t) => {
-    const test = exec(`${cli} -s`, (err, stdout, stderr) => {
-      t.notOk(stderr); 
-      const csv = stdout;
-      t.equal(csv, csvFixtures.default + '\n'); // console.log append the new line
-      t.end();
-    });
+  testRunner.add('should get input from stdin with -s flag', async (t) => {
+    const execution = execAsync(`${cli} -s`);
 
-    test.stdin.write(JSON.stringify(jsonFixtures.default()));
-    test.stdin.end();
+    execution.child.stdin.write(JSON.stringify(jsonFixtures.default()));
+    execution.child.stdin.end();
+
+    const { stdout: csv } = await execution;
+    
+    t.equal(csv, csvFixtures.default + '\n'); // console.log append the new line
   });
 
-  testRunner.add('should error if stdin data is not valid with -s flag', (t) => {
-    const test = exec(`${cli} -s`, (err, stdout, stderr) => {
-      t.ok(stderr.includes('Invalid data received from stdin'));
-      t.end();
-    });
+  testRunner.add('should error if stdin data is not valid with -s flag', async (t) => {
+    const execution = execAsync(`${cli} -s`);
 
-    test.stdin.write('{ "b": 1,');
-    test.stdin.end();
+    execution.child.stdin.write('{ "b": 1,');
+    execution.child.stdin.end();
+
+    try {
+      await execution;
+
+      t.fail('Exception expected.');  
+    } catch (err) {
+      t.ok(err.message.includes('Invalid data received from stdin'));
+    }
   });
 
-  // testRunner.add('should error if stdin fails', (t) => {
-  //   const test = exec(cli, (err, stdout, stderr) => {
-  //     t.ok(stderr.includes('Could not read from stdin'));
-  //     t.end();
-  //   });
+  testRunner.add('should error if stdin fails', async (t) => {
+    const execution = execAsync(cli);
 
-  //   // TODO Figure out how to make the stdin to error
-  //   test.stdin._read = test.stdin._write = () => {};
-  //   test.stdin.on('error', () => {});
-  //   test.stdin.destroy(new Error('Test error'));
-  // });
+    // TODO Figure out how to make the stdin to error
+    execution.child.stdin._read = execution.child.stdin._write = () => {};
+    execution.child.stdin.on('error', () => {});
+    execution.child.stdin.destroy(new Error('Test error'));
+
+    try {
+      await execution;
+
+      t.fail('Exception expected.');  
+    } catch (err) {
+      // TODO error message seems wrong
+      t.ok(err.message.includes('Data should not be empty or the "fields" option should be included'));
+    }
+  });
 
   // Put output to file
 
-  testRunner.add('should output to file', (t) => {
+  testRunner.add('should output to file', async (t) => {
     const outputPath = getFixturePath('/results/default.csv');
     const opts = `-o "${outputPath}" --fields carModel,price,color,manual`;
 
-    exec(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`, async (err, stdout, stderr) => {
-      t.notOk(stderr);
-      try {
-       const csv = await readFileAsync(outputPath, 'utf-8');
-       t.equal(csv, csvFixtures.default);
-      } catch (err) {
-        t.fail(err);
-      }
-      t.end();
-    });
+    await execAsync(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`);
+
+    const csv = await readFileAsync(outputPath, 'utf-8');
+    t.equal(csv, csvFixtures.default);
   });
 
-
-  testRunner.add('should output to file without streaming', (t) => {
+  testRunner.add('should output to file without streaming', async (t) => {
     const outputPath = getFixturePath('/results/default.csv');
     const opts = `-o ${outputPath} --fields carModel,price,color,manual --no-streaming`;
 
-    exec(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`, async (err, stdout, stderr) => {
-      t.notOk(stderr);
-      try {
-       const csv = await readFileAsync(outputPath, 'utf-8');
-       t.equal(csv, csvFixtures.default);
-      } catch (err) {
-        t.fail(err);
-      }
-      t.end();
-    });
+    await execAsync(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`);
+
+    const csv = await readFileAsync(outputPath, 'utf-8');
+    t.equal(csv, csvFixtures.default);
   });
 
-  testRunner.add('should error on invalid output file path', (t) => {
+  testRunner.add('should error on invalid output file path', async (t) => {
     const outputPath = getFixturePath('/results2/default.csv');
     const opts = `-o "${outputPath}" --fields carModel,price,color,manual`;
 
-    exec(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.ok(stderr.includes('Invalid output file.'));
-      t.end();
-    });
+    try{
+      await execAsync(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`);
+    } catch (err) {
+      t.ok(err.message.includes('Invalid output file.'));
+    }
   });
 
-  testRunner.add('should error on invalid output file path without streaming', (t) => {
+  testRunner.add('should error on invalid output file path without streaming', async (t) => {
     const outputPath = getFixturePath('/results2/default.csv');
     const opts = `-o "${outputPath}" --fields carModel,price,color,manual --no-streaming`;
 
-    exec(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.ok(stderr.includes('Invalid output file.'));
-      t.end();
-    });
+    try {
+      await execAsync(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`);
+    } catch (err) {
+      t.ok(err.message.includes('Invalid output file.'));
+    }
   });
 
   // Pretty print
 
-  testRunner.add('should print pretty table', (t) => {
+  testRunner.add('should print pretty table', async (t) => {
     const opts = '--pretty';
 
-    exec(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr);
-      const csv = stdout;
-      t.equal(csv, csvFixtures.prettyprint);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`);
+
+    t.equal(csv, csvFixtures.prettyprint);
   });
 
-  testRunner.add('should print pretty table without header', (t) => {
+  testRunner.add('should print pretty table without header', async (t) => {
     const opts = '--no-header --pretty';
 
-    exec(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr);
-      const csv = stdout;
-      t.equal(csv, csvFixtures.prettyprintWithoutHeader);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`);
+
+    t.equal(csv, csvFixtures.prettyprintWithoutHeader);
   });
 
-  testRunner.add('should print pretty table without streaming', (t) => {
+  testRunner.add('should print pretty table without streaming', async (t) => {
     const opts = '--fields carModel,price,color --no-streaming --pretty ';
 
-    exec(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr);
-      const csv = stdout;
-      t.equal(csv, csvFixtures.prettyprint);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`);
+
+    t.equal(csv, csvFixtures.prettyprint);
   });
 
-  testRunner.add('should print pretty table without streaming and without header', (t) => {
+  testRunner.add('should print pretty table without streaming and without header', async (t) => {
     const opts = '--fields carModel,price,color --no-streaming --no-header --pretty ';
 
-    exec(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr);
-      const csv = stdout;
-      t.equal(csv, csvFixtures.prettyprintWithoutHeader);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`);
+
+    t.equal(csv, csvFixtures.prettyprintWithoutHeader);
   });
 
-  testRunner.add('should print pretty table without rows', (t) => {
+  testRunner.add('should print pretty table without rows', async (t) => {
     const opts = '--fields fieldA,fieldB,fieldC --pretty';
 
-    exec(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr);
-      const csv = stdout;
-      t.equal(csv, csvFixtures.prettyprintWithoutRows);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`);
+
+    t.equal(csv, csvFixtures.prettyprintWithoutRows);
   });
 
   // Preprocessing
 
-  testRunner.add('should unwind all unwindable fields using the unwind transform', (t) => {
+  testRunner.add('should unwind all unwindable fields using the unwind transform', async (t) => {
     const opts = '--fields carModel,price,extras.items.name,extras.items.color,extras.items.items.position,extras.items.items.color'
       + ' --unwind';
 
-    exec(`${cli} -i "${getFixturePath('/json/unwind2.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr);
-      const csv = stdout;
-      t.equal(csv, csvFixtures.unwind2);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/unwind2.json')}" ${opts}`);
+
+    t.equal(csv, csvFixtures.unwind2);
   });
 
-  testRunner.add('should support unwinding specific fields using the unwind transform', (t) => {
+  testRunner.add('should support unwinding specific fields using the unwind transform', async (t) => {
     const opts = '--unwind colors';
 
-    exec(`${cli} -i "${getFixturePath('/json/unwind.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr);
-      const csv = stdout;
-      t.equal(csv, csvFixtures.unwind);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/unwind.json')}" ${opts}`);
+
+    t.equal(csv, csvFixtures.unwind);
   });
 
-  testRunner.add('should support multi-level unwind using the unwind transform', (t) => {
+  testRunner.add('should support multi-level unwind using the unwind transform', async (t) => {
     const opts = '--fields carModel,price,extras.items.name,extras.items.color,extras.items.items.position,extras.items.items.color'
       + ' --unwind extras.items,extras.items.items';
 
-    exec(`${cli} -i "${getFixturePath('/json/unwind2.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr);
-      const csv = stdout;
-      t.equal(csv, csvFixtures.unwind2);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/unwind2.json')}" ${opts}`);
+
+    t.equal(csv, csvFixtures.unwind2);
   });
 
-  testRunner.add('hould unwind and blank out repeated data', (t) => {
+  testRunner.add('hould unwind and blank out repeated data', async (t) => {
     const opts = '--fields carModel,price,extras.items.name,extras.items.color,extras.items.items.position,extras.items.items.color'
       + ' --unwind extras.items,extras.items.items --unwind-blank';
 
-    exec(`${cli} -i "${getFixturePath('/json/unwind2.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr);
-      const csv = stdout;
-      t.equal(csv, csvFixtures.unwind2Blank);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/unwind2.json')}" ${opts}`);
+
+    t.equal(csv, csvFixtures.unwind2Blank);
   });
 
-  testRunner.add('should support flattening deep JSON using the flatten transform', (t) => {
+  testRunner.add('should support flattening deep JSON using the flatten transform', async (t) => {
     const opts = '--flatten-objects';
 
-    exec(`${cli} -i "${getFixturePath('/json/deepJSON.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr);
-      const csv = stdout;
-      t.equal(csv, csvFixtures.flattenedDeepJSON);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/deepJSON.json')}" ${opts}`);
+
+    t.equal(csv, csvFixtures.flattenedDeepJSON);
   });
 
-  testRunner.add('should support flattening JSON with nested arrays using the flatten transform', (t) => {
+  testRunner.add('should support flattening JSON with nested arrays using the flatten transform', async (t) => {
     const opts = '--flatten-objects --flatten-arrays';
 
-    exec(`${cli} -i "${getFixturePath('/json/flattenArrays.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr);
-      const csv = stdout;
-      t.equal(csv, csvFixtures.flattenedArrays);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/flattenArrays.json')}" ${opts}`);
+ 
+    t.equal(csv, csvFixtures.flattenedArrays);
   });
 
-  testRunner.add('should support custom flatten separator using the flatten transform', (t) => {
+  testRunner.add('should support custom flatten separator using the flatten transform', async (t) => {
     const opts = '--flatten-objects --flatten-separator __';
 
-    exec(`${cli} -i "${getFixturePath('/json/deepJSON.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr);
-      const csv = stdout;
-      t.equal(csv, csvFixtures.flattenedCustomSeparatorDeepJSON);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/deepJSON.json')}" ${opts}`);
+ 
+    t.equal(csv, csvFixtures.flattenedCustomSeparatorDeepJSON);
   });
 
-  testRunner.add('should support multiple transforms and honor the order in which they are declared', (t) => {
+  testRunner.add('should support multiple transforms and honor the order in which they are declared', async (t) => {
     const opts = '--unwind items --flatten-objects';
 
-    exec(`${cli} -i "${getFixturePath('/json/unwindAndFlatten.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr);
-      const csv = stdout;
-      t.equal(csv, csvFixtures.unwindAndFlatten);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/unwindAndFlatten.json')}" ${opts}`);
+ 
+    t.equal(csv, csvFixtures.unwindAndFlatten);
   });
 
 
-  testRunner.add('should unwind complex objects using the unwind transform', (t) => {
+  testRunner.add('should unwind complex objects using the unwind transform', async (t) => {
     const opts = '--fields carModel,price,extras.items.name,extras.items.items.position,extras.items.items.color,extras.items.color'
       + ' --unwind extras.items,extras.items.items --flatten-objects --flatten-arrays';
 
-    exec(`${cli} -i "${getFixturePath('/json/unwindComplexObject.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr);
-      const csv = stdout;
-      t.equal(csv, csvFixtures.unwindComplexObject);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/unwindComplexObject.json')}" ${opts}`);
+ 
+    t.equal(csv, csvFixtures.unwindComplexObject);
   });
 
   // Formatters
 
-
   // String Quote
 
-  testRunner.add('should use a custom quote when \'quote\' property is present', (t) => {
+  testRunner.add('should use a custom quote when \'quote\' property is present', async (t) => {
     const opts = '--fields carModel,price --quote "\'"';
 
-    exec(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr); 
-      const csv = stdout;
-      t.equal(csv, csvFixtures.withSimpleQuotes);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`);
+ 
+    t.equal(csv, csvFixtures.withSimpleQuotes);
   });
 
-  testRunner.add('should be able to don\'t output quotes when setting \'quote\' to empty string', (t) => {
+  testRunner.add('should be able to don\'t output quotes when setting \'quote\' to empty string', async (t) => {
     const opts = '--fields carModel,price --quote ""';
 
-    exec(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr); 
-      const csv = stdout;
-      t.equal(csv, csvFixtures.withoutQuotes);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`);
+ 
+    t.equal(csv, csvFixtures.withoutQuotes);
   });
 
-  testRunner.add('should escape quotes when setting \'quote\' property is present', (t) => {
+  testRunner.add('should escape quotes when setting \'quote\' property is present', async (t) => {
     const opts = '--fields carModel,color --quote "\'"';
 
-    exec(`${cli} -i "${getFixturePath('/json/escapeCustomQuotes.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr); 
-      const csv = stdout;
-        t.equal(csv, csvFixtures.escapeCustomQuotes);
-        t.end();
-      });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/escapeCustomQuotes.json')}" ${opts}`);
+    t.equal(csv, csvFixtures.escapeCustomQuotes);
   });
 
-  testRunner.add('should not escape \'"\' when setting \'quote\' set to something else', (t) => {
+  testRunner.add('should not escape \'"\' when setting \'quote\' set to something else', async (t) => {
     const opts = '--quote "\'"';
 
-    exec(`${cli} -i "${getFixturePath('/json/escapedQuotes.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr); 
-      const csv = stdout;
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/escapedQuotes.json')}" ${opts}`);
         t.equal(csv, csvFixtures.escapedQuotesUnescaped);
-        t.end();
-      });
   });
 
   // String Escaped Quote
 
-  testRunner.add('should escape quotes with double quotes', (t) => {
-    exec(`${cli} -i "${getFixturePath('/json/quotes.json')}"`, (err, stdout, stderr) => {
-      t.notOk(stderr); 
-      const csv = stdout;
-      t.equal(csv, csvFixtures.quotes);
-      t.end();
-    });
+  testRunner.add('should escape quotes with double quotes', async (t) => {
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/quotes.json')}"`);
+ 
+    t.equal(csv, csvFixtures.quotes);
   });
 
-  testRunner.add('should not escape quotes with double quotes, when there is a backslash in the end', (t) => {
-    exec(`${cli} -i "${getFixturePath('/json/backslashAtEnd.json')}"`, (err, stdout, stderr) => {
-      t.notOk(stderr); 
-      const csv = stdout;
-      t.equal(csv, csvFixtures.backslashAtEnd);
-      t.end();
-    });
+  testRunner.add('should not escape quotes with double quotes, when there is a backslash in the end', async (t) => {
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/backslashAtEnd.json')}"`);
+ 
+    t.equal(csv, csvFixtures.backslashAtEnd);
   });
 
-  testRunner.add('should not escape quotes with double quotes, when there is a backslash in the end, and its not the last column', (t) => {
-    exec(`${cli} -i "${getFixturePath('/json/backslashAtEndInMiddleColumn.json')}"`, (err, stdout, stderr) => {
-      t.notOk(stderr); 
-      const csv = stdout;
-      t.equal(csv, csvFixtures.backslashAtEndInMiddleColumn);
-      t.end();
-    });
+  testRunner.add('should not escape quotes with double quotes, when there is a backslash in the end, and its not the last column', async (t) => {
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/backslashAtEndInMiddleColumn.json')}"`);
+ 
+    t.equal(csv, csvFixtures.backslashAtEndInMiddleColumn);
   });
 
-  testRunner.add('should escape quotes with value in \'escapedQuote\'', (t) => {
+  testRunner.add('should escape quotes with value in \'escapedQuote\'', async (t) => {
     const opts = '--fields "a string" --escaped-quote "*"';
 
-    exec(`${cli} -i "${getFixturePath('/json/escapedQuotes.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr); 
-      const csv = stdout;
-      t.equal(csv, csvFixtures.escapedQuotes);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/escapedQuotes.json')}" ${opts}`);
+ 
+    t.equal(csv, csvFixtures.escapedQuotes);
   });
 
   // String Excel
 
-  testRunner.add('should format strings to force excel to view the values as strings', (t) => {
+  testRunner.add('should format strings to force excel to view the values as strings', async (t) => {
     const opts = '--fields carModel,price,color --excel-strings';
 
-    exec(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr); 
-      const csv = stdout;
-      t.equal(csv, csvFixtures.excelStrings);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`);
+ 
+    t.equal(csv, csvFixtures.excelStrings);
   });
 
-  testRunner.add('should format strings to force excel to view the values as strings with escaped quotes', (t) => {
+  testRunner.add('should format strings to force excel to view the values as strings with escaped quotes', async (t) => {
     const opts = '--excel-strings';
 
-    exec(`${cli} -i "${getFixturePath('/json/quotes.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr); 
-      const csv = stdout;
-      t.equal(csv, csvFixtures.excelStringsWithEscapedQuoted);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/quotes.json')}" ${opts}`);
+ 
+    t.equal(csv, csvFixtures.excelStringsWithEscapedQuoted);
   });
 
   // String Escaping and preserving values
 
-  testRunner.add('should parse JSON values with trailing backslashes', (t) => {
+  testRunner.add('should parse JSON values with trailing backslashes', async (t) => {
     const opts = '--fields carModel,price,color';
 
-    exec(`${cli} -i "${getFixturePath('/json/trailingBackslash.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr); 
-      const csv = stdout;
-      t.equal(csv, csvFixtures.trailingBackslash);
-      t.end();
-    });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/trailingBackslash.json')}" ${opts}`);
+ 
+    t.equal(csv, csvFixtures.trailingBackslash);
   });
 
-  testRunner.add('should escape " when preceeded by \\', (t) => {
-    exec(`${cli} -i "${getFixturePath('/json/escapeDoubleBackslashedEscapedQuote.json')}"`, (err, stdout, stderr) => {
-      t.notOk(stderr); 
-      const csv = stdout;
-      t.equal(csv, csvFixtures.escapeDoubleBackslashedEscapedQuote);
-      t.end();
-    });
+  testRunner.add('should escape " when preceeded by \\', async (t) => {
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/escapeDoubleBackslashedEscapedQuote.json')}"`);
+ 
+    t.equal(csv, csvFixtures.escapeDoubleBackslashedEscapedQuote);
   });
 
-  testRunner.add('should preserve new lines in values', (t) => {
+  testRunner.add('should preserve new lines in values', async (t) => {
     const opts = '--eol "\r\n"';
 
-    exec(`${cli} -i "${getFixturePath('/json/escapeEOL.json')}" ${opts}`, (err, stdout, stderr) => {
-      t.notOk(stderr); 
-      const csv = stdout;
-      t.equal(csv, [
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/escapeEOL.json')}" ${opts}`);
+ 
+    t.equal(csv, [
       '"a string"',
       '"with a \u2028description\\n and\na new line"',
       '"with a \u2029\u2028description and\r\nanother new line"'
     ].join('\r\n'));
-      t.end();
-    });
   });
 
-  testRunner.add('should preserve tabs in values', (t) => {
-    exec(`${cli} -i "${getFixturePath('/json/escapeTab.json')}"`, (err, stdout, stderr) => {
-      t.notOk(stderr); 
-      const csv = stdout;
-      t.equal(csv, csvFixtures.escapeTab);
-      t.end();
-    });
+  testRunner.add('should preserve tabs in values', async (t) => {
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/escapeTab.json')}"`);
+ 
+    t.equal(csv, csvFixtures.escapeTab);
   });
 };
