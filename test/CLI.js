@@ -87,39 +87,27 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     }
   });
 
-  // testRunner.add('should error if input data is not an object', async (t) => {
-  //   const input = new Readable();
-  //   input._read = () => {};
-  //   input.push(JSON.stringify('not an object'));
-  //   input.push(null);
-  //   try {
-  //     const parser = new Json2csvParser();
-  //     parser.parse(input);
+  testRunner.add('should error if input data is not an object', async (t) => {
+    try {
+      await execAsync(`${cli} -i "${getFixturePath('/json2/notAnObject.json')}"`);
 
-  //       t.fail('Exception expected');
-  //   } catch(error) {
-  //       t.equal(error.message, 'Data should not be empty or the "fields" option should be included');
-  //   }
-  //     t.end();
-  // });
+      t.fail('Exception expected.');  
+    } catch (err) {
+      t.ok(err.message.includes('Invalid input file.'));
+    }
+  });
 
-  // testRunner.add('should handle empty object', async (t) => {
-  //   const input = new Readable();
-  //   input._read = () => {};
-  //   input.push(JSON.stringify({}));
-  //   input.push(null);
-  //   const opts = {
-  //     fields: ['carModel', 'price', 'color']
-  //   };
+  testRunner.add('should handle empty object', async (t) => {
+    const opts = '--fields carModel,price,color';
 
-  //   const parser = new Json2csvParser(opts);
-  //   const { stdout: csv } = await execAsync(`${cli} -i ${input}`);
-  //     t.equal(csv, '"carModel","price","color"');
-  //     t.end();
-  // });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/emptyObject.json')}" ${opts}`);
+
+    t.equal(csv, csvFixtures.emptyObject);
+  });
 
   testRunner.add('should handle deep JSON objects', async (t) => {
     const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/deepJSON.json')}"`);
+
     t.equal(csv, csvFixtures.deepJSON);
   });
 
@@ -127,16 +115,15 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     const opts = '--no-streaming';
 
     const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/deepJSON.json')}" ${opts}`);
+
     t.equal(csv, csvFixtures.deepJSON + '\n'); // console.log append the new line
   });
 
-  // testRunner.add('should parse json to csv and infer the fields automatically ', async (t) => {
-  //   const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/default.json')}" ${opts}`);
-  //     t.ok(typeof csv === 'string');
-  //     t.equal(csv, csvFixtures.default);
-  //     t.end();
-  //   });
-  // });
+  testRunner.add('should parse json to csv and infer the fields automatically ', async (t) => {
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/default.json')}"`);
+
+    t.equal(csv, csvFixtures.defaultStream);
+  });
 
   testRunner.add('should error on invalid fields config file path', async (t) => {
     const opts = `--config "${getFixturePath('/fields2/fieldNames.json')}"`;
@@ -310,21 +297,13 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     t.equal(csv, csvFixtures.emptyRowDefaultValues);
   });
 
-  // testRunner.add('should parse data:[null] to csv with only column title, despite options.includeEmptyRows', async (t) => {
-  //   const input = new Readable();
-  //   input._read = () => {};
-  //   input.push(JSON.stringify([null]));
-  //   input.push(null);
-  //   const opts = {
-  //     fields: ['carModel', 'price', 'color'],
-  //     includeEmptyRows: true,
-  //   };
+  testRunner.add('should parse data:[null] to csv with only column title, despite options.includeEmptyRows', async (t) => {
+    const opts = '--fields carModel,price,color --include-empty-rows';
 
-  //   const { stdout: csv } = await execAsync(cli + '-i input');
-  //     t.equal(csv, '"carModel","price","color"');
-  //     t.end();
-  //   });
-  // });
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/arrayWithNull.json')}" ${opts}`);
+
+    t.equal(csv, csvFixtures.emptyObject);
+  });
 
   // BOM
 
