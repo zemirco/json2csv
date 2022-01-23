@@ -1,25 +1,27 @@
 'use strict';
 
 const {
-  Transform: Parser,
+  AsyncParser: Parser,
   transforms: { flatten, unwind },
   formatters: { number: numberFormatter, string: stringFormatter, stringExcel: stringExcelFormatter, stringQuoteOnlyIfNecessary: stringQuoteOnlyIfNecessaryFormatter },
 } = require('../lib/json2csv');
 
-function parseInput(transform, nodeStream) {
-  return new Promise((resolve, reject) => {
-    let csv = '';
-
-    nodeStream
-      .on('error', err => reject(err))
-      .pipe(transform)
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => resolve(csv))
-      .on('error', err => reject(err));
-  });
+async function parseInput(parser, nodeStream) {
+  return await parser.parse(nodeStream).promise();
 }
 
 module.exports = (testRunner, jsonFixtures, csvFixtures) => {
+  testRunner.add('should error if input is of an invalid format', async (t) => {
+    try {
+      const parser = new Parser();
+      await parseInput(parser, 123);
+
+      t.fail('Exception expected');
+    } catch (err) {
+      t.equal(err.message, 'Data should be a JSON object, JSON array, typed array, string or stream');
+    }
+  });
+
   testRunner.add('should handle object mode', async (t) => {
     const opts = {
       fields: ['carModel', 'price', 'color', 'manual']
@@ -30,65 +32,6 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     const csv = await parseInput(parser, jsonFixtures.default({ objectMode: true }));
 
     t.equal(csv, csvFixtures.ndjson);
-  });
-
-  testRunner.add('should handle ndjson', async (t) => {
-    const opts = {
-      fields: ['carModel', 'price', 'color', 'manual'],
-      ndjson: true
-    };
-
-    const parser = new Parser(opts);
-    const csv = await parseInput(parser, jsonFixtures.ndjson());
-
-    t.equal(csv, csvFixtures.ndjson);
-  });
-
-  testRunner.add('should error if ndjson input data is empty and fields are not set', async (t) => {
-    const opts = {
-      ndjson: true
-    };
-
-    try {
-      const parser = new Parser(opts);
-      await parseInput(parser, jsonFixtures.empty());
-
-      t.fail('Exception expected');
-    } catch (err) {
-      t.equal(err.message, 'Data should not be empty or the "fields" option should be included');
-    }
-  });
-
-  testRunner.add('should handle ndjson with small chunk size', async (t) => {
-    const opts = {
-      fields: ['carModel', 'price', 'color', 'manual'],
-      ndjson: true
-    };
-
-    try {
-      const parser = new Parser(opts, { highWaterMark: 16 });
-      await parseInput(parser, jsonFixtures.ndjsonInvalid());
-
-      t.fail('Exception expected');
-    } catch(err) {
-      t.equal(err.message, 'Unexpected SEPARATOR ("\\n") in state COMMA');
-    }
-  });
-
-  testRunner.add('should error on invalid ndjson input data', async (t) => {
-    const opts = {
-      fields: ['carModel', 'price', 'color', 'manual'],
-      ndjson: true
-    };
-
-    try {
-      const parser = new Parser(opts);
-      await parseInput(parser, jsonFixtures.ndjsonInvalid());
-
-      t.fail('Exception expected');
-    } catch (err) {
-      t.equal(err.message, 'Unexpected SEPARATOR ("\\n") in state COMMA');
-    }
   });
 
   testRunner.add('should not modify the opts passed', async (t) => {
@@ -114,7 +57,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   testRunner.add('should error if input data is not an object', async (t) => {
     try {
       const parser = new Parser();
-      await parseInput(parser, jsonFixtures.notAnObject());
+      await parseInput(parser, `"${jsonFixtures.notAnObject()}"`);
 
       t.fail('Exception expected');
     } catch (err) {

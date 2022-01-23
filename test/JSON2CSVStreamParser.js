@@ -1,21 +1,24 @@
 'use strict';
 
 const {
-  Transform: Parser,
+  StreamParser: Parser,
   transforms: { flatten, unwind },
   formatters: { number: numberFormatter, string: stringFormatter, stringExcel: stringExcelFormatter, stringQuoteOnlyIfNecessary: stringQuoteOnlyIfNecessaryFormatter },
 } = require('../lib/json2csv');
 
-function parseInput(transform, nodeStream) {
+function parseInput(parser, nodeStream) {
   return new Promise((resolve, reject) => {
     let csv = '';
+    parser.onData = chunk => csv += chunk.toString();
+    parser.onError = err => reject(err);
+    parser.onEnd = () => resolve(csv);
 
     nodeStream
-      .on('error', err => reject(err))
-      .pipe(transform)
-      .on('data', chunk => (csv += chunk.toString()))
-      .on('end', () => resolve(csv))
-      .on('error', err => reject(err));
+      .on('data', chunk => parser.write(chunk))
+      .on('end', () => parser.end())
+      .on('error', err => {
+        reject(err.message);
+      });
   });
 }
 
@@ -59,22 +62,6 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     }
   });
 
-  testRunner.add('should handle ndjson with small chunk size', async (t) => {
-    const opts = {
-      fields: ['carModel', 'price', 'color', 'manual'],
-      ndjson: true
-    };
-
-    try {
-      const parser = new Parser(opts, { highWaterMark: 16 });
-      await parseInput(parser, jsonFixtures.ndjsonInvalid());
-
-      t.fail('Exception expected');
-    } catch(err) {
-      t.equal(err.message, 'Unexpected SEPARATOR ("\\n") in state COMMA');
-    }
-  });
-
   testRunner.add('should error on invalid ndjson input data', async (t) => {
     const opts = {
       fields: ['carModel', 'price', 'color', 'manual'],
@@ -96,6 +83,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     const parser = new Parser(opts);
     const csv = await parseInput(parser, jsonFixtures.default());
 
+    t.ok(typeof csv === 'string');
     t.equal(csv, csvFixtures.defaultStream);
     t.deepEqual(opts, {});
   });
