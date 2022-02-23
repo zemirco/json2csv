@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.0.7](https://github.com/zemirco/json2csv/compare/v5.0.6...v5.0.7) (2022-02-23)
+
+
+### Bug Fixes
+
+* unwind transform issue with nested arrays ([#549](https://github.com/zemirco/json2csv/issues/549)) ([485ea77](https://github.com/zemirco/json2csv/commit/485ea77886f1e09d768ed1cce0af6faeb06707cf))
+
 ### [5.0.6](https://github.com/zemirco/json2csv/compare/v5.0.5...v5.0.6) (2021-02-03)
 
 
