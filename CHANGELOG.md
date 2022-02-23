@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.0.0-alpha.1](https://github.com/zemirco/json2csv/compare/v6.0.0-alpha.0...v6.0.0-alpha.1) (2022-02-23)
+
+
+### Features
+
+* expose JSON2CSVStreamParser ([d476707](https://github.com/zemirco/json2csv/commit/d47670780f3dd07299ece99c7a5de409f714d21f))
+
+
+### Bug Fixes
+
+* fix missing ndjson option to CLI ([885e28b](https://github.com/zemirco/json2csv/commit/885e28bef66777d715f6df575f971525391efbbe))
+* fix some issues in the AsyncParser tests ([695f116](https://github.com/zemirco/json2csv/commit/695f116cca80f316a802b85c6065ad5db3b9d2d8))
+* reset lockfile due to changes in url patterns for github ([b589372](https://github.com/zemirco/json2csv/commit/b58937294b383946067f0eb415e484f645c420f0))
+* unwind transform issue with nested arrays ([#548](https://github.com/zemirco/json2csv/issues/548)) ([3cb57f3](https://github.com/zemirco/json2csv/commit/3cb57f3357b053ce0d4a26e474dae10e07d14ac4))
+* update engines and volta ([98984dd](https://github.com/zemirco/json2csv/commit/98984ddd479439c904c8434cafac6bdbabf2e6f2))
+
 ## [6.0.0-alpha.0](https://github.com/zemirco/json2csv/compare/v5.0.3...v6.0.0-alpha.0) (2021-04-14)
 
 
