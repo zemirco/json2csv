@@ -1,0 +1,56 @@
+name: Node.js CI
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest] # macos-latest is too slow
+        node-version: [16.x, 14.x, 12.x]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Cache Node.js modules on Linux
+      uses: actions/cache@v2
+      if: ${{ runner.OS != 'windows-latest' }}
+      with:
+        path: ~/.npm 
+        key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.OS }}-node-
+          ${{ runner.OS }}-
+    - name: Cache Node.js modules on Windows
+      uses: actions/cache@v2
+      if: ${{ runner.OS == 'windows-latest' }}
+      with:
+        path: ~\AppData\Roaming\npm-cache
+        key: ${{ runner.os }}-node-${{ hashFiles('**\package-lock.json') }}
+        restore-keys: |
+          ${{ runner.OS }}-node-
+          ${{ runner.OS }}-
+    - run: npm ci
+    - run: npm run lint
+    - name: Unit tests
+      run: npm run test-with-coverage
+    - name: Coveralls Parallel
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.github_token }}
+        flag-name: run-${{ matrix.node-version }}
+        parallel: true
+  finish:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Coveralls Finished
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.github_token }}
+        parallel-finished: true

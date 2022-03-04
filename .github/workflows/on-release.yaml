@@ -1,0 +1,19 @@
+name: Node.js Publish
+on:
+  release:
+    types: [published]
+jobs:
+  build:
+    runs-on: Ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    # Setup .npmrc file to publish to npm
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '16.x'
+        # Needs to be explicitly specified for auth to work
+        registry-url: 'https://registry.npmjs.org'
+    - run: npm ci
+    - run: npm publish --access public
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

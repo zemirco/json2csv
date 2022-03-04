@@ -32,8 +32,7 @@
     "dev": "rollup -c -w",
     "test": "node test | tap-spec",
     "lint": "eslint bin lib test",
-    "test-with-coverage": "nyc --reporter=text node test | tap-spec",
-    "coveralls": "nyc report --reporter=text-lcov | coveralls",
+    "test-with-coverage": "nyc --reporter=text --reporter=lcov node test | tap-spec",
     "deploy:docs": "docpress b && gh-pages -d _docpress",
     "prepublish": "in-publish && npm run before:publish || not-in-publish",
     "before:publish": "npm test && npm run build && npm run deploy:docs",
@@ -47,7 +46,6 @@
   "devDependencies": {
     "@babel/core": "^7.13.15",
     "@babel/preset-env": "^7.13.15",
-    "coveralls": "^3.1.0",
     "docpress": "^0.8.2",
     "eslint": "^7.24.0",
     "gh-pages": "^3.1.0",
