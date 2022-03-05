@@ -1,5 +1,6 @@
 'use strict';
 
+const os = require('os');
 const { Writable } = require('stream');
 
 const MIN_CELL_WIDTH = 15;
@@ -44,14 +45,14 @@ class TablePrinter {
   }
 
   print(top, lines, bottom) {
-    const table = `${top}\n`
+    const table = `${top}${os.EOL}`
       + lines
         .map(row => this.formatRow(row))
-        .join(`\n${this.middleLine}\n`)
-      + (bottom ? `\n${bottom}` : '');
+        .join(`${os.EOL}${this.middleLine}${os.EOL}`)
+      + os.EOL
+      + (bottom ? bottom : '');
 
-    // eslint-disable-next-line no-console
-    console.log(table);  
+    process.stdout.write(table);  
   }
 
   formatRow(row) {
@@ -66,7 +67,7 @@ class TablePrinter {
 
     return Array(height).fill('')
       .map((_, i) => `│${processedCells.map(cell => cell[i]).join('│')}│`)
-      .join('\n');
+      .join(os.EOL);
   }
 
   formatCell(content, heigth, width) {

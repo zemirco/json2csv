@@ -1,5 +1,6 @@
 'use strict';
 
+const os = require('os');
 const { mkdir, rm, readFile } = require('fs').promises;
 const { join: joinPath } = require('path');
 const { exec } = require('child_process');
@@ -53,7 +54,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
 
       t.fail('Exception expected.');  
     } catch (err) {
-      t.ok(err.message.includes('Unexpected SEPARATOR ("\\n") in state COMMA'));
+      t.ok(err.message.includes(`Unexpected SEPARATOR ("${os.EOL.replace('\r', '\\r').replace('\n', '\\n')}") in state COMMA`));
     }
   });
 
@@ -62,7 +63,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
 
     const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/ndjson.json')}" ${opts}`);
 
-    t.equal(csv, csvFixtures.ndjson + '\n'); // console.log append the new line
+    t.equal(csv, csvFixtures.ndjson);
   });
 
   testRunner.add('should error on invalid input file path', async (t) => {
@@ -116,7 +117,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
 
     const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/deepJSON.json')}" ${opts}`);
 
-    t.equal(csv, csvFixtures.deepJSON + '\n'); // console.log append the new line
+    t.equal(csv, csvFixtures.deepJSON);
   });
 
   testRunner.add('should parse json to csv and infer the fields automatically ', async (t) => {
@@ -354,7 +355,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
 
     const { stdout: csv } = await execution;
     
-    t.equal(csv, csvFixtures.default + '\n'); // console.log append the new line
+    t.equal(csv, csvFixtures.default);
   });
 
   testRunner.add('should error if stdin data is not valid with -s flag', async (t) => {

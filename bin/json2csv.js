@@ -76,9 +76,9 @@ function getOutputStream(outputPath, config) {
   return process.stdout;
 }
 
-async function getInput(inputPath, ndjson) {
+async function getInput(inputPath, ndjson, eol) {
   if (!inputPath) return getInputFromStdin();
-  if (ndjson) return parseNdJson(await readFile(inputPath, 'utf8'));
+  if (ndjson) return parseNdJson(await readFile(inputPath, 'utf8'), eol);
   return require(inputPath);
 }
 
@@ -104,7 +104,7 @@ async function getInputFromStdin() {
 async function processOutput(outputPath, csv, config) {
   if (!outputPath) {
     // eslint-disable-next-line no-console
-    config.pretty ? (new TablePrinter(config)).printCSV(csv) : console.log(csv);
+    config.pretty ? (new TablePrinter(config)).printCSV(csv) : process.stdout.write(csv);
     return;
   }
 
@@ -112,7 +112,7 @@ async function processOutput(outputPath, csv, config) {
 }
 
 async function processInMemory(config, opts) {
-  const input = await getInput(program.input, config.ndjson);
+  const input = await getInput(program.input, config.ndjson, config.eol);
   const output = new JSON2CSVParser(opts).parse(input);
   await processOutput(program.output, output, config);
 }

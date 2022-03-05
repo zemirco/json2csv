@@ -1,5 +1,7 @@
 'use strict';
 
+const os = require('os');
+
 const {
   StreamParser: Parser,
   transforms: { flatten, unwind },
@@ -74,7 +76,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
 
       t.fail('Exception expected');
     } catch (err) {
-      t.equal(err.message, 'Unexpected SEPARATOR ("\\n") in state COMMA');
+      t.ok(err.message.includes(`Unexpected SEPARATOR ("${os.EOL.replace('\r', '\\r').replace('\n', '\\n')}") in state COMMA`));
     }
   });
 
