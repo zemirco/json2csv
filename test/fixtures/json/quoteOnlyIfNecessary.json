@@ -1,6 +1,7 @@
 [
-  {"a string": "with a description"},
-  {"a string": "with a description and \"quotes\""},
-  {"a string": "with a description, and a separator"},
-  {"a string": "with a description\n and a new line"}
+  {"a string": "with a description", "column 2": "string"},
+  {"a string": "with a description and \"quotes\"", "column 2": "string"},
+  {"a string": "with a description, and a separator", "column 2": "string"},
+  {"a string": "with a description\n and a new line", "column 2": "string"},
+  {"a string": "with a description and a backslash \\", "column 2": "string"}
 ]
