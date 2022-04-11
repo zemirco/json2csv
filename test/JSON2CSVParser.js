@@ -757,6 +757,21 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     t.equal(csv, csvFixtures.quoteOnlyIfNecessary);
   });
 
+  testRunner.add('should respect the stringQuoteOnlyIfNecessary eol option', async (t) => {
+    const opts = {
+      formatters: {
+        string: stringQuoteOnlyIfNecessaryFormatter({ eol: '\r\n' })
+      },
+      eol: '\r\n'
+    };
+
+    const parser = new Parser(opts);
+    const csv = await parseInput(parser, jsonFixtures.quoteOnlyIfNecessaryCRLF());
+
+    // Git will not store the CRLF newlines in the fixture, so simulate them here.
+    t.equal(csv, csvFixtures.quoteOnlyIfNecessaryCRLF.replace(/\n/g, '\r\n'));
+  });
+
   // String Excel
 
   testRunner.add('should format strings to force excel to view the values as strings', async (t) => {
