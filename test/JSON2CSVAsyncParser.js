@@ -922,7 +922,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     };
 
     const parser = new Parser(opts);
-    const csv = await parseInput(parser, jsonFixtures.escapeEOL());
+    const csv = await parseInput(parser, jsonFixtures.eol());
 
 
     t.equal(csv, [

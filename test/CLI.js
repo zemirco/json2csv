@@ -655,7 +655,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   testRunner.add('should preserve new lines in values', async (t) => {
     const opts = '--eol "\r\n"';
 
-    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/escapeEOL.json')}" ${opts}`);
+    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/eol.json')}" ${opts}`);
  
     t.equal(csv, [
       '"a string"',
