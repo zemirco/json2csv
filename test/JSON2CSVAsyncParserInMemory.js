@@ -797,8 +797,9 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
   testRunner.add('should quote only if necessary if using stringQuoteOnlyIfNecessary formatter', async (t) => {
     const opts = {
       formatters: {
-        string: stringQuoteOnlyIfNecessaryFormatter()
-      }
+        string: stringQuoteOnlyIfNecessaryFormatter({ eol: '\n' })
+      },
+      eol: '\n'
     };
 
     const parser = new Parser(opts);
