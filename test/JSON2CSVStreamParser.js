@@ -829,7 +829,8 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
 
   testRunner.add('should escape quotes before new line with value in \'escapedQuote\'', async (t) => {
     const opts = {
-      fields: ['a string']
+      fields: ['a string'],
+      eol: '\n'
     };
 
     const parser = new Parser(opts);

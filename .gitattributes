@@ -1,3 +1,4 @@
 * text=auto
+test/fixtures/csv/backslashBeforeNewLine.csv text eol=lf
 test/fixtures/csv/eol.csv text eol=crlf
 test/fixtures/csv/escapeEOL.csv text eol=crlf
