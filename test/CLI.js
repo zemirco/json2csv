@@ -505,7 +505,7 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
     t.equal(csv, csvFixtures.unwind2);
   });
 
-  testRunner.add('hould unwind and blank out repeated data', async (t) => {
+  testRunner.add('should unwind and blank out repeated data', async (t) => {
     const opts = '--fields carModel,price,extras.items.name,extras.items.color,extras.items.items.position,extras.items.items.color'
       + ' --unwind extras.items,extras.items.items --unwind-blank';
 
