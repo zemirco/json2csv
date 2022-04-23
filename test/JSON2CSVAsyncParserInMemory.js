@@ -872,13 +872,6 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
 
   });
 
-  testRunner.add('should preserve tabs in values', async (t) => {
-    const parser = new Parser();
-    const csv = await parseInput(parser, jsonFixtures.escapeTab());
-
-    t.equal(csv, csvFixtures.escapeTab);
-  });
-
   // Headers
 
   testRunner.add('should format headers based on the headers formatter', async (t) => {

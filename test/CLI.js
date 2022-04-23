@@ -663,10 +663,4 @@ module.exports = (testRunner, jsonFixtures, csvFixtures) => {
       '"with a \u2029\u2028description and\r\nanother new line"'
     ].join('\r\n'));
   });
-
-  testRunner.add('should preserve tabs in values', async (t) => {
-    const { stdout: csv } = await execAsync(`${cli} -i "${getFixturePath('/json/escapeTab.json')}"`);
- 
-    t.equal(csv, csvFixtures.escapeTab);
-  });
 };
