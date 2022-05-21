@@ -19,7 +19,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name: Cache Node.js modules on Linux
       uses: actions/cache@v2
-      if: ${{ runner.OS != 'windows-latest' }}
+      if: ${{ runner.OS != 'Windows' }}
       with:
         path: ~/.npm 
         key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -28,7 +28,7 @@ jobs:
           ${{ runner.OS }}-
     - name: Cache Node.js modules on Windows
       uses: actions/cache@v2
-      if: ${{ runner.OS == 'windows-latest' }}
+      if: ${{ runner.OS == 'Windows' }}
       with:
         path: ~\AppData\Roaming\npm-cache
         key: ${{ runner.os }}-node-${{ hashFiles('**\package-lock.json') }}
